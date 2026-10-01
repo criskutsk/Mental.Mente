@@ -37,10 +37,14 @@
         .card { background: var(--card-dark); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .category-title { font-size: 1.1rem; color: #a5b4fc; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-        .criterion-item { margin-bottom: 15px; }
-        .criterion-label { display: block; font-size: 0.9rem; margin-bottom: 5px; font-weight: 600; }
-        .rating-options { display: flex; gap: 8px; margin-bottom: 6px; }
-        .rating-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #0f172a; color: var(--text-main); border-radius: 6px; cursor: pointer; text-align: center; }
+        .criterion-item { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
+        .criterion-item:last-child { border-bottom: none; }
+        .criterion-label { display: block; font-size: 0.95rem; margin-bottom: 2px; font-weight: 600; color: #f1f5f9; }
+        .criterion-desc { font-size: 0.78rem; color: #cbd5e1; margin-bottom: 4px; line-height: 1.3; }
+        .criterion-scale { font-size: 0.75rem; color: #93c5fd; font-style: italic; margin-bottom: 8px; background: rgba(15, 23, 42, 0.6); padding: 4px 8px; border-radius: 4px; border-left: 2px solid var(--accent); }
+
+        .rating-options { display: flex; gap: 8px; margin-bottom: 8px; }
+        .rating-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #0f172a; color: var(--text-main); border-radius: 6px; cursor: pointer; text-align: center; font-weight: bold; }
         .rating-btn.selected { background: var(--accent); border-color: #818cf8; }
         
         input[type="text"], input[type="date"] { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-size: 0.85rem; }
@@ -147,23 +151,98 @@
     };
 
     const criteriaData = [
-        { id: 'c1', cat: 'neuro', name: 'Intensidade Emocional' },
-        { id: 'c2', cat: 'neuro', name: 'Sobrecarga Sensorial / Estímulos' },
-        { id: 'c3', cat: 'neuro', name: 'Regulação do Humor / Ansiedade' },
-        { id: 'c4', cat: 'neuro', name: 'Autoaceitação & Mascaramento (Camouflage)' },
-        { id: 'c5', cat: 'foco', name: 'Hiperfoco & Produtividade' },
-        { id: 'c6', cat: 'foco', name: 'Organização & Gestão de Tempo' },
-        { id: 'c7', cat: 'foco', name: 'Inércia de Ação / Procrastinação' },
-        { id: 'c8', cat: 'foco', name: 'Tolerância à Frustração' },
-        { id: 'c9', cat: 'saude', name: 'Qualidade do Sono' },
-        { id: 'c10', cat: 'saude', name: 'Nível de Energia Física' },
-        { id: 'c11', cat: 'saude', name: 'Alimentação & Hidratação' },
-        { id: 'c12', cat: 'saude', name: 'Atividade Física / Movimento' },
-        { id: 'c13', cat: 'saude', name: 'Tempo Conectado (Ecrãs/Telas)' },
-        { id: 'c14', cat: 'conexoes', name: 'Qualidade das Conexões Sociais' },
-        { id: 'c15', cat: 'conexoes', name: 'Sentimento de Pertencimento' },
-        { id: 'c16', cat: 'conexoes', name: 'Tempo para Interesses / Hobbies' },
-        { id: 'c17', cat: 'conexoes', name: 'Descanso / Desconexão do Trabalho' }
+        // 1. NEUROEMOCIONAL
+        { 
+            id: 'c1', cat: 'neuro', name: 'Intensidade Emocional', 
+            desc: 'Avalia a magnitude e força com que sente as emoções ao longo do dia.',
+            scale: '1: Extremamente desregulado / sobrecarregado | 3: Moderado | 5: Totalmente equilibrado e sereno'
+        },
+        { 
+            id: 'c2', cat: 'neuro', name: 'Sobrecarga Sensorial / Estímulos', 
+            desc: 'Sensibilidade a ruídos, luzes, luz solar, texturas ou excesso de informação.',
+            scale: '1: Totalmente hipersensível / esgotado | 3: Tolerável | 5: Sem incômodo sensorial'
+        },
+        { 
+            id: 'c3', cat: 'neuro', name: 'Regulação do Humor / Ansiedade', 
+            desc: 'Nível de oscilação do humor, angústia ou crise de ansiedade.',
+            scale: '1: Muita ansiedade / oscilação bruta | 3: Oscilação leve | 5: Humor estável e calmo'
+        },
+        { 
+            id: 'c4', cat: 'neuro', name: 'Autoaceitação & Mascaramento (Camouflage)', 
+            desc: 'Esforço para esconder traços AH/SD ou se forçar a se encaixar.',
+            scale: '1: Exaustão por mascaramento continuo | 3: Mascaramento pontual | 5: Autêntico / sem necessidade de mascarar'
+        },
+
+        // 2. FOCO & COGNIÇÃO
+        { 
+            id: 'c5', cat: 'foco', name: 'Hiperfoco & Produtividade', 
+            desc: 'Capacidade de canalizar o foco em tarefas relevantes sem esgotamento.',
+            scale: '1: Disperso / Hiperfoco destrutivo | 3: Foco razoável | 5: Hiperfoco produtivo e equilibrado'
+        },
+        { 
+            id: 'c6', cat: 'foco', name: 'Organização & Gestão de Tempo', 
+            desc: 'Facilidade para planejar, priorizar e cumprir os compromissos diários.',
+            scale: '1: Caótico / Sensação de perdido | 3: Parcialmente organizado | 5: Excelente gestão do tempo'
+        },
+        { 
+            id: 'c7', cat: 'foco', name: 'Inércia de Ação / Procrastinação', 
+            desc: 'Dificuldade para iniciar tarefas pendentes ou transitar entre atividades.',
+            scale: '1: Paralisado / Muita procrastinação | 3: Executou com esforço | 5: Fluxo de ação contínuo'
+        },
+        { 
+            id: 'c8', cat: 'foco', name: 'Tolerância à Frustração', 
+            desc: 'Reação a erros, imprevistos ou prazos e expectativas quebradas.',
+            scale: '1: Baixa tolerância / Irritação extrema | 3: Reação moderada | 5: Elevada resiliência'
+        },
+
+        // 3. SAÚDE INTEGRAL
+        { 
+            id: 'c9', cat: 'saude', name: 'Qualidade do Sono', 
+            desc: 'Tempo e profundidade do descanso noturno (ausência de insônia).',
+            scale: '1: Insônia / Sono muito agitado | 3: Restaurador mediano | 5: Sono profundo e reparador'
+        },
+        { 
+            id: 'c10', cat: 'saude', name: 'Nível de Energia Física', 
+            desc: 'Sensação geral de vitalidade e disposição física no dia.',
+            scale: '1: Exaustão física / Fadiga | 3: Energia suficiente | 5: Vitalidade e disposição plena'
+        },
+        { 
+            id: 'c11', cat: 'saude', name: 'Alimentação & Hidratação', 
+            desc: 'Cuidado com a ingestão regular de água e refeições nutritivas.',
+            scale: '1: Descuidou / Pula refeições | 3: Alimentação razoável | 5: Excelente nutrição e hidratação'
+        },
+        { 
+            id: 'c12', cat: 'saude', name: 'Atividade Física / Movimento', 
+            desc: 'Movimento corporal, caminhadas, alongamentos ou exercício estruturado.',
+            scale: '1: Sedentário no dia | 3: Movimento leve | 5: Exercício físico completo'
+        },
+        { 
+            id: 'c13', cat: 'saude', name: 'Tempo Conectado (Ecrãs/Telas)', 
+            desc: 'Uso de dispositivos eletrônicos sem gerar cansaço mental.',
+            scale: '1: Uso excessivo / Vício em telas | 3: Uso moderado | 5: Uso consciente e controlado'
+        },
+
+        // 4. CONEXÕES & LAZER
+        { 
+            id: 'c14', cat: 'conexoes', name: 'Qualidade das Conexões Sociais', 
+            desc: 'Interações com pessoas significativas com trocas reais.',
+            scale: '1: Conexões superficiais / Desgastantes | 3: Interações neutras | 5: Trocas profundas e estimulantes'
+        },
+        { 
+            id: 'c15', cat: 'conexoes', name: 'Sentimento de Pertencimento', 
+            desc: 'Sensação de ser compreendido e aceito no meio social ou familiar.',
+            scale: '1: Sensação profunda de inadequação | 3: Aceitável | 5: Forte sentimento de pertencimento'
+        },
+        { 
+            id: 'c16', cat: 'conexoes', name: 'Tempo para Interesses / Hobbies', 
+            desc: 'Dedicação a temas de interesse especial para recarga de energia.',
+            scale: '1: Nenhum tempo dedicado | 3: Pouco tempo | 5: Dedicação satisfatória aos hobbies'
+        },
+        { 
+            id: 'c17', cat: 'conexoes', name: 'Descanso / Desconexão do Trabalho', 
+            desc: 'Capacidade de desligar a mente das obrigações e relaxar verdadeiramente.',
+            scale: '1: Incapaz de desligar a mente | 3: Desconexão parcial | 5: Relaxamento e descanso completo'
+        }
     ];
 
     document.getElementById('reg-date').valueAsDate = new Date();
@@ -177,6 +256,8 @@
             div.className = 'criterion-item';
             div.innerHTML = `
                 <label class="criterion-label">${item.name}</label>
+                <div class="criterion-desc">${item.desc}</div>
+                <div class="criterion-scale">💡 <strong>Escala:</strong> ${item.scale}</div>
                 <div class="rating-options">
                     ${[1, 2, 3, 4, 5].map(val => `
                         <button type="button" class="rating-btn" onclick="setRating('${item.id}', ${val}, this)">${val}</button>
