@@ -5,948 +5,379 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Neuroemocional & AH/SD</title>
   
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Chart.js para Gráficos -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- html2pdf.js para Exportação de Relatórios PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
   <style>
-    :root {
-      --bg-dark: #0f111a;
-      --card-bg: #1a1d2e;
-      --card-inner-bg: #131522;
-      --primary: #6c5ce7;
-      --primary-hover: #5b4bc4;
-      --text-main: #e2e8f0;
-      --text-muted: #94a3b8;
-      --border-color: #2d3748;
-      --danger: #e74c3c;
-      --success: #2ecc71;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; padding: 20px; }
+    
+    .container { max-width: 800px; margin: 0 auto; }
+    
+    .header { text-align: center; margin-bottom: 25px; }
+    .header h1 { font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; color: #ffffff; }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    /* Navegação */
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 12px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: #334155; color: #fff; border-color: #64748b; }
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      padding-bottom: 60px;
-    }
+    .aba-conteudo { display: none; }
+    .aba-conteudo.active { display: block; }
 
-    header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 15px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    /* Cards e Seções */
+    .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { font-size: 1.1rem; font-weight: bold; color: #38bdf8; }
 
-    .header-container {
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* Caixa Descritiva de Evolução */
+    .caixa-analise { background: #0f172a; border-left: 4px solid #38bdf8; padding: 14px; border-radius: 6px; margin-bottom: 16px; font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; }
 
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      max-width: 800px;
-      margin: 15px auto 0 auto;
-      padding: 0 15px;
-    }
+    /* Ações do Relatório (Botões) */
+    .relatorio-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+    
+    .btn { padding: 8px 12px; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: opacity 0.2s; }
+    .btn:hover { opacity: 0.9; }
 
-    .tab-btn {
-      background: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
+    .btn-baixar { background: #6366f1; color: white; }
+    .btn-importar { background: #10b981; color: white; position: relative; }
+    .btn-pdf { background: #06b6d4; color: white; }
+    .btn-apagar { background: #ef4444; color: white; }
 
-    .tab-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 0 15px;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.25rem;
-      color: #a29bfe;
-      margin: 25px 0 15px 0;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-color);
-    }
-
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #ffffff;
-    }
-
-    .scale-desc {
-      background-color: var(--card-inner-bg);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 15px;
-      line-height: 1.4;
-    }
-
-    .rating-buttons {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn-rating {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 12px 0;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-rating.selected {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: #ffffff;
-    }
-
-    textarea {
-      width: 100%;
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      color: var(--text-main);
-      padding: 12px;
-      font-size: 0.9rem;
-      resize: vertical;
-      min-height: 50px;
-    }
-
-    textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    .summary-card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 30px;
-      border: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .saldo-badge {
-      background-color: #d35400;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      display: inline-block;
-    }
-
-    .btn-action {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      transition: background 0.2s;
-    }
-
-    .btn-action:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-danger {
-      background-color: var(--danger);
-    }
-
-    .btn-danger:hover {
-      background-color: #c0392b;
-    }
-
-    .filter-select {
-      width: 100%;
-      background: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 1rem;
-    }
-
-    .report-item {
-      background-color: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .report-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-icon {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-size: 0.9rem;
-    }
-
-    .date-picker-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .date-picker {
-      background: var(--card-inner-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: 6px;
-    }
-
-    #pdf-preview {
-      background: #ffffff;
-      color: #000000;
-      padding: 30px;
-      border-radius: 8px;
-      display: none;
-    }
+    .btn-importar input[type="file"] { display: none; }
+    
+    .anotacao-box { background: #0f172a; padding: 10px; border-radius: 6px; font-size: 0.88rem; color: #cbd5e1; margin-top: 8px; border: 1px dashed #334155; }
   </style>
+
+  <!-- Biblioteca para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <header>
-    <div class="header-container">
-      <h1 style="font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
-        🧠 <span>Dashboard Neuroemocional & AH/SD</span>
-      </h1>
-      <div class="date-picker-container">
-        <input type="date" id="data-registro" class="date-picker">
-      </div>
-    </div>
-  </header>
-
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="alternarAba('registro')"><i class="fa-solid fa-pen-to-square"></i> Registro</button>
-    <button class="tab-btn" onclick="alternarAba('relatorios')"><i class="fa-solid fa-folder-open"></i> Relatórios</button>
-    <button class="tab-btn" onclick="alternarAba('evolucao')"><i class="fa-solid fa-chart-line"></i> Evolução</button>
-    <button class="tab-btn" onclick="alternarAba('backup')"><i class="fa-solid fa-database"></i> Backup</button>
-  </div>
-
   <div class="container">
-    
-    <!-- ABA 1: FORMULÁRIO DE REGISTRO DIÁRIO -->
-    <div id="aba-registro" class="tab-content active">
-      <form id="form-diario">
-        
-        <!-- SEÇÃO 1: NEUROEMOCIONAL & AH/SD -->
-        <div class="section-header">
-          🧠 <span>Neuroemocional & AH/SD</span>
-        </div>
-
-        <div class="card" data-criterio="ansiedade" data-area="neuroemocional">
-          <div class="card-title">Ansiedade & Ruminação</div>
-          <div class="scale-desc">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="vitalidade" data-area="neuroemocional">
-          <div class="card-title">Vitalidade & Humor</div>
-          <div class="scale-desc">1 = Apatia/Exaustão extrema; 3 = Disposição moderada; 5 = Energia e motivação altas.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="sobrecarga" data-area="neuroemocional">
-          <div class="card-title">Sobrecarga Sensorial</div>
-          <div class="scale-desc">1 = Hipersensibilidade/Irritação extrema; 3 = Desconforto pontual; 5 = Ambiente regulado.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="produtividade" data-area="neuroemocional">
-          <div class="card-title">Produtividade Criativa / Trabalho</div>
-          <div class="scale-desc">1 = Bloqueio criativo; 3 = Entregas essenciais; 5 = Alto fluxo criativo e realização.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="autocompaixao" data-area="neuroemocional">
-          <div class="card-title">Autocompaixão & Flexibilidade</div>
-          <div class="scale-desc">1 = Autocrítica destrutiva; 3 = Aceitação razoável; 5 = Diálogo interno acolhedor.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <!-- SEÇÃO 2: FOCO & COGNIÇÃO -->
-        <div class="section-header">
-          🎯 <span>Foco & Cognição</span>
-        </div>
-
-        <div class="card" data-criterio="nutricao_intelectual" data-area="foco">
-          <div class="card-title">Nutrição Intelectual / Estimulação</div>
-          <div class="scale-desc">1 = Tédio/Subestimulação severa; 3 = Aprendizado básico; 5 = Hiperfoco produtivo/Estímulo ideal.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="foco_estudos" data-area="foco">
-          <div class="card-title">Foco nos Estudos / Projetos</div>
-          <div class="scale-desc">1 = Dispersão total; 3 = Foco parcial; 5 = Execução fluida sem distrações.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <!-- SEÇÃO 3: SAÚDE INTEGRAL & ROTINA -->
-        <div class="section-header">
-          🌱 <span>Saúde Integral & Rotina</span>
-        </div>
-
-        <div class="card" data-criterio="sono" data-area="saude">
-          <div class="card-title">Qualidade do Sono</div>
-          <div class="scale-desc">1 = Insônia/Sono não reparador; 3 = Sono mediano; 5 = Descanso profundo e revigorante.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="autocuidado" data-area="saude">
-          <div class="card-title">Rotinas de Autocuidado</div>
-          <div class="scale-desc">1 = Abandono total de si; 3 = Higiene e cuidados básicos; 5 = Rituais de bem-estar completos.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="alimentacao" data-area="saude">
-          <div class="card-title">Alimentação Equilibrada</div>
-          <div class="scale-desc">1 = Ultraprocessados/Compulsão; 3 = Alimentação razoável; 5 = Refeições nutritivas.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="hidratacao" data-area="saude">
-          <div class="card-title">Hidratação Adequada</div>
-          <div class="scale-desc">1 = Menos de 1L; 3 = ~1.5L de água; 5 = Meta atingida (2L+).</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="exercicios" data-area="saude">
-          <div class="card-title">Prática de Exercícios Físicos</div>
-          <div class="scale-desc">1 = Sedentarismo total; 3 = Caminhada leve; 5 = Treino completo.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="medicacao" data-area="saude">
-          <div class="card-title">Cuidados Médicos & Medicação</div>
-          <div class="scale-desc">1 = Esqueceu medicação; 3 = Medicação em dia; 5 = Cuidados de saúde perfeitos.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="organizacao" data-area="saude">
-          <div class="card-title">Rotina Doméstica & Organização</div>
-          <div class="scale-desc">1 = Caos na casa; 3 = Manutenção básica; 5 = Casa limpa e organizada.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="financeiro" data-area="saude">
-          <div class="card-title">Gestão & Gastos Financeiros</div>
-          <div class="scale-desc">1 = Gastos impulsivos; 3 = Apenas essenciais; 5 = Gastos estratégicos/Investimento.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <!-- SEÇÃO 4: CONEXÕES & LAZER -->
-        <div class="section-header">
-          👥 <span>Conexões & Lazer</span>
-        </div>
-
-        <div class="card" data-criterio="relacionamentos" data-area="conexoes">
-          <div class="card-title">Relacionamento Afetivo & Social</div>
-          <div class="scale-desc">1 = Conflito severo/Mascaramento; 3 = Trocas neutras; 5 = Conexão autêntica sem masking.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <div class="card" data-criterio="hobbies" data-area="conexoes">
-          <div class="card-title">Hobbies & Desconexão</div>
-          <div class="scale-desc">1 = Sem tempo para si; 3 = Lazer rápido; 5 = Imersão relaxante e estimulante.</div>
-          <div class="rating-buttons">
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
-            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
-            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
-          </div>
-          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
-        </div>
-
-        <!-- RESUMO DO DIA E BOTÃO SALVAR -->
-        <div class="summary-card">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <strong style="font-size: 1.1rem;">Saldo do Dia:</strong>
-            <span class="saldo-badge" id="saldo-texto">0 pts (Equilíbrio / Manutenção)</span>
-          </div>
-
-          <button type="button" class="btn-action" onclick="salvarRegistroDiario()">
-            <i class="fa-solid fa-floppy-disk"></i> Guardar Registo Diário
-          </button>
-        </div>
-
-      </form>
+    <div class="header">
+      <h1>🧠 Dashboard Neuroemocional & AH/SD</h1>
     </div>
 
-    <!-- ABA 2: RELATÓRIOS SALVOS E AÇÕES -->
-    <div id="aba-relatorios" class="tab-content">
+    <!-- Navegação por Abas -->
+    <div class="nav-tabs">
+      <button class="tab-btn" onclick="mudarAba('registro', this)">📝 Registro</button>
+      <button class="tab-btn active" onclick="mudarAba('relatorios', this)">📁 Relatórios</button>
+      <button class="tab-btn" onclick="mudarAba('evolucao', this)">📈 Evolução</button>
+    </div>
+
+    <!-- Conteúdo 1: Registro (Espaço mantido) -->
+    <div id="aba-registro" class="aba-conteudo">
       <div class="card">
-        <h2 style="margin-bottom: 20px;">📊 Histórico de Relatórios Salvos</h2>
-        <div id="lista-relatorios-container">
-          <!-- Relatórios renderizados dinamicamente aqui -->
-        </div>
+        <p style="color: #94a3b8; text-align: center;">Área de formulário para novos registros diários.</p>
       </div>
     </div>
 
-    <!-- ABA 3: EVOLUÇÃO GRÁFICA POR ÁREA -->
-    <div id="aba-evolucao" class="tab-content">
-      <div class="card">
-        <h2 style="margin-bottom: 15px;">📈 Evolução Temporal por Área</h2>
-        
-        <select id="filtro-area-grafico" class="filter-select" onchange="atualizarGraficoEvolucao()">
-          <option value="todas">Geral (Média de Todas as Áreas)</option>
-          <option value="neuroemocional">Neuroemocional & AH/SD</option>
-          <option value="foco">Foco & Cognição</option>
-          <option value="saude">Saúde Integral & Rotina</option>
-          <option value="conexoes">Conexões & Lazer</option>
-        </select>
-
-        <div style="position: relative; height:350px; width:100%">
-          <canvas id="canvasEvolucao"></canvas>
-        </div>
+    <!-- Conteúdo 2: Relatórios -->
+    <div id="aba-relatorios" class="aba-conteudo active">
+      <div id="lista-relatorios">
+        <!-- Renderizado via JS -->
       </div>
     </div>
 
-    <!-- ABA 4: BACKUP E RESTAURAÇÃO DE DADOS -->
-    <div id="aba-backup" class="tab-content">
+    <!-- Conteúdo 3: Evolução (App) -->
+    <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
-        <h2>💾 Backup & Restauração de Dados</h2>
-        <p style="color: var(--text-muted); margin: 15px 0 20px 0;">Exporte seus dados em JSON para garantir a segurança das suas informações ou importar em outro dispositivo.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-          <button class="btn-action" onclick="exportarBackupJSON()"><i class="fa-solid fa-download"></i> Baixar Backup JSON</button>
-          
-          <label class="btn-action" style="background-color: #27ae60; cursor: pointer; text-align: center;">
-            <i class="fa-solid fa-upload"></i> Importar Backup JSON
-            <input type="file" id="input-importar-json" accept=".json" onchange="importarBackupJSON(event)" style="display: none;">
-          </label>
-
-          <button class="btn-action btn-danger" onclick="limparTodosOsDados()"><i class="fa-solid fa-trash"></i> Apagar Todos os Dados</button>
+        <div class="card-title" style="margin-bottom:10px;">📊 Análise Descritiva de Evolução (30 Dias)</div>
+        <div id="analise-evolucao-app" class="caixa-analise">
+          <!-- Texto gerado dinamicamente -->
+        </div>
+        <div id="historico-evolucao-app">
+          <!-- Linha do tempo com anotações -->
         </div>
       </div>
     </div>
-
   </div>
-
-  <!-- CONTAINER OCULTO PARA IMPRESSÃO DE PDF -->
-  <div id="pdf-preview"></div>
 
   <script>
-    // Inicialização da Data Padrão (Hoje)
-    document.addEventListener('DOMContentLoaded', () => {
-      const hoje = new Date().toISOString().split('T')[0];
-      document.getElementById('data-registro').value = hoje;
-      carregarRegistroDaData(hoje);
-      
-      document.getElementById('data-registro').addEventListener('change', (e) => {
-        carregarRegistroDaData(e.target.value);
-      });
-    });
+    // --- 1. BANCO DE DADOS LOCAL ---
+    let bancoDeDados = JSON.parse(localStorage.getItem('dashboard_neuroemocional')) || [
+      {
+        data: '2026-10-01',
+        humor: 'Estável',
+        foco: 'Alto',
+        sobrecarga: 'Baixa',
+        observacoes: 'Dia bastante produtivo. Consegui finalizar as tarefas sem sobressaltos e mantive boa autorregulação.'
+      },
+      {
+        data: '2026-09-28',
+        humor: 'Ansioso',
+        foco: 'Médio',
+        sobrecarga: 'Alta',
+        observacoes: 'Sensibilidade sensorial muito alta no final da tarde devido a ruídos externos. Precisou de pausa.'
+      },
+      {
+        data: '2026-09-20',
+        humor: 'Estável',
+        foco: 'Médio',
+        sobrecarga: 'Média',
+        observacoes: 'Início de semana com rotina ajustada. Houve melhora gradativa no foco em relação aos dias anteriores.'
+      },
+      {
+        data: '2026-09-10',
+        humor: 'Desanimado',
+        foco: 'Baixo',
+        sobrecarga: 'Alta',
+        observacoes: 'Sensação de cansaço acumulado. Pouco rendimento nas atividades acadêmicas/profissionais.'
+      }
+    ];
 
-    // Navegação entre Abas
-    function alternarAba(nomeAba) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(conteudo => conteudo.classList.remove('active'));
-      
-      event.currentTarget.classList.add('active');
-      document.getElementById(`aba-${nomeAba}`).classList.add('active');
-
-      if (nomeAba === 'relatorios') carregarListaRelatorios();
-      if (nomeAba === 'evolucao') atualizarGraficoEvolucao();
+    function salvarDadosLocais() {
+      localStorage.setItem('dashboard_neuroemocional', JSON.stringify(bancoDeDados));
+      renderizarTudo();
     }
 
-    // Seleção Visual de Notas (1 a 5)
-    function selecionarNota(botao, valor) {
-      const containerBotoes = botao.parentElement;
-      containerBotoes.querySelectorAll('.btn-rating').forEach(b => b.classList.remove('selected'));
-      botao.classList.add('selected');
-      calcularSaldo();
-    }
-
-    // Obter os Dados Formulario
-    function extrairDadosFormulario() {
-      const cards = document.querySelectorAll('#aba-registro .card');
-      const criterios = {};
-      const mediasPorArea = {
-        neuroemocional: { soma: 0, count: 0 },
-        foco: { soma: 0, count: 0 },
-        saude: { soma: 0, count: 0 },
-        conexoes: { soma: 0, count: 0 }
-      };
-
-      let somaGeral = 0;
-      let totalCriterios = 0;
-
-      cards.forEach(card => {
-        const idCriterio = card.getAttribute('data-criterio');
-        const area = card.getAttribute('data-area');
-        const notaSelecionada = parseInt(card.querySelector('.btn-rating.selected')?.innerText || 3);
-        const observacao = card.querySelector('textarea')?.value || '';
-
-        criterios[idCriterio] = {
-          nota: notaSelecionada,
-          observacao: observacao,
-          area: area
-        };
-
-        somaGeral += notaSelecionada;
-        totalCriterios++;
-
-        if (mediasPorArea[area]) {
-          mediasPorArea[area].soma += notaSelecionada;
-          mediasPorArea[area].count++;
-        }
-      });
-
-      const mediaGeral = totalCriterios > 0 ? (somaGeral / totalCriterios).toFixed(2) : 0;
-      const saldoCalculado = somaGeral - (totalCriterios * 3); // Cálculo relativo ao ponto médio 3
-
-      const mediasCalculadas = {};
-      for (const area in mediasPorArea) {
-        mediasCalculadas[area] = mediasPorArea[area].count > 0 ? 
-          (mediasPorArea[area].soma / mediasPorArea[area].count).toFixed(2) : 0;
+    // --- 2. GERADOR DE ANÁLISE DESCRITIVA DE EVOLUÇÃO ---
+    function gerarTextoDescritivoEvolucao(relatorios) {
+      if (!relatorios || relatorios.length === 0) {
+        return "Sem dados suficientes no período dos últimos 30 dias para gerar a análise de evolução.";
       }
 
-      return {
-        data: document.getElementById('data-registro').value,
-        criterios: criterios,
-        mediaGeral: parseFloat(mediaGeral),
-        saldo: saldoCalculado,
-        mediasPorArea: mediasCalculadas
-      };
-    }
-
-    // Recalcular Texto do Saldo
-    function calcularSaldo() {
-      const dados = extrairDadosFormulario();
-      const badge = document.getElementById('saldo-texto');
+      // Ordenar por data (mais antigo -> mais recente para avaliar progressão)
+      const ordenados = [...relatorios].sort((a, b) => new Date(a.data) - new Date(b.data));
       
-      let status = "Equilíbrio / Manutenção";
-      if (dados.saldo > 3) status = "Superávit Positivo / Alta Energia";
-      if (dados.saldo < -3) status = "Déficit / Necessidade de Descanso";
+      const primeiro = ordenados[0];
+      const ultimo = ordenados[ordenados.length - 1];
 
-      badge.innerText = `${dados.saldo > 0 ? '+' : ''}${dados.saldo} pts (${status})`;
-    }
+      let texto = `Acompanhamento do período de ${new Date(primeiro.data + 'T00:00:00').toLocaleDateString('pt-BR')} a ${new Date(ultimo.data + 'T00:00:00').toLocaleDateString('pt-BR')} (${ordenados.length} registros):\n\n`;
 
-    // Salvar Registro Diário no localStorage
-    function salvarRegistroDiario() {
-      const dados = extrairDadosFormulario();
-      const chave = `registro_${dados.data}`;
-      localStorage.setItem(chave, JSON.stringify(dados));
-      alert(`Registro de ${dados.data} guardado com sucesso!`);
-    }
+      // Análise simples de tendência
+      const sobrecargaBaixaOuMedia = ordenados.filter(r => r.sobrecarga === 'Baixa' || r.sobrecarga === 'Média').length;
+      const proporcaoEstavel = (sobrecargaBaixaOuMedia / ordenados.length) * 100;
 
-    // Carregar Registro de uma Data Específica
-    function carregarRegistroDaData(dataStr) {
-      const chave = `registro_${dataStr}`;
-      const dadosSalvos = localStorage.getItem(chave);
-
-      if (!dadosSalvos) {
-        // Reset para o padrão de notas = 3
-        document.querySelectorAll('#aba-registro .card').forEach(card => {
-          card.querySelectorAll('.btn-rating').forEach((b, idx) => {
-            b.classList.toggle('selected', idx === 2);
-          });
-          if (card.querySelector('textarea')) card.querySelector('textarea').value = '';
-        });
-        calcularSaldo();
-        return;
+      if (ultimo.humor === 'Estável' || ultimo.humor === 'Calmo') {
+        texto += `• **Tendência:** Observa-se uma **melhora na estabilidade emocional** nos registros mais recentes. `;
+      } else {
+        texto += `• **Tendência:** Os registros mais recentes indicam necessidade de atenção à sobrecarga e regulação do humor. `;
       }
 
-      const dados = JSON.parse(dadosSalvos);
-      for (const idCriterio in dados.criterios) {
-        const item = dados.criterios[idCriterio];
-        const card = document.querySelector(`[data-criterio="${idCriterio}"]`);
-        if (card) {
-          card.querySelectorAll('.btn-rating').forEach(b => {
-            b.classList.toggle('selected', parseInt(b.innerText) === item.nota);
-          });
-          if (card.querySelector('textarea')) card.querySelector('textarea').value = item.observacao;
-        }
+      if (proporcaoEstavel >= 50) {
+        texto += `Em ${proporcaoEstavel.toFixed(0)}% dos dias registrados, os níveis de sobrecarga mantiveram-se sob controle (baixa/média).\n`;
+      } else {
+        texto += `Houve predominância de episódios de sobrecarga elevada no período.\n`;
       }
-      calcularSaldo();
+
+      texto += `• **Resumo das Anotações:** Destaque para o registro de ${new Date(ultimo.data + 'T00:00:00').toLocaleDateString('pt-BR')} com foco ${ultimo.foco.toLowerCase()} e sobrecarga ${ultimo.sobrecarga.toLowerCase()}.`;
+
+      return texto;
     }
 
-    // Carregar Lista de Relatórios com Opção de Apagar e Gerar PDF
-    function carregarListaRelatorios() {
-      const container = document.getElementById('lista-relatorios-container');
+    // --- 3. RENDERIZAR INTERFACE ---
+    function renderizarTudo() {
+      renderizarRelatorios();
+      renderizarEvolucaoApp();
+    }
+
+    function renderizarRelatorios() {
+      const container = document.getElementById('lista-relatorios');
       container.innerHTML = '';
 
-      const chaves = Object.keys(localStorage).filter(k => k.startsWith('registro_')).sort().reverse();
-
-      if (chaves.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Nenhum relatório salvo no histórico.</p>';
+      if (bancoDeDados.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Nenhum relatório cadastrado.</p>';
         return;
       }
 
-      chaves.forEach(chave => {
-        const dados = JSON.parse(localStorage.getItem(chave));
+      bancoDeDados.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+      bancoDeDados.forEach(relatorio => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const dataFormatada = new Date(relatorio.data + 'T00:00:00').toLocaleDateString('pt-BR');
+
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="card-title">📅 Relatório - ${dataFormatada}</span>
+          </div>
+          <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">
+            <strong>Humor:</strong> ${relatorio.humor} | 
+            <strong>Foco:</strong> ${relatorio.foco} | 
+            <strong>Sobrecarga:</strong> ${relatorio.sobrecarga}
+          </div>
+          <div class="anotacao-box">
+            <strong>📝 Anotações Diárias:</strong><br>
+            ${relatorio.observacoes || 'Nenhuma anotação inserida neste dia.'}
+          </div>
+          <div class="relatorio-acoes">
+            <button class="btn btn-baixar" onclick="baixarJSONDia('${relatorio.data}')">📥 Baixar</button>
+            <label class="btn btn-importar">
+              📤 Importar
+              <input type="file" accept=".json" onchange="importarJSONDia(event, '${relatorio.data}')">
+            </label>
+            <button class="btn btn-pdf" onclick="gerarPDF30Dias('${relatorio.data}')">📄 Gerar PDF</button>
+            <button class="btn btn-apagar" onclick="apagarRelatorioDia('${relatorio.data}')">🗑️ Apagar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderizarEvolucaoApp() {
+      const caixaAnalise = document.getElementById('analise-evolucao-app');
+      const historicoContainer = document.getElementById('historico-evolucao-app');
+
+      // Filtrar últimos 30 dias a partir do registro mais recente
+      const ordenados = [...bancoDeDados].sort((a, b) => new Date(b.data) - new Date(a.data));
+      const dataRef = ordenados.length > 0 ? new Date(ordenados[0].data + 'T00:00:00') : new Date();
+      
+      const dataInicio = new Date(dataRef);
+      dataInicio.setDate(dataRef.getDate() - 30);
+
+      const relatorios30Dias = bancoDeDados.filter(r => {
+        const d = new Date(r.data + 'T00:00:00');
+        return d >= dataInicio && d <= dataRef;
+      });
+
+      caixaAnalise.innerHTML = gerarTextoDescritivoEvolucao(relatorios30Dias).replace(/\n/g, '<br>');
+
+      historicoContainer.innerHTML = '<h4 style="color:#38bdf8; margin: 15px 0 10px 0;">Linha do Tempo e Anotações</h4>';
+      
+      relatorios30Dias.forEach(r => {
+        const dForm = new Date(r.data + 'T00:00:00').toLocaleDateString('pt-BR');
         const item = document.createElement('div');
-        item.className = 'report-item';
+        item.style.marginBottom = "12px";
         item.innerHTML = `
-          <div>
-            <strong>📅 ${dados.data}</strong>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
-              Saldo: ${dados.saldo > 0 ? '+' : ''}${dados.saldo} pts | Média: ${dados.mediaGeral}
-            </div>
-          </div>
-          <div class="report-actions">
-            <button class="btn-icon" style="background-color: var(--primary);" onclick="carregarParaEdicao('${dados.data}')"><i class="fa-solid fa-pen"></i> Editar</button>
-            <button class="btn-icon" style="background-color: #27ae60;" onclick="gerarPDFRelatorio('${dados.data}')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-            <button class="btn-icon" style="background-color: var(--danger);" onclick="apagarRelatorio('${chave}')"><i class="fa-solid fa-trash"></i></button>
-          </div>
+          <strong style="color:#f8fafc;">${dForm}</strong> - <span style="color:#94a3b8;">Humor: ${r.humor} | Foco: ${r.foco}</span>
+          <div class="anotacao-box">${r.observacoes || 'Sem anotações.'}</div>
         `;
-        container.appendChild(item);
+        historicoContainer.appendChild(item);
       });
     }
 
-    // Editar Registro
-    function carregarParaEdicao(dataStr) {
-      document.getElementById('data-registro').value = dataStr;
-      carregarRegistroDaData(dataStr);
-      alternarAba('registro');
-    }
+    // --- 4. AÇÕES DOS BOTOES ---
+    function baixarJSONDia(data) {
+      const relatorio = bancoDeDados.find(item => item.data === data);
+      if (!relatorio) return;
 
-    // Apagar Relatório Específico
-    function apagarRelatorio(chave) {
-      const dataFormatada = chave.replace('registro_', '');
-      if (confirm(`Tem certeza que deseja apagar o relatório do dia ${dataFormatada}?`)) {
-        localStorage.removeItem(chave);
-        carregarListaRelatorios();
-      }
-    }
-
-    // Exportar Relatório em PDF com html2pdf.js
-    function gerarPDFRelatorio(dataStr) {
-      const chave = `registro_${dataStr}`;
-      const dados = JSON.parse(localStorage.getItem(chave));
-      if (!dados) return;
-
-      const preview = document.getElementById('pdf-preview');
-      preview.style.display = 'block';
-
-      let htmlConteudo = `
-        <h1 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Relatório Neuroemocional & AH/SD</h1>
-        <p><strong>Data:</strong> ${dados.data}</p>
-        <p><strong>Saldo do Dia:</strong> ${dados.saldo} pts | <strong>Média Geral:</strong> ${dados.mediaGeral}</p>
-        <hr style="margin: 15px 0;">
-        <h3>Detalhamento por Critério</h3>
-      `;
-
-      for (const key in dados.criterios) {
-        const item = dados.criterios[key];
-        htmlConteudo += `
-          <div style="margin-bottom: 12px; padding: 8px; border-bottom: 1px solid #eee;">
-            <strong>${key.toUpperCase()}:</strong> Nota ${item.nota}/5
-            ${item.observacao ? `<br><small><em>Obs: ${item.observacao}</em></small>` : ''}
-          </div>
-        `;
-      }
-
-      preview.innerHTML = htmlConteudo;
-
-      const opt = {
-        margin:       10,
-        filename:     `Relatorio_Neuroemocional_${dataStr}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(preview).save().then(() => {
-        preview.style.display = 'none';
-      });
-    }
-
-    // Gráfico de Evolução com Chart.js
-    let instanciaChart = null;
-
-    function atualizarGraficoEvolucao() {
-      const filtro = document.getElementById('filtro-area-grafico').value;
-      const chaves = Object.keys(localStorage).filter(k => k.startsWith('registro_')).sort();
-
-      const datas = [];
-      const valores = [];
-
-      chaves.forEach(chave => {
-        const dados = JSON.parse(localStorage.getItem(chave));
-        datas.push(dados.data);
-
-        if (filtro === 'todas') {
-          valores.push(dados.mediaGeral);
-        } else {
-          valores.push(dados.mediasPorArea ? dados.mediasPorArea[filtro] || 0 : 0);
-        }
-      });
-
-      const ctx = document.getElementById('canvasEvolucao').getContext('2d');
-
-      if (instanciaChart) instanciaChart.destroy();
-
-      instanciaChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: datas,
-          datasets: [{
-            label: `Evolução: ${filtro.toUpperCase()}`,
-            data: valores,
-            borderColor: '#6c5ce7',
-            backgroundColor: 'rgba(108, 92, 231, 0.2)',
-            fill: true,
-            tension: 0.3,
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { min: 1, max: 5, grid: { color: '#2d3748' } },
-            x: { grid: { color: '#2d3748' } }
-          },
-          plugins: {
-            legend: { labels: { color: '#e2e8f0' } }
-          }
-        }
-      });
-    }
-
-    // Backup JSON: Exportar
-    function exportarBackupJSON() {
-      const todosOsDados = {};
-      Object.keys(localStorage).forEach(chave => {
-        if (chave.startsWith('registro_')) {
-          todosOsDados[chave] = JSON.parse(localStorage.getItem(chave));
-        }
-      });
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(todosOsDados, null, 2));
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(relatorio, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `backup_neuroemocional_${new Date().toISOString().split('T')[0]}.json`);
+      downloadAnchor.setAttribute("download", `relatorio_${data}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
     }
 
-    // Backup JSON: Importar
-    function importarBackupJSON(event) {
+    function importarJSONDia(event, dataOriginal) {
+      const file = event.target.files[0];
+      if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const dadosImportados = JSON.parse(e.target.result);
-          Object.keys(dadosImportados).forEach(chave => {
-            localStorage.setItem(chave, JSON.stringify(dadosImportados[chave]));
-          });
-          alert('Backup importado com sucesso!');
-          carregarListaRelatorios();
+          if (!dadosImportados.data) {
+            alert('Arquivo JSON inválido.');
+            return;
+          }
+          const index = bancoDeDados.findIndex(item => item.data === dataOriginal);
+          if (index !== -1) {
+            bancoDeDados[index] = dadosImportados;
+          } else {
+            bancoDeDados.push(dadosImportados);
+          }
+          salvarDadosLocais();
+          alert('Relatório importado com sucesso!');
         } catch (err) {
-          alert('Erro ao carregar ficheiro JSON inválido.');
+          alert('Erro ao processar o arquivo JSON.');
         }
       };
-      reader.readAsText(event.target.files[0]);
+      reader.readAsText(file);
     }
 
-    // Apagar Tudo
-    function limparTodosOsDados() {
-      if (confirm('ATENÇÃO: Esta ação apagar todos os registos guardados no navegador. Deseja continuar?')) {
-        Object.keys(localStorage).forEach(chave => {
-          if (chave.startsWith('registro_')) localStorage.removeItem(chave);
-        });
-        carregarListaRelatorios();
-        alert('Todos os dados foram removidos.');
+    // --- 5. GERAR PDF COM EVOLUÇÃO DESCRITIVA + ANOTAÇÕES DIÁRIAS ---
+    async function gerarPDF30Dias(dataRef) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const dataFim = new Date(dataRef + 'T00:00:00');
+      const dataInicio = new Date(dataFim);
+      dataInicio.setDate(dataFim.getDate() - 30);
+
+      const relatorios30Dias = bancoDeDados.filter(item => {
+        const d = new Date(item.data + 'T00:00:00');
+        return d >= dataInicio && d <= dataFim;
+      }).sort((a, b) => new Date(a.data) - new Date(b.data));
+
+      // 1. Cabeçalho
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text("Relatório Neuroemocional & AH/SD", 14, 18);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Período analisado: ${dataInicio.toLocaleDateString('pt-BR')} até ${dataFim.toLocaleDateString('pt-BR')} (últimos 30 dias)`, 14, 25);
+      doc.line(14, 28, 196, 28);
+
+      let yPos = 35;
+
+      // 2. Seção de Evolução Descritiva
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("1. Análise Descritiva de Evolução", 14, yPos);
+      yPos += 7;
+
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      const textoEvolucao = gerarTextoDescritivoEvolucao(relatorios30Dias);
+      const linhasEvolucao = doc.splitTextToSize(textoEvolucao, 180);
+      doc.text(linhasEvolucao, 14, yPos);
+      
+      yPos += (linhasEvolucao.length * 5) + 6;
+      doc.line(14, yPos, 196, yPos);
+      yPos += 8;
+
+      // 3. Seção de Histórico Diário + Anotações
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("2. Histórico de Relatórios e Anotações Diárias", 14, yPos);
+      yPos += 8;
+
+      relatorios30Dias.forEach((rel) => {
+        const dForm = new Date(rel.data + 'T00:00:00').toLocaleDateString('pt-BR');
+
+        // Quebra de página se necessário
+        if (yPos > 260) {
+          doc.addPage();
+          yPos = 20;
+        }
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(`• Data: ${dForm} | Humor: ${rel.humor} | Foco: ${rel.foco} | Sobrecarga: ${rel.sobrecarga}`, 14, yPos);
+        yPos += 5;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "italic");
+        const anotacaoTexto = `Anotações: ${rel.observacoes || 'Sem anotações registradas.'}`;
+        const linhasAnotacao = doc.splitTextToSize(anotacaoTexto, 175);
+        doc.text(linhasAnotacao, 18, yPos);
+
+        yPos += (linhasAnotacao.length * 4.5) + 6;
+      });
+
+      // Baixar PDF
+      doc.save(`Relatorio_Evolucao_Anotacoes_${dataRef}.pdf`);
+    }
+
+    function apagarRelatorioDia(data) {
+      if (confirm(`Tem certeza que deseja apagar o relatório do dia ${data}?`)) {
+        bancoDeDados = bancoDeDados.filter(item => item.data !== data);
+        salvarDadosLocais();
       }
     }
+
+    function mudarAba(nomeAba, elemento) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.aba-conteudo').forEach(aba => aba.classList.remove('active'));
+      
+      elemento.classList.add('active');
+      document.getElementById(`aba-${nomeAba}`).classList.add('active');
+    }
+
+    // Inicialização
+    renderizarTudo();
   </script>
 </body>
 </html>
