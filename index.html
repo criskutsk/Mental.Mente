@@ -16,6 +16,8 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -47,6 +49,11 @@
 
         .btn-main { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
         .btn-pdf { background: var(--success); margin-bottom: 15px; }
+        .btn-sec { background: #334155; padding: 10px; font-size: 0.85rem; border: none; color: white; border-radius: 6px; cursor: pointer; flex: 1; }
+
+        .trend-card { background: #0f172a; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .trend-title { font-size: 0.85rem; color: var(--text-muted); }
+        .trend-value { font-size: 1.2rem; font-weight: bold; margin-top: 4px; }
 
         .history-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
         .history-date { font-size: 0.8rem; color: var(--text-muted); }
@@ -106,8 +113,19 @@
     <div id="tab-relatorios" class="tab-content">
         <button onclick="gerarPDF()" class="btn-main btn-pdf">📄 Baixar Relatório em PDF</button>
 
+        <div class="card" style="margin-bottom: 15px;">
+            <div style="display: flex; gap: 8px;">
+                <button onclick="exportarBackup()" class="btn-sec">📥 Exportar Backup</button>
+                <button onclick="document.getElementById('importFile').click()" class="btn-sec">📤 Importar Backup</button>
+                <input type="file" id="importFile" style="display:none;" onchange="importarBackup(event)" accept=".json">
+            </div>
+        </div>
+
         <div id="area-relatorio" class="card">
-            <h2 style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Histórico de Registos</h2>
+            <h2 style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Histórico e Análise de Evolução</h2>
+            
+            <div id="trend-summary"></div>
+
             <div id="lista-historico">
                 <p style="text-align: center; color: var(--text-muted);">Carregando dados...</p>
             </div>
@@ -196,7 +214,7 @@
             totalScore += val;
         });
 
-        const entry = { date, ratings, notes, totalScore, average: (totalScore / criteriaData.length).toFixed(1) };
+        const entry = { date, ratings, notes, totalScore, average: parseFloat((totalScore / criteriaData.length).toFixed(1)) };
 
         let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
         history.unshift(entry);
@@ -208,11 +226,48 @@
 
     function carregarHistorico() {
         const container = document.getElementById('lista-historico');
+        const trendContainer = document.getElementById('trend-summary');
         const history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
 
         if(history.length === 0) {
+            trendContainer.innerHTML = '';
             container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Nenhum registo guardado ainda.</p>';
             return;
+        }
+
+        // Análise de Tendência
+        if(history.length > 1) {
+            const recente = history[0].average;
+            const anterior = history[1].average;
+            const diff = (recente - anterior).toFixed(1);
+
+            let status = '';
+            let cor = '';
+
+            if(diff > 0) {
+                status = `📈 A melhorar (+${diff} em relação ao registo anterior)`;
+                cor = 'var(--success)';
+            } else if(diff < 0) {
+                status = `📉 A requerer atenção (${diff} em relação ao registo anterior)`;
+                cor = 'var(--danger)';
+            } else {
+                status = '➡️ Estável (Igual ao registo anterior)';
+                cor = 'var(--warning)';
+            }
+
+            trendContainer.innerHTML = `
+                <div class="trend-card">
+                    <div class="trend-title">Análise de Evolução Recente</div>
+                    <div class="trend-value" style="color: ${cor};">${status}</div>
+                </div>
+            `;
+        } else {
+            trendContainer.innerHTML = `
+                <div class="trend-card">
+                    <div class="trend-title">Análise de Evolução</div>
+                    <div class="trend-value" style="color: #818cf8;">Primeiro registo guardado. Adicione mais registos para comparar a evolução.</div>
+                </div>
+            `;
         }
 
         container.innerHTML = history.map(item => `
@@ -220,13 +275,49 @@
                 <div class="history-date">📅 Data: ${item.date}</div>
                 <div class="history-score">Média Geral: ${item.average} / 5.0</div>
                 <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">
-                    ${Object.keys(item.notes).map(k => {
+                    ${Object.keys(item.notes || {}).map(k => {
                         const crit = criteriaData.find(c => c.id === k);
-                        return item.notes[k] ? `<div><strong>${crit.name}:</strong>${item.notes[k]}</div>` : '';
+                        return item.notes[k] ? `<div><strong>${crit ? crit.name : k}:</strong> ${item.notes[k]}</div>` : '';
                     }).join('')}
                 </div>
             </div>
         `).join('');
+    }
+
+    function exportarBackup() {
+        const history = localStorage.getItem('mentalmente_ahsd_data');
+        if(!history || history === '[]') {
+            alert('Não existem dados para exportar.');
+            return;
+        }
+        const blob = new Blob([history], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-mentalmente-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    }
+
+    function importarBackup(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if(Array.isArray(data)) {
+                    localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(data));
+                    alert('Backup restaurado com sucesso!');
+                    carregarHistorico();
+                } else {
+                    alert('Ficheiro de backup inválido.');
+                }
+            } catch(err) {
+                alert('Erro ao ler o ficheiro de backup.');
+            }
+        };
+        reader.readAsText(file);
     }
 
     function gerarPDF() {
