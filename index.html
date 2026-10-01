@@ -181,7 +181,7 @@
 
     /* Estilos das Abas Relatórios e Evolução */
     .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
-    .card-title { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-bottom: 12px; }
+    .card-title { font-size: 1.15rem; font-weight: bold; color: #38bdf8; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
     .acoes-globais-topo {
       display: flex;
@@ -243,19 +243,29 @@
     }
     .btn-apagar-diario:hover { background: rgba(239, 68, 68, 0.15); }
 
-    .caixa-analise {
+    /* Caixa estilo Prontuário Médico/Psicológico */
+    .caixa-prontuario {
       background: #0f172a;
       border-left: 4px solid #38bdf8;
-      padding: 14px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-      font-size: 0.88rem;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 0.92rem;
       line-height: 1.6;
       color: #e2e8f0;
     }
 
-    .caixa-analise strong {
-      color: #38bdf8;
+    .prontuario-subtitulo {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+
+    .prontuario-topico {
+      margin-bottom: 10px;
+    }
+
+    .prontuario-topico strong {
+      color: #f8fafc;
     }
 
     .chart-box {
@@ -552,12 +562,12 @@
       </div>
     </div>
 
-    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS) ==================== -->
+    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS & PRONTUÁRIO) ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
-        <div class="card-title">📊 Análise Elaborada dos Últimos 30 Dias</div>
-        <div id="caixa-resumo-evolucao" class="caixa-analise">
-          Carregando dados de evolução...
+        <div class="card-title">📊 Análise Descritiva de Evolução (30 Dias)</div>
+        <div id="caixa-resumo-evolucao" class="caixa-prontuario">
+          Carregando prontuário de evolução...
         </div>
       </div>
 
@@ -788,69 +798,85 @@
       }
     }
 
-    // Renderizar Aba Evolução com Diagnóstico Elaborado e Gráficos
+    // Formatar data para DD/MM/AAAA
+    function formatarDataBR(strData) {
+      const [ano, mes, dia] = strData.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    // Renderizar Aba Evolução em Estilo Prontuário Clínico
     function renderizarEvolucao() {
       const historico = obterHistorico();
       const resumoContainer = document.getElementById('caixa-resumo-evolucao');
 
       if (historico.length === 0) {
-        resumoContainer.innerHTML = 'Sem dados suficientes registrados para gerar a análise visual e diagnóstica.';
+        resumoContainer.innerHTML = 'Sem dados suficientes registrados para gerar a análise descritiva.';
         return;
       }
 
       const ultimos30 = historico.slice(-30);
-      const qtdDias = ultimos30.length;
-      const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
-      const mediaSaldo = parseFloat((somaSaldos / qtdDias).toFixed(1));
+      const qtdRegistros = ultimos30.length;
+      const dataInicio = formatarDataBR(ultimos30[0].data);
+      const dataFim = formatarDataBR(ultimos30[qtdRegistros - 1].data);
 
-      // Métricas de Frequência de Estados
-      const diasPositivos = ultimos30.filter(d => d.saldo > 0).length;
-      const diasNeutros = ultimos30.filter(d => d.saldo === 0).length;
-      const diasNegativos = ultimos30.filter(d => d.saldo < 0).length;
+      // Métricas de Controle de Sobrecarga (Sobrecarga Sensorial / Ansiedade)
+      let diasSobrecargaOk = 0;
+      ultimos30.forEach(reg => {
+        const nivelSobrecarga = reg.criterios.sobrecarga ? reg.criterios.sobrecarga.valor : 3;
+        // Nível >= 3 significa sobrecarga sob controle/baixa
+        if (nivelSobrecarga >= 3) diasSobrecargaOk++;
+      });
+      const pctSobrecargaOk = Math.round((diasSobrecargaOk / qtdRegistros) * 100);
 
-      // Análise de Tendência
-      let tendenciaTexto = "";
-      if (qtdDias < 3) {
-        tendenciaTexto = "Fase de Amostragem Inicial (Dados ainda acumulando histórico)";
+      // Análise de Tendência Descritiva
+      let textoTendencia = "";
+      const regMaisRecente = ultimos30[qtdRegistros - 1];
+
+      if (qtdRegistros === 1) {
+        textoTendencia = `Início do acompanhamento diário. Em <strong>100% dos registros</strong>, os níveis de autorregulação apresentam estado inicial preservado.`;
       } else {
-        const metade = Math.floor(qtdDias / 2);
-        const priMetade = ultimos30.slice(0, metade);
-        const segMetade = ultimos30.slice(metade);
-
-        const medPri = priMetade.reduce((a,b) => a + b.saldo, 0) / priMetade.length;
-        const medSeg = segMetade.reduce((a,b) => a + b.saldo, 0) / segMetade.length;
-
-        if (medSeg - medPri > 1.5) {
-          tendenciaTexto = "🚀 Curva Ascendente (Melhoria progressiva da autorregulação)";
-        } else if (medPri - medSeg > 1.5) {
-          tendenciaTexto = "⚠️️ Curva Descendente (Aumento gradual do desgaste/sobrecarga)";
-        } else if (Math.abs(medSeg - medPri) <= 1.5 && (diasPositivos > 0 && diasNegativos > 0)) {
-          tendenciaTexto = "🔄 Oscilação Recorrente (Período de instabilidade ou picos de sobrecarga alternados)";
+        if (pctSobrecargaOk >= 60) {
+          textoTendencia = `Observa-se uma <strong>melhora na estabilidade emocional</strong> nos registros mais recentes. Em <strong>${pctSobrecargaOk}% dos dias registrados</strong>, os níveis de sobrecarga mantiveram-se sob controle (baixa/média).`;
         } else {
-          tendenciaTexto = "⚖️ Estabilidade Continuada (Regulação mantida em patamar constante)";
+          textoTendencia = `Identifica-se período de <strong>maior vulnerabilidade neuroemocional</strong>. Em apenas <strong>${pctSobrecargaOk}% dos dias</strong> a sobrecarga esteve totalmente sob controle, exigindo maior atenção às rotinas de descanso.`;
         }
       }
 
-      // Recomendação Ação/Clínica Personalizada
-      let orientacaoEstrategica = "";
-      if (mediaSaldo >= 3) {
-        orientacaoEstrategica = "Excelente reservatório de recursos. Momento propício para avançar em metas de alto impacto, mantendo os rituais de descanso para prevenir sobrecarga súbita.";
-      } else if (mediaSaldo >= 0.5) {
-        orientacaoEstrategica = "Estado de equilíbrio funcional positivo. O sistema está respondendo bem aos estímulos diários. Mantenha a consistência nos pilares de sono e hidratação.";
-      } else if (mediaSaldo >= -2) {
-        orientacaoEstrategica = "Indicadores apontam leve déficit de energia ou estresse moderado acumulado. Recomendado revisar as anotações diárias nas áreas de 'Saúde Integral' e 'Conexões' para estancar pequenos vazamentos de energia.";
+      // Resumo das Anotações e Destaques
+      let textoResumoAnotacoes = "";
+      
+      // Busca registro recente com observações ou de maior destaque
+      const regComObs = ultimos30.slice().reverse().find(r => {
+        return Object.values(r.criterios).some(c => c.observacao && c.observacao.length > 0);
+      });
+
+      if (regComObs) {
+        const dataObs = formatarDataBR(regComObs.data);
+        // Coleta itens com observação
+        const obsLista = [];
+        Object.keys(regComObs.criterios).forEach(k => {
+          if (regComObs.criterios[k].observacao) {
+            obsLista.push(`${nomesCriterios[k]}: "${regComObs.criterios[k].observacao}"`);
+          }
+        });
+        textoResumoAnotacoes = `Destaque para o registro de <strong>${dataObs}</strong> com relato registrado (${obsLista.join(', ')}).`;
       } else {
-        orientacaoEstrategica = "Sinal de sobrecarga sensorial ou exaustão emocional significativa. Priorize a redução de demandas cognitivas imediatas e foque em práticas urgentes de autorregulação e desaceleração.";
+        // Sem anotações escritas, gera destaque sintético pelas notas
+        const dataDestaque = formatarDataBR(regMaisRecente.data);
+        const focoLvl = regMaisRecente.criterios.foco_estudos ? regMaisRecente.criterios.foco_estudos.valor : 3;
+        const sobLvl = regMaisRecente.criterios.sobrecarga ? regMaisRecente.criterios.sobrecarga.valor : 3;
+        
+        const descFoco = focoLvl >= 4 ? "foco alto" : (focoLvl <= 2 ? "dispersão" : "foco moderado");
+        const descSob = sobLvl >= 4 ? "sobrecarga baixa" : (sobLvl <= 2 ? "sobrecarga elevada" : "sobrecarga moderada");
+
+        textoResumoAnotacoes = `Destaque para o registro de <strong>${dataDestaque}</strong> com ${descFoco} e ${descSob}.`;
       }
 
-      const percentualConsistencia = Math.round((qtdDias / 30) * 100);
-
+      // Montagem final do Prontuário exatamente como no modelo visual da imagem
       resumoContainer.innerHTML = `
-        <strong>• Cobertura do Período:</strong> ${qtdDias} de 30 dias registrados (${percentualConsistencia}% de adesão)<br>
-        <strong>• Média do Saldo Diário:</strong> ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo} ponto(s)<br>
-        <strong>• Balanço Frequencial:</strong> ${diasPositivos} dia(s) regulado(s) [+], ${diasNeutros} neutro(s) [0], ${diasNegativos} de sobrecarga [-]<br>
-        <strong>• Tendência Recente:</strong> ${tendenciaTexto}<br>
-        <strong>• Diretriz de Ação:</strong> ${orientacaoEstrategica}
+        <div class="prontuario-subtitulo">Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro${qtdRegistros > 1 ? 's' : ''}):</div>
+        <div class="prontuario-topico">• <strong>Tendência:</strong> ${textoTendencia}</div>
+        <div class="prontuario-topico">• <strong>Resumo das Anotações:</strong> ${textoResumoAnotacoes}</div>
       `;
 
       // Dados para Gráfico de Linha
@@ -1000,40 +1026,26 @@
       doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 24);
 
       const ultimos30 = historico.slice(0, 30);
-      const qtdDias = ultimos30.length;
-      const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
-      const mediaSaldo = parseFloat((somaSaldos / qtdDias).toFixed(1));
-
-      const diasPositivos = ultimos30.filter(d => d.saldo > 0).length;
-      const diasNeutros = ultimos30.filter(d => d.saldo === 0).length;
-      const diasNegativos = ultimos30.filter(d => d.saldo < 0).length;
+      const qtdRegistros = ultimos30.length;
+      const dataInicio = formatarDataBR(ultimos30[qtdRegistros - 1].data);
+      const dataFim = formatarDataBR(ultimos30[0].data);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("ANÁLISE E DIAGNÓSTICO ELABORADO (ÚLTIMOS 30 DIAS)", 14, 33);
+      doc.text("ANÁLISE DESCRITIVA DE EVOLUÇÃO (ÚLTIMOS 30 DIAS)", 14, 33);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.5);
-      doc.text(`• Total de Registros Avaliados: ${qtdDias} dia(s)`, 14, 40);
-      doc.text(`• Média do Saldo Diário: ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo} ponto(s)`, 14, 46);
-      doc.text(`• Distribuição: ${diasPositivos} dia(s) regulado(s), ${diasNeutros} neutro(s), ${diasNegativos} de sobrecarga`, 14, 52);
-      
-      let diagTexto = mediaSaldo > 1 
-        ? "Período predominantemente regulado e produtivo." 
-        : (mediaSaldo < -1 
-          ? "Atenção: Indicadores sugerem acúmulo de sobrecarga ou estresse." 
-          : "Período de estabilidade e equilíbrio relativo.");
-      
-      doc.text(`• Diagnóstico Síntese: ${diagTexto}`, 14, 58);
+      doc.text(`Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro(s)):`, 14, 40);
 
       doc.setDrawColor(200, 200, 200);
-      doc.line(14, 63, 196, 63);
+      doc.line(14, 46, 196, 46);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 70);
+      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 53);
 
-      let y = 78;
+      let y = 61;
 
       historico.forEach((reg) => {
         if (y > 270) {
