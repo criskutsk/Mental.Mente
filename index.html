@@ -14,6 +14,41 @@
     .header { text-align: center; margin-bottom: 20px; }
     .header h1 { font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; }
 
+    /* Seletor de Data / Calendário */
+    .seletor-data-container {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .seletor-data-label {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .seletor-data-input {
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .seletor-data-input::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+
     /* Navegação */
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
     .tab-btn { flex: 1; padding: 10px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
@@ -226,7 +261,6 @@
       color: #e2e8f0;
     }
 
-    /* Contêiner de Gráficos na Evolução */
     .chart-box {
       position: relative;
       width: 100%;
@@ -256,6 +290,12 @@
     <!-- ==================== ABA 1: REGISTRO ==================== -->
     <div id="aba-registro" class="aba-conteudo active">
       
+      <!-- Seletor de Data por Calendário -->
+      <div class="seletor-data-container">
+        <span class="seletor-data-label">📅 Selecionar Data do Registro:</span>
+        <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
+      </div>
+
       <!-- Seção: Neuroemocional & AH/SD -->
       <div class="categoria-titulo">🧠 Neuroemocional & AH/SD</div>
 
@@ -572,7 +612,7 @@
       "Conexões & Lazer": ["relacionamento", "hobbies"]
     };
 
-    // Instâncias Globais dos Gráficos para destruição/recriação limpa
+    // Instâncias Globais dos Gráficos
     let instChartLinha = null;
     let instChartRadar = null;
 
@@ -625,9 +665,46 @@
       }
     }
 
+    // Carregar registro de uma data específica ao mudar o Calendário
+    function carregarRegistroData(dataSelecionada) {
+      if (!dataSelecionada) return;
+      const historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
+      const registro = historico.find(item => item.data === dataSelecionada);
+
+      document.querySelectorAll('.criterio-card').forEach(card => {
+        const key = card.getAttribute('data-key');
+        const botoes = card.querySelectorAll('.btn-escala');
+        const textarea = card.querySelector('.anotacao-criterio');
+
+        botoes.forEach(b => b.classList.remove('selected'));
+
+        if (registro && registro.criterios[key]) {
+          const valorSalvo = registro.criterios[key].valor;
+          const obsSalva = registro.criterios[key].observacao || '';
+
+          botoes.forEach(b => {
+            if (parseInt(b.innerText) === valorSalvo) b.classList.add('selected');
+          });
+          textarea.value = obsSalva;
+        } else {
+          botoes.forEach(b => {
+            if (parseInt(b.innerText) === 3) b.classList.add('selected');
+          });
+          textarea.value = '';
+        }
+      });
+
+      atualizarSaldoDia();
+    }
+
     // Salvar Registro Diário no LocalStorage
     function salvarRegistroDiario() {
-      const dataHoje = new Date().toISOString().split('T')[0];
+      const dataSelecionada = document.getElementById('data-registro').value;
+      if (!dataSelecionada) {
+        alert('Por favor, selecione uma data no calendário.');
+        return;
+      }
+
       const dadosCriterios = {};
 
       document.querySelectorAll('.criterio-card').forEach(card => {
@@ -639,30 +716,30 @@
       });
 
       const registro = {
-        data: dataHoje,
+        data: dataSelecionada,
         timestamp: new Date().getTime(),
         saldo: calcularSaldoAtual(),
         criterios: dadosCriterios
       };
 
       let historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
-      historico = historico.filter(item => item.data !== dataHoje);
+      historico = historico.filter(item => item.data !== dataSelecionada);
       historico.push(registro);
       
       localStorage.setItem('dashboard_neuro_dados', JSON.stringify(historico));
-      alert('Registro diário guardado com sucesso!');
+      alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} guardado com sucesso!`);
     }
 
     // Obter dados do LocalStorage
     function obterHistorico() {
       const dados = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
-      return dados.sort((a, b) => a.data.localeCompare(b.data)); // Ordenado do mais antigo para o mais recente para os gráficos
+      return dados.sort((a, b) => a.data.localeCompare(b.data));
     }
 
     // Renderizar Aba Relatórios
     function renderizarRelatorios() {
       const container = document.getElementById('lista-relatorios');
-      const historico = obterHistorico().slice().reverse(); // Exibe do mais recente para o mais antigo
+      const historico = obterHistorico().slice().reverse();
 
       if (historico.length === 0) {
         container.innerHTML = '<div class="card" style="text-align:center; color:#94a3b8;">Nenhum registro encontrado.</div>';
@@ -709,6 +786,9 @@
         historico = historico.filter(item => item.data !== data);
         localStorage.setItem('dashboard_neuro_dados', JSON.stringify(historico));
         renderizarRelatorios();
+        if (document.getElementById('data-registro').value === data) {
+          carregarRegistroData(data);
+        }
       }
     }
 
@@ -736,7 +816,7 @@
         }
       `;
 
-      // Preparação de dados para Gráfico de Linha (Saldo)
+      // Dados para Gráfico de Linha
       const labelsDatas = ultimos30.map(item => {
         const [ano, mes, dia] = item.data.split('-');
         return `${dia}/${mes}`;
@@ -744,7 +824,6 @@
       const valoresSaldos = ultimos30.map(item => item.saldo);
       const coresPontos = valoresSaldos.map(s => s > 0 ? '#10b981' : (s < 0 ? '#ef4444' : '#d97706'));
 
-      // Renderizar Gráfico 1: Linha de Saldo
       const ctxLinha = document.getElementById('chartSaldoLinha').getContext('2d');
       if (instChartLinha) instChartLinha.destroy();
       instChartLinha = new Chart(ctxLinha, {
@@ -773,7 +852,7 @@
         }
       });
 
-      // Preparação de dados para Gráfico de Radar (Média das 4 áreas)
+      // Dados para Gráfico de Radar
       const mediasAreas = [];
       const nomesAreas = Object.keys(categoriasAreas);
 
@@ -795,7 +874,6 @@
         mediasAreas.push(mediaArea);
       });
 
-      // Renderizar Gráfico 2: Radar
       const ctxRadar = document.getElementById('chartCategoriasRadar').getContext('2d');
       if (instChartRadar) instChartRadar.destroy();
       instChartRadar = new Chart(ctxRadar, {
@@ -853,6 +931,8 @@
             localStorage.setItem('dashboard_neuro_dados', JSON.stringify(dados));
             alert('Backup importado com sucesso!');
             renderizarRelatorios();
+            const dataAtualInput = document.getElementById('data-registro').value;
+            if (dataAtualInput) carregarRegistroData(dataAtualInput);
           } else {
             alert('Formato de arquivo JSON inválido.');
           }
@@ -867,14 +947,13 @@
     function gerarPDFMensal() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const historico = obterHistorico().slice().reverse(); // Do mais recente para o mais antigo
+      const historico = obterHistorico().slice().reverse();
 
       if (historico.length === 0) {
         alert('Sem dados para gerar relatório.');
         return;
       }
 
-      // Cabeçalho Principal
       doc.setFont("helvetica", "bold");
       doc.setFontSize(15);
       doc.text("Relatório Mensal - Dashboard Neuroemocional", 14, 18);
@@ -883,7 +962,6 @@
       doc.setFont("helvetica", "normal");
       doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 24);
 
-      // Bloco de Análise dos Últimos 30 Dias no Topo
       const ultimos30 = historico.slice(0, 30);
       const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
       const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
@@ -905,7 +983,6 @@
       
       doc.text(`• Diagnóstico: ${diagTexto}`, 14, 52);
 
-      // Linha Divisória
       doc.setDrawColor(200, 200, 200);
       doc.line(14, 57, 196, 57);
 
@@ -951,9 +1028,12 @@
       doc.save(`Relatorio_Neuroemocional_${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
-    // Inicialização
+    // Inicialização do aplicativo e data de hoje por padrão
     window.onload = function() {
-      atualizarSaldoDia();
+      const hoje = new Date().toISOString().split('T')[0];
+      const inputData = document.getElementById('data-registro');
+      inputData.value = hoje;
+      carregarRegistroData(hoje);
     };
   </script>
 </body>
