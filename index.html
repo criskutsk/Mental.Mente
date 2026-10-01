@@ -249,9 +249,13 @@
       padding: 14px;
       border-radius: 6px;
       margin-bottom: 16px;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      font-size: 0.88rem;
+      line-height: 1.6;
       color: #e2e8f0;
+    }
+
+    .caixa-analise strong {
+      color: #38bdf8;
     }
 
     .chart-box {
@@ -551,7 +555,7 @@
     <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS) ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
-        <div class="card-title">📊 Análise dos Últimos 30 Dias</div>
+        <div class="card-title">📊 Análise Elaborada dos Últimos 30 Dias</div>
         <div id="caixa-resumo-evolucao" class="caixa-analise">
           Carregando dados de evolução...
         </div>
@@ -784,28 +788,69 @@
       }
     }
 
-    // Renderizar Aba Evolução com Gráficos
+    // Renderizar Aba Evolução com Diagnóstico Elaborado e Gráficos
     function renderizarEvolucao() {
       const historico = obterHistorico();
       const resumoContainer = document.getElementById('caixa-resumo-evolucao');
 
       if (historico.length === 0) {
-        resumoContainer.innerHTML = 'Sem dados suficientes para gerar a análise visual.';
+        resumoContainer.innerHTML = 'Sem dados suficientes registrados para gerar a análise visual e diagnóstica.';
         return;
       }
 
       const ultimos30 = historico.slice(-30);
+      const qtdDias = ultimos30.length;
       const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
-      const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
+      const mediaSaldo = parseFloat((somaSaldos / qtdDias).toFixed(1));
+
+      // Métricas de Frequência de Estados
+      const diasPositivos = ultimos30.filter(d => d.saldo > 0).length;
+      const diasNeutros = ultimos30.filter(d => d.saldo === 0).length;
+      const diasNegativos = ultimos30.filter(d => d.saldo < 0).length;
+
+      // Análise de Tendência
+      let tendenciaTexto = "";
+      if (qtdDias < 3) {
+        tendenciaTexto = "Fase de Amostragem Inicial (Dados ainda acumulando histórico)";
+      } else {
+        const metade = Math.floor(qtdDias / 2);
+        const priMetade = ultimos30.slice(0, metade);
+        const segMetade = ultimos30.slice(metade);
+
+        const medPri = priMetade.reduce((a,b) => a + b.saldo, 0) / priMetade.length;
+        const medSeg = segMetade.reduce((a,b) => a + b.saldo, 0) / segMetade.length;
+
+        if (medSeg - medPri > 1.5) {
+          tendenciaTexto = "🚀 Curva Ascendente (Melhoria progressiva da autorregulação)";
+        } else if (medPri - medSeg > 1.5) {
+          tendenciaTexto = "⚠️️ Curva Descendente (Aumento gradual do desgaste/sobrecarga)";
+        } else if (Math.abs(medSeg - medPri) <= 1.5 && (diasPositivos > 0 && diasNegativos > 0)) {
+          tendenciaTexto = "🔄 Oscilação Recorrente (Período de instabilidade ou picos de sobrecarga alternados)";
+        } else {
+          tendenciaTexto = "⚖️ Estabilidade Continuada (Regulação mantida em patamar constante)";
+        }
+      }
+
+      // Recomendação Ação/Clínica Personalizada
+      let orientacaoEstrategica = "";
+      if (mediaSaldo >= 3) {
+        orientacaoEstrategica = "Excelente reservatório de recursos. Momento propício para avançar em metas de alto impacto, mantendo os rituais de descanso para prevenir sobrecarga súbita.";
+      } else if (mediaSaldo >= 0.5) {
+        orientacaoEstrategica = "Estado de equilíbrio funcional positivo. O sistema está respondendo bem aos estímulos diários. Mantenha a consistência nos pilares de sono e hidratação.";
+      } else if (mediaSaldo >= -2) {
+        orientacaoEstrategica = "Indicadores apontam leve déficit de energia ou estresse moderado acumulado. Recomendado revisar as anotações diárias nas áreas de 'Saúde Integral' e 'Conexões' para estancar pequenos vazamentos de energia.";
+      } else {
+        orientacaoEstrategica = "Sinal de sobrecarga sensorial ou exaustão emocional significativa. Priorize a redução de demandas cognitivas imediatas e foque em práticas urgentes de autorregulação e desaceleração.";
+      }
+
+      const percentualConsistencia = Math.round((qtdDias / 30) * 100);
 
       resumoContainer.innerHTML = `
-        <strong>Total de Registros:</strong> ${ultimos30.length} dias avaliados.<br>
-        <strong>Média do Saldo Diário:</strong> ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo}<br>
-        <strong>Diagnóstico Curto:</strong> ${
-          mediaSaldo > 1 ? 'Período predominantemente regulado e produtivo.' :
-          mediaSaldo < -1 ? 'Atenção: Indicadores sugerem acúmulo de sobrecarga ou estresse.' :
-          'Período de estabilidade e equilíbrio relativo.'
-        }
+        <strong>• Cobertura do Período:</strong> ${qtdDias} de 30 dias registrados (${percentualConsistencia}% de adesão)<br>
+        <strong>• Média do Saldo Diário:</strong> ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo} ponto(s)<br>
+        <strong>• Balanço Frequencial:</strong> ${diasPositivos} dia(s) regulado(s) [+], ${diasNeutros} neutro(s) [0], ${diasNegativos} de sobrecarga [-]<br>
+        <strong>• Tendência Recente:</strong> ${tendenciaTexto}<br>
+        <strong>• Diretriz de Ação:</strong> ${orientacaoEstrategica}
       `;
 
       // Dados para Gráfico de Linha
@@ -955,17 +1000,23 @@
       doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 24);
 
       const ultimos30 = historico.slice(0, 30);
+      const qtdDias = ultimos30.length;
       const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
-      const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
+      const mediaSaldo = parseFloat((somaSaldos / qtdDias).toFixed(1));
+
+      const diasPositivos = ultimos30.filter(d => d.saldo > 0).length;
+      const diasNeutros = ultimos30.filter(d => d.saldo === 0).length;
+      const diasNegativos = ultimos30.filter(d => d.saldo < 0).length;
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("ANÁLISE E DIAGNÓSTICO DOS ÚLTIMOS 30 DIAS", 14, 33);
+      doc.text("ANÁLISE E DIAGNÓSTICO ELABORADO (ÚLTIMOS 30 DIAS)", 14, 33);
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9.5);
-      doc.text(`• Total de registros avaliados: ${ultimos30.length} dias`, 14, 40);
-      doc.text(`• Média do Saldo Diário: ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo}`, 14, 46);
+      doc.text(`• Total de Registros Avaliados: ${qtdDias} dia(s)`, 14, 40);
+      doc.text(`• Média do Saldo Diário: ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo} ponto(s)`, 14, 46);
+      doc.text(`• Distribuição: ${diasPositivos} dia(s) regulado(s), ${diasNeutros} neutro(s), ${diasNegativos} de sobrecarga`, 14, 52);
       
       let diagTexto = mediaSaldo > 1 
         ? "Período predominantemente regulado e produtivo." 
@@ -973,16 +1024,16 @@
           ? "Atenção: Indicadores sugerem acúmulo de sobrecarga ou estresse." 
           : "Período de estabilidade e equilíbrio relativo.");
       
-      doc.text(`• Diagnóstico: ${diagTexto}`, 14, 52);
+      doc.text(`• Diagnóstico Síntese: ${diagTexto}`, 14, 58);
 
       doc.setDrawColor(200, 200, 200);
-      doc.line(14, 57, 196, 57);
+      doc.line(14, 63, 196, 63);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 64);
+      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 70);
 
-      let y = 72;
+      let y = 78;
 
       historico.forEach((reg) => {
         if (y > 270) {
