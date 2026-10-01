@@ -153,7 +153,7 @@
 
     /* Estilos das Abas Relatórios e Evolução */
     .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
-    .card-title { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
+    .card-title { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-bottom: 12px; }
 
     .acoes-globais-topo {
       display: flex;
@@ -226,67 +226,18 @@
       color: #e2e8f0;
     }
 
-    /* Estilização Elegante do Histórico de Observações na Evolução */
-    .historico-card-dia {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    .historico-header-dia {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #1e293b;
-      margin-bottom: 12px;
-    }
-    .historico-data-texto {
-      font-weight: 600;
-      color: #38bdf8;
-      font-size: 0.95rem;
-    }
-    .historico-saldo-texto {
-      font-size: 0.88rem;
-      color: #94a3b8;
-      font-weight: 600;
-    }
-    .area-linha-bloco {
+    /* Contêiner de Gráficos na Evolução */
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 260px;
       margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px dashed #1e293b;
-    }
-    .area-linha-bloco:first-child {
-      border-top: none;
-      margin-top: 0;
-      padding-top: 0;
-    }
-    .area-titulo-media {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #a5b4fc;
-      margin-bottom: 6px;
-    }
-    .area-anotacoes-lista {
-      padding-left: 12px;
-    }
-    .area-anotacao-item {
-      font-size: 0.83rem;
-      color: #cbd5e1;
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-    .area-sem-anotacao {
-      font-size: 0.8rem;
-      color: #64748b;
-      font-style: italic;
-      padding-left: 12px;
     }
   </style>
 
-  <!-- Biblioteca jsPDF -->
+  <!-- Bibliotecas externas (jsPDF e Chart.js) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -565,7 +516,7 @@
       </div>
     </div>
 
-    <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
+    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS) ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
         <div class="card-title">📊 Análise dos Últimos 30 Dias</div>
@@ -575,9 +526,16 @@
       </div>
 
       <div class="card">
-        <div class="card-title">Histórico de Observações</div>
-        <div id="historico-observacoes">
-          <!-- Linha do tempo inserida via JS -->
+        <div class="card-title">📈 Tendência do Saldo Emocional (30 Dias)</div>
+        <div class="chart-box">
+          <canvas id="chartSaldoLinha"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 Perfil de Regulação por Dimensão</div>
+        <div class="chart-box">
+          <canvas id="chartCategoriasRadar"></canvas>
         </div>
       </div>
     </div>
@@ -585,7 +543,7 @@
   </div>
 
   <script>
-    // Mapeamento dos Nomes dos Critérios
+    // Nomes dos Critérios
     const nomesCriterios = {
       ansiedade: "Ansiedade & Ruminação",
       vitalidade: "Vitalidade & Humor",
@@ -606,13 +564,17 @@
       hobbies: "Hobbies & Desconexão"
     };
 
-    // Mapeamento de Categorias sem emojis para exibição elegante
-    const categoriasAreasSemEmoji = {
+    // Categorias/Dimensões
+    const categoriasAreas = {
       "Neuroemocional & AH/SD": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
       "Foco & Cognição": ["nutricao_intelectual", "foco_estudos", "produtividade_criativa"],
       "Saúde Integral & Rotina": ["qualidade_sono", "rotinas_autocuidado", "alimentacao", "hidratacao", "exercicios", "cuidados_medicos", "rotina_domestica", "gestao_financeira"],
       "Conexões & Lazer": ["relacionamento", "hobbies"]
     };
+
+    // Instâncias Globais dos Gráficos para destruição/recriação limpa
+    let instChartLinha = null;
+    let instChartRadar = null;
 
     // Alternar Abas
     function mudarAba(abaId, btnElement) {
@@ -694,13 +656,13 @@
     // Obter dados do LocalStorage
     function obterHistorico() {
       const dados = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
-      return dados.sort((a, b) => b.data.localeCompare(a.data));
+      return dados.sort((a, b) => a.data.localeCompare(b.data)); // Ordenado do mais antigo para o mais recente para os gráficos
     }
 
     // Renderizar Aba Relatórios
     function renderizarRelatorios() {
       const container = document.getElementById('lista-relatorios');
-      const historico = obterHistorico();
+      const historico = obterHistorico().slice().reverse(); // Exibe do mais recente para o mais antigo
 
       if (historico.length === 0) {
         container.innerHTML = '<div class="card" style="text-align:center; color:#94a3b8;">Nenhum registro encontrado.</div>';
@@ -750,20 +712,17 @@
       }
     }
 
-    // Renderizar Aba Evolução com visual discreto e elegante
+    // Renderizar Aba Evolução com Gráficos
     function renderizarEvolucao() {
       const historico = obterHistorico();
       const resumoContainer = document.getElementById('caixa-resumo-evolucao');
-      const obsContainer = document.getElementById('historico-observacoes');
 
       if (historico.length === 0) {
-        resumoContainer.innerHTML = 'Sem dados suficientes para gerar a análise.';
-        obsContainer.innerHTML = '<div style="color:#94a3b8;">Nenhuma observação registrada.</div>';
+        resumoContainer.innerHTML = 'Sem dados suficientes para gerar a análise visual.';
         return;
       }
 
-      // Cálculo dos últimos 30 dias
-      const ultimos30 = historico.slice(0, 30);
+      const ultimos30 = historico.slice(-30);
       const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
       const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
 
@@ -777,54 +736,96 @@
         }
       `;
 
-      // Histórico de observações elegante, sem emojis, estruturado em linhas
-      let htmlObs = '';
-      ultimos30.forEach(reg => {
-        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
-        let blocosAreas = '';
+      // Preparação de dados para Gráfico de Linha (Saldo)
+      const labelsDatas = ultimos30.map(item => {
+        const [ano, mes, dia] = item.data.split('-');
+        return `${dia}/${mes}`;
+      });
+      const valoresSaldos = ultimos30.map(item => item.saldo);
+      const coresPontos = valoresSaldos.map(s => s > 0 ? '#10b981' : (s < 0 ? '#ef4444' : '#d97706'));
 
-        Object.keys(categoriasAreasSemEmoji).forEach(nomeArea => {
-          const chavesArea = categoriasAreasSemEmoji[nomeArea];
-          let somaArea = 0;
-          let qtdArea = 0;
-          let obsLista = [];
-
-          chavesArea.forEach(k => {
-            if (reg.criterios[k]) {
-              somaArea += reg.criterios[k].valor;
-              qtdArea++;
-              if (reg.criterios[k].observacao) {
-                obsLista.push(`• ${nomesCriterios[k]} (Pontuação: ${reg.criterios[k].valor}/5): ${reg.criterios[k].observacao}`);
-              }
-            }
-          });
-
-          const mediaArea = qtdArea > 0 ? (somaArea / qtdArea).toFixed(1) : '3.0';
-          let estadoArea = mediaArea >= 3.8 ? 'Alto desempenho/Regulação' : (mediaArea <= 2.2 ? 'Ponto de atenção/Desgaste' : 'Estável/Equilibrado');
-
-          blocosAreas += `
-            <div class="area-linha-bloco">
-              <div class="area-titulo-media">${nomeArea} — Média: ${mediaArea}/5 (${estadoArea})</div>
-              ${obsLista.length > 0 
-                ? `<div class="area-anotacoes-lista">${obsLista.map(o => `<div class="area-anotacao-item">${o}</div>`).join('')}</div>`
-                : `<div class="area-sem-anotacao">Sem anotações específicas nesta área.</div>`
-              }
-            </div>
-          `;
-        });
-
-        htmlObs += `
-          <div class="historico-card-dia">
-            <div class="historico-header-dia">
-              <span class="historico-data-texto">📅 ${dataFormatada}</span>
-              <span class="historico-saldo-texto">Saldo do dia: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}</span>
-            </div>
-            ${blocosAreas}
-          </div>
-        `;
+      // Renderizar Gráfico 1: Linha de Saldo
+      const ctxLinha = document.getElementById('chartSaldoLinha').getContext('2d');
+      if (instChartLinha) instChartLinha.destroy();
+      instChartLinha = new Chart(ctxLinha, {
+        type: 'line',
+        data: {
+          labels: labelsDatas,
+          datasets: [{
+            label: 'Saldo Diário',
+            data: valoresSaldos,
+            borderColor: '#6366f1',
+            borderWidth: 2,
+            pointBackgroundColor: coresPontos,
+            pointRadius: 4,
+            tension: 0.2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+          }
+        }
       });
 
-      obsContainer.innerHTML = htmlObs || '<div style="color:#94a3b8;">Nenhuma observação detalhada nos últimos registros.</div>';
+      // Preparação de dados para Gráfico de Radar (Média das 4 áreas)
+      const mediasAreas = [];
+      const nomesAreas = Object.keys(categoriasAreas);
+
+      nomesAreas.forEach(area => {
+        const chaves = categoriasAreas[area];
+        let somaValores = 0;
+        let countValores = 0;
+
+        ultimos30.forEach(reg => {
+          chaves.forEach(k => {
+            if (reg.criterios[k]) {
+              somaValores += reg.criterios[k].valor;
+              countValores++;
+            }
+          });
+        });
+
+        const mediaArea = countValores > 0 ? (somaValores / countValores).toFixed(1) : 3.0;
+        mediasAreas.push(mediaArea);
+      });
+
+      // Renderizar Gráfico 2: Radar
+      const ctxRadar = document.getElementById('chartCategoriasRadar').getContext('2d');
+      if (instChartRadar) instChartRadar.destroy();
+      instChartRadar = new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+          labels: nomesAreas,
+          datasets: [{
+            label: 'Média de Nível (1 a 5)',
+            data: mediasAreas,
+            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+            borderColor: '#818cf8',
+            pointBackgroundColor: '#38bdf8'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            r: {
+              min: 1,
+              max: 5,
+              ticks: { stepSize: 1, display: false },
+              grid: { color: '#334155' },
+              angleLines: { color: '#334155' },
+              pointLabels: { color: '#cbd5e1', font: { size: 11, weight: 'bold' } }
+            }
+          }
+        }
+      });
     }
 
     // Exportar Backup JSON
@@ -862,28 +863,59 @@
       reader.readAsText(file);
     }
 
-    // Gerar PDF do Mês com jsPDF
+    // Gerar PDF do Mês com Análise de 30 Dias no Topo
     function gerarPDFMensal() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const historico = obterHistorico();
+      const historico = obterHistorico().slice().reverse(); // Do mais recente para o mais antigo
 
       if (historico.length === 0) {
         alert('Sem dados para gerar relatório.');
         return;
       }
 
+      // Cabeçalho Principal
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("Relatório Mensal - Dashboard Neuroemocional", 14, 20);
+      doc.setFontSize(15);
+      doc.text("Relatório Mensal - Dashboard Neuroemocional", 14, 18);
 
-      doc.setFontSize(10);
+      doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
-      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 28);
+      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 24);
 
-      let y = 38;
+      // Bloco de Análise dos Últimos 30 Dias no Topo
+      const ultimos30 = historico.slice(0, 30);
+      const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
+      const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
 
-      historico.slice(0, 31).forEach((reg) => {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("ANÁLISE E DIAGNÓSTICO DOS ÚLTIMOS 30 DIAS", 14, 33);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.text(`• Total de registros avaliados: ${ultimos30.length} dias`, 14, 40);
+      doc.text(`• Média do Saldo Diário: ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo}`, 14, 46);
+      
+      let diagTexto = mediaSaldo > 1 
+        ? "Período predominantemente regulado e produtivo." 
+        : (mediaSaldo < -1 
+          ? "Atenção: Indicadores sugerem acúmulo de sobrecarga ou estresse." 
+          : "Período de estabilidade e equilíbrio relativo.");
+      
+      doc.text(`• Diagnóstico: ${diagTexto}`, 14, 52);
+
+      // Linha Divisória
+      doc.setDrawColor(200, 200, 200);
+      doc.line(14, 57, 196, 57);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 64);
+
+      let y = 72;
+
+      historico.forEach((reg) => {
         if (y > 270) {
           doc.addPage();
           y = 20;
@@ -891,22 +923,25 @@
 
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         doc.setFont("helvetica", "bold");
-        doc.text(`Data: ${dataFormatada} | Saldo: ${reg.saldo}`, 14, y);
+        doc.setFontSize(10);
+        doc.text(`Data: ${dataFormatada} | Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
         y += 6;
 
         doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        
         Object.keys(reg.criterios).forEach(key => {
           const item = reg.criterios[key];
           if (item.observacao || item.valor !== 3) {
-            const linha = `  - ${nomesCriterios[key] || key}: Nível ${item.valor} ${item.observacao ? `("${item.observacao}")` : ''}`;
+            const linha = ` - ${nomesCriterios[key] || key}: Nível ${item.valor} ${item.observacao ? `("${item.observacao}")` : ''}`;
             const linhasTratadas = doc.splitTextToSize(linha, 180);
             
             if (y > 270) {
               doc.addPage();
               y = 20;
             }
-            doc.text(linhasTratadas, 14, y);
-            y += (linhasTratadas.length * 5);
+            doc.text(linhasTratadas, 16, y);
+            y += (linhasTratadas.length * 4.8);
           }
         });
 
