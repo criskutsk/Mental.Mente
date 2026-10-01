@@ -226,18 +226,56 @@
       color: #e2e8f0;
     }
 
-    .area-resumo-bloco {
+    /* Formatação Clean & Elegante da Aba Evolução */
+    .historico-card-dia {
       background: #0f172a;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #243248;
+    }
+    .historico-header-dia {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .area-resumo-bloco {
+      background: #172033;
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px 12px;
       margin-top: 8px;
-      border: 1px solid #334155;
+      border: 1px solid #26354a;
     }
     .area-resumo-titulo {
-      font-weight: bold;
+      font-weight: 600;
       font-size: 0.88rem;
-      color: #818cf8;
-      margin-bottom: 6px;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .area-resumo-titulo .media-tag {
+      font-size: 0.78rem;
+      color: #38bdf8;
+      font-weight: normal;
+    }
+    .item-observacao-linha {
+      font-size: 0.83rem;
+      color: #94a3b8;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .item-observacao-linha strong {
+      color: #e2e8f0;
+    }
+    .sem-anotacao-txt {
+      font-size: 0.8rem;
+      color: #475569;
+      font-style: italic;
     }
   </style>
 
@@ -733,7 +771,7 @@
         }
       `;
 
-      // Histórico de observações com Pontuação e Breve Relato sobre as 4 áreas
+      // Histórico de observações refinado com visual elegante e clean
       let htmlObs = '';
       ultimos30.forEach(reg => {
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
@@ -750,7 +788,7 @@
               somaArea += reg.criterios[k].valor;
               qtdArea++;
               if (reg.criterios[k].observacao) {
-                obsLista.push(`• <strong>${nomesCriterios[k]}</strong> (Pontuação: ${reg.criterios[k].valor}/5): ${reg.criterios[k].observacao}`);
+                obsLista.push(`<div class="item-observacao-linha">• <strong>${nomesCriterios[k]}</strong> (Pontuação: ${reg.criterios[k].valor}/5): ${reg.criterios[k].observacao}</div>`);
               }
             }
           });
@@ -760,18 +798,21 @@
 
           blocosAreas += `
             <div class="area-resumo-bloco">
-              <div class="area-resumo-titulo">${nomeArea} — Média: ${mediaArea}/5 (${estadoArea})</div>
+              <div class="area-resumo-titulo">
+                <span>${nomeArea}</span>
+                <span class="media-tag">Média: ${mediaArea}/5 (${estadoArea})</span>
+              </div>
               ${obsLista.length > 0 
-                ? obsLista.map(o => `<div style="font-size:0.83rem; color:#cbd5e1; margin-top:2px;">${o}</div>`).join('') 
-                : `<div style="font-size:0.8rem; color:#64748b; font-style:italic;">Sem anotações específicas nesta área.</div>`
+                ? obsLista.join('') 
+                : `<div class="sem-anotacao-txt">Sem anotações específicas nesta área.</div>`
               }
             </div>
           `;
         });
 
         htmlObs += `
-          <div style="margin-bottom: 20px; padding: 12px; background:#0f172a; border-radius:8px; border:1px solid #334155;">
-            <div style="display:flex; justify-between; align-items:center; margin-bottom:6px;">
+          <div class="historico-card-dia">
+            <div class="historico-header-dia">
               <span style="color:#38bdf8; font-weight:bold; font-size:0.95rem;">📅 ${dataFormatada}</span>
               <span style="font-size:0.85rem; color:#94a3b8; font-weight:bold;">Saldo do dia: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}</span>
             </div>
