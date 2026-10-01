@@ -465,4 +465,384 @@
       <div class="categoria-titulo">👥 Conexões & Lazer</div>
 
       <div class="criterio-card" data-key="relacionamento">
-        <div cl
+        <div class="criterio-nome">Relacionamento Afetivo / Social</div>
+        <div class="criterio-legenda">1 = Isolamento doloroso/Conflito; 3 = Trocas superficiais; 5 = Conexão profunda e acolhedora.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="hobbies">
+        <div class="criterio-nome">Hobbies & Desconexão</div>
+        <div class="criterio-legenda">1 = Sem tempo para si/Cansaço; 3 = Lazer passivo; 5 = Imersão em hobbies/Desconexão real.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <!-- Painel Fixo de Saldo e Ação -->
+      <div class="painel-guardar">
+        <div class="saldo-linha">
+          <span>Saldo do Dia:</span>
+          <span id="saldo-badge" class="saldo-badge">0 (Equilíbrio)</span>
+        </div>
+        <button class="btn-guardar" onclick="salvarRegistroDiario()">💾 Guardar Registo Diário</button>
+      </div>
+
+    </div>
+
+    <!-- ==================== ABA 2: RELATÓRIOS ==================== -->
+    <div id="aba-relatorios" class="aba-conteudo">
+      <div class="acoes-globais-topo">
+        <button class="btn-discreto" onclick="exportarBackupJSON()">📥 Exportar</button>
+        <label class="btn-discreto">
+          📤 Importar
+          <input type="file" accept=".json" onchange="importarBackupJSON(event)">
+        </label>
+        <button class="btn-discreto" onclick="gerarPDFMensal()">📄 PDF do Mês</button>
+      </div>
+
+      <div id="lista-relatorios">
+        <!-- Itens inseridos via JS -->
+      </div>
+    </div>
+
+    <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
+    <div id="aba-evolucao" class="aba-conteudo">
+      <div class="card">
+        <div class="card-title">📊 Análise dos Últimos 30 Dias</div>
+        <div id="caixa-resumo-evolucao" class="caixa-analise">
+          Carregando dados de evolução...
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📜 Histórico de Observações</div>
+        <div id="historico-observacoes">
+          <!-- Linha do tempo inserida via JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Mapeamento dos Nomes dos Critérios
+    const nomesCriterios = {
+      ansiedade: "Ansiedade & Ruminação",
+      vitalidade: "Vitalidade & Humor",
+      sobrecarga: "Sobrecarga Sensorial",
+      autocompaixao: "Autocompaixão & Flexibilidade",
+      nutricao_intelectual: "Nutrição Intelectual / Estimulação",
+      foco_estudos: "Foco nos Estudos / Projetos",
+      produtividade_criativa: "Produtividade Criativa / Trabalho",
+      qualidade_sono: "Qualidade do Sono",
+      rotinas_autocuidado: "Rotinas de Autocuidado",
+      alimentacao: "Alimentação Equilibrada",
+      hidratacao: "Hidratação",
+      exercicios: "Exercícios / Movimento",
+      cuidados_medicos: "Cuidados Médicos & Medicação",
+      rotina_domestica: "Rotina Doméstica / Organização",
+      gestao_financeira: "Gestão Financeira",
+      relacionamento: "Relacionamento Afetivo / Social",
+      hobbies: "Hobbies & Desconexão"
+    };
+
+    // Alternar Abas
+    function mudarAba(abaId, btnElement) {
+      document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(`aba-${abaId}`).classList.add('active');
+      btnElement.classList.add('active');
+
+      if (abaId === 'relatorios') renderizarRelatorios();
+      if (abaId === 'evolucao') renderizarEvolucao();
+    }
+
+    // Seleção visual dos botões de escala
+    function selecionarValor(btn, valor) {
+      const card = btn.closest('.criterio-card');
+      card.querySelectorAll('.btn-escala').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      atualizarSaldoDia();
+    }
+
+    // Calcular Saldo do Dia em Tempo Real
+    function calcularSaldoAtual() {
+      let saldoTotal = 0;
+      document.querySelectorAll('.criterio-card').forEach(card => {
+        const btnSelecionado = card.querySelector('.btn-escala.selected');
+        if (btnSelecionado) {
+          const val = parseInt(btnSelecionado.innerText);
+          saldoTotal += (val - 3);
+        }
+      });
+      return saldoTotal;
+    }
+
+    function atualizarSaldoDia() {
+      const saldo = calcularSaldoAtual();
+      const badge = document.getElementById('saldo-badge');
+      
+      if (saldo > 0) {
+        badge.innerText = `+${saldo} (Regulado/Positivo)`;
+        badge.style.background = '#10b981';
+      } else if (saldo < 0) {
+        badge.innerText = `${saldo} (Sobrecarga/Desgaste)`;
+        badge.style.background = '#ef4444';
+      } else {
+        badge.innerText = `0 (Equilíbrio)`;
+        badge.style.background = '#d97706';
+      }
+    }
+
+    // Salvar Registro Diário no LocalStorage
+    function salvarRegistroDiario() {
+      const dataHoje = new Date().toISOString().split('T')[0];
+      const dadosCriterios = {};
+
+      document.querySelectorAll('.criterio-card').forEach(card => {
+        const key = card.getAttribute('data-key');
+        const val = parseInt(card.querySelector('.btn-escala.selected').innerText);
+        const obs = card.querySelector('.anotacao-criterio').value.trim();
+        
+        dadosCriterios[key] = { valor: val, observacao: obs };
+      });
+
+      const registro = {
+        data: dataHoje,
+        timestamp: new Date().getTime(),
+        saldo: calcularSaldoAtual(),
+        criterios: dadosCriterios
+      };
+
+      let historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
+      // Substitui se já existir registro na mesma data
+      historico = historico.filter(item => item.data !== dataHoje);
+      historico.push(registro);
+      
+      localStorage.setItem('dashboard_neuro_dados', JSON.stringify(historico));
+      alert('Registro diário guardado com sucesso!');
+    }
+
+    // Obter dados do LocalStorage
+    function obterHistorico() {
+      const dados = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
+      return dados.sort((a, b) => b.data.localeCompare(a.data));
+    }
+
+    // Renderizar Aba Relatórios
+    function renderizarRelatorios() {
+      const container = document.getElementById('lista-relatorios');
+      const historico = obterHistorico();
+
+      if (historico.length === 0) {
+        container.innerHTML = '<div class="card" style="text-align:center; color:#94a3b8;">Nenhum registro encontrado.</div>';
+        return;
+      }
+
+      let html = '';
+      historico.forEach(reg => {
+        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
+        
+        let corSaldo = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
+
+        html += `
+          <div class="relatorio-item">
+            <div class="relatorio-item-header">
+              <span class="relatorio-data">📅 ${dataFormatada}</span>
+              <span style="color: ${corSaldo}; font-weight: bold; font-size:0.9rem;">Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}</span>
+              <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">🗑️ Apagar</button>
+            </div>
+        `;
+
+        Object.keys(reg.criterios).forEach(key => {
+          const item = reg.criterios[key];
+          if (item.observacao || item.valor !== 3) {
+            html += `
+              <div class="anotacao-box">
+                <strong>${nomesCriterios[key] || key}:</strong> Nível ${item.valor} 
+                ${item.observacao ? `<br><em>"${item.observacao}"</em>` : ''}
+              </div>
+            `;
+          }
+        });
+
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Apagar Registro Individual
+    function apagarRegistro(data) {
+      if (confirm(`Deseja apagar o registro do dia ${data}?`)) {
+        let historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
+        historico = historico.filter(item => item.data !== data);
+        localStorage.setItem('dashboard_neuro_dados', JSON.stringify(historico));
+        renderizarRelatorios();
+      }
+    }
+
+    // Renderizar Aba Evolução
+    function renderizarEvolucao() {
+      const historico = obterHistorico();
+      const resumoContainer = document.getElementById('caixa-resumo-evolucao');
+      const obsContainer = document.getElementById('historico-observacoes');
+
+      if (historico.length === 0) {
+        resumoContainer.innerHTML = 'Sem dados suficientes para gerar a análise.';
+        obsContainer.innerHTML = '<div style="color:#94a3b8;">Nenhuma observação registrada.</div>';
+        return;
+      }
+
+      // Cálculo dos últimos 30 dias
+      const ultimos30 = historico.slice(0, 30);
+      const somaSaldos = ultimos30.reduce((acc, cur) => acc + cur.saldo, 0);
+      const mediaSaldo = (somaSaldos / ultimos30.length).toFixed(1);
+
+      resumoContainer.innerHTML = `
+        <strong>Total de Registros:</strong> ${ultimos30.length} dias avaliados.<br>
+        <strong>Média do Saldo Diário:</strong> ${mediaSaldo > 0 ? '+' + mediaSaldo : mediaSaldo}<br>
+        <strong>Diagnóstico Curto:</strong> ${
+          mediaSaldo > 1 ? 'Período predominantemente regulado e produtivo.' :
+          mediaSaldo < -1 ? 'Atenção: Indicadores sugerem acúmulo de sobrecarga ou estresse.' :
+          'Período de estabilidade e equilíbrio relativo.'
+        }
+      `;
+
+      // Linha do tempo de observações
+      let htmlObs = '';
+      ultimos30.forEach(reg => {
+        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
+        let temObs = false;
+        let blocosObs = '';
+
+        Object.keys(reg.criterios).forEach(key => {
+          const item = reg.criterios[key];
+          if (item.observacao) {
+            temObs = true;
+            blocosObs += `<div style="font-size:0.85rem; margin-top:4px; color:#cbd5e1;">• <strong>${nomesCriterios[key]}:</strong> ${item.observacao}</div>`;
+          }
+        });
+
+        if (temObs) {
+          htmlObs += `
+            <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #334155;">
+              <span style="color:#38bdf8; font-weight:bold; font-size:0.85rem;">${dataFormatada}</span>
+              ${blocosObs}
+            </div>
+          `;
+        }
+      });
+
+      obsContainer.innerHTML = htmlObs || '<div style="color:#94a3b8;">Nenhuma observação detalhada nos últimos registros.</div>';
+    }
+
+    // Exportar Backup JSON
+    function exportarBackupJSON() {
+      const historico = localStorage.getItem('dashboard_neuro_dados') || '[]';
+      const blob = new Blob([historico], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `backup_dashboard_neuro_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Importar Backup JSON
+    function importarBackupJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const dados = JSON.parse(e.target.result);
+          if (Array.isArray(dados)) {
+            localStorage.setItem('dashboard_neuro_dados', JSON.stringify(dados));
+            alert('Backup importado com sucesso!');
+            renderizarRelatorios();
+          } else {
+            alert('Formato de arquivo JSON inválido.');
+          }
+        } catch (err) {
+          alert('Erro ao ler o arquivo JSON.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Gerar PDF do Mês com jsPDF
+    function gerarPDFMensal() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const historico = obterHistorico();
+
+      if (historico.length === 0) {
+        alert('Sem dados para gerar relatório.');
+        return;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Relatório Mensal - Dashboard Neuroemocional", 14, 20);
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 28);
+
+      let y = 38;
+
+      historico.slice(0, 31).forEach((reg) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+
+        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
+        doc.setFont("helvetica", "bold");
+        doc.text(`Data: ${dataFormatada} | Saldo: ${reg.saldo}`, 14, y);
+        y += 6;
+
+        doc.setFont("helvetica", "normal");
+        Object.keys(reg.criterios).forEach(key => {
+          const item = reg.criterios[key];
+          if (item.observacao || item.valor !== 3) {
+            const linha = `  - ${nomesCriterios[key] || key}: Nível ${item.valor} ${item.observacao ? `("${item.observacao}")` : ''}`;
+            const linhasTratadas = doc.splitTextToSize(linha, 180);
+            
+            if (y > 270) {
+              doc.addPage();
+              y = 20;
+            }
+            doc.text(linhasTratadas, 14, y);
+            y += (linhasTratadas.length * 5);
+          }
+        });
+
+        y += 4;
+      });
+
+      doc.save(`Relatorio_Neuroemocional_${new Date().toISOString().split('T')[0]}.pdf`);
+    }
+
+    // Inicialização
+    window.onload = function() {
+      atualizarSaldoDia();
+    };
+  </script>
+</body>
+</html>
