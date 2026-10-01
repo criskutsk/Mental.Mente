@@ -23,16 +23,7 @@
       margin-bottom: 20px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .seletor-data-label {
-      font-size: 0.95rem;
-      font-weight: bold;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      justify-content: flex-end;
     }
     .seletor-data-input {
       background: #0f172a;
@@ -43,6 +34,8 @@
       font-size: 0.9rem;
       outline: none;
       cursor: pointer;
+      width: 100%;
+      max-width: 200px;
     }
     .seletor-data-input::-webkit-calendar-picker-indicator {
       filter: invert(1);
@@ -292,7 +285,6 @@
       
       <!-- Seletor de Data por Calendário -->
       <div class="seletor-data-container">
-        <span class="seletor-data-label">📅 Selecionar Data do Registro:</span>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
 
