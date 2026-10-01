@@ -1,230 +1,247 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental.Mente</title>
-    <!-- Biblioteca html2pdf para exportar relatórios em PDF -->
+    <title>Mental.Mente AH/SD</title>
+    <!-- Biblioteca html2pdf para exportar em PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --primary: #4A90E2;
-            --primary-dark: #357ABD;
-            --bg: #F4F7F6;
-            --card-bg: #FFFFFF;
-            --text: #2C3E50;
-            --border: #E0E0E0;
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 600px; }
+        
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { color: #818cf8; font-size: 1.8rem; margin-bottom: 5px; }
+        header p { color: var(--text-muted); font-size: 0.85rem; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: var(--card-dark); color: var(--text-muted); border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: var(--accent); color: white; }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        h1, h2 {
-            text-align: center;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-        }
+        .card { background: var(--card-dark); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .category-title { font-size: 1.1rem; color: #a5b4fc; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .criterion-item { margin-bottom: 15px; }
+        .criterion-label { display: block; font-size: 0.9rem; margin-bottom: 5px; font-weight: 600; }
+        .rating-options { display: flex; gap: 8px; margin-bottom: 6px; }
+        .rating-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #0f172a; color: var(--text-main); border-radius: 6px; cursor: pointer; text-align: center; }
+        .rating-btn.selected { background: var(--accent); border-color: #818cf8; }
+        
+        input[type="text"], textarea, select { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-size: 0.85rem; }
+        textarea { height: 60px; resize: vertical; }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
+        .btn-main { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        .btn-pdf { background: var(--success); margin-bottom: 15px; }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 80px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-pdf {
-            background-color: #27AE60;
-            margin-bottom: 15px;
-        }
-
-        .btn-pdf:hover {
-            background-color: #219150;
-        }
-
-        .divider {
-            margin: 30px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        #pdf-content {
-            padding: 10px;
-            background-color: white;
-        }
-
-        .registro-item {
-            border-left: 4px solid var(--primary);
-            background: #F9FAFB;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .registro-data {
-            font-size: 12px;
-            color: #7F8C8D;
-            margin-bottom: 4px;
-        }
-
-        .registro-humor {
-            font-weight: bold;
-            color: var(--primary-dark);
-            margin-bottom: 6px;
-        }
+        .history-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
+        .history-date { font-size: 0.8rem; color: var(--text-muted); }
+        .history-score { font-size: 1.1rem; font-weight: bold; color: #818cf8; margin: 4px 0; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Mental.Mente 🧠</h1>
+<div class="app-container">
+    <header>
+        <h1>Mental.Mente AH/SD</h1>
+        <p>Monitorização Emocional, Saúde Integral e Desenvolvimento em AH/SD</p>
+    </header>
 
-    <!-- FORMULÁRIO DE REGISTRO -->
-    <form id="mentalForm">
-        <div class="form-group">
-            <label for="humor">Como você está se sentindo hoje?</label>
-            <select id="humor" required>
-                <option value="">Selecione...</option>
-                <option value="Muito Bem 😊">Muito Bem 😊</option>
-                <option value="Bem 🙂">Bem 🙂</option>
-                <option value="Neutro 😐">Neutro 😐</option>
-                <option value="Ansioso(a) 😰">Ansioso(a) 😰</option>
-                <option value="Triste 😢">Triste 😢</option>
-                <option value="Estressado(a) 😤">Estressado(a) 😤</option>
-            </select>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('registro')">📋 Registo Diário</button>
+        <button class="tab-btn" onclick="switchTab('relatorios')">📊 Relatórios & Saldo</button>
+    </div>
+
+    <!-- TAB REGISTO DIÁRIO -->
+    <div id="tab-registro" class="tab-content active">
+        <div class="card">
+            <label class="criterion-label">Data do Registo:</label>
+            <input type="date" id="reg-date">
         </div>
 
-        <div class="form-group">
-            <label for="notas">Observações / Sentimentos:</label>
-            <textarea id="notas" placeholder="Escreva o que aconteceu ou como se sente..."></textarea>
-        </div>
+        <form id="trackerForm">
+            <!-- 1. NEUROEMOCIONAL -->
+            <div class="card">
+                <div class="category-title">🧠 Neuroemocional & AH/SD</div>
+                <div id="cat-neuro"></div>
+            </div>
 
-        <button type="submit" class="btn">Salvar Registro</button>
-    </form>
+            <!-- 2. FOCO & COGNIÇÃO -->
+            <div class="card">
+                <div class="category-title">🎯 Foco & Cognição</div>
+                <div id="cat-foco"></div>
+            </div>
 
-    <div class="divider"></div>
+            <!-- 3. SAÚDE INTEGRAL -->
+            <div class="card">
+                <div class="category-title">🌱 Saúde Integral & Rotina</div>
+                <div id="cat-saude"></div>
+            </div>
 
-    <!-- ÁREA DE RELATÓRIO -->
-    <h2>Relatório de Evolução</h2>
-    
-    <button onclick="gerarPDF()" class="btn btn-pdf">📄 Baixar Relatório em PDF</button>
+            <!-- 4. CONEXÕES & LAZER -->
+            <div class="card">
+                <div class="category-title">👥 Conexões & Lazer</div>
+                <div id="cat-conexoes"></div>
+            </div>
 
-    <div id="pdf-content">
-        <div id="listaRegistros">
-            <!-- Os registros salvos aparecerão aqui -->
+            <button type="submit" class="btn-main">💾 Guardar Registo Diário</button>
+        </form>
+    </div>
+
+    <!-- TAB RELATÓRIOS -->
+    <div id="tab-relatorios" class="tab-content">
+        <button onclick="gerarPDF()" class="btn-main btn-pdf">📄 Baixar Relatório em PDF</button>
+
+        <div id="area-relatorio" class="card">
+            <h2 style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Histórico de Registos</h2>
+            <div id="lista-historico">
+                <p style="text-align: center; color: var(--text-muted);">Carregando dados...</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Carregar registros salvos ao abrir a página
-    document.addEventListener('DOMContentLoaded', carregarRegistros);
+    const criteriaData = [
+        { id: 'c1', cat: 'neuro', name: 'Intensidade Emocional' },
+        { id: 'c2', cat: 'neuro', name: 'Sobrecarga Sensorial / Estímulos' },
+        { id: 'c3', cat: 'neuro', name: 'Regulação do Humor / Ansiedade' },
+        { id: 'c4', cat: 'neuro', name: 'Autoaceitação & Mascaramento (Camouflage)' },
+        { id: 'c5', cat: 'foco', name: 'Hiperfoco & Produtividade' },
+        { id: 'c6', cat: 'foco', name: 'Organização & Gestão de Tempo' },
+        { id: 'c7', cat: 'foco', name: 'Inércia de Ação / Procrastinação' },
+        { id: 'c8', cat: 'foco', name: 'Tolerância à Frustração' },
+        { id: 'c9', cat: 'saude', name: 'Qualidade do Sono' },
+        { id: 'c10', cat: 'saude', name: 'Nível de Energia Física' },
+        { id: 'c11', cat: 'saude', name: 'Alimentação & Hidratação' },
+        { id: 'c12', cat: 'saude', name: 'Atividade Física / Movimento' },
+        { id: 'c13', cat: 'saude', name: 'Tempo Conectado (Ecrãs/Telas)' },
+        { id: 'c14', cat: 'conexoes', name: 'Qualidade das Conexões Sociais' },
+        { id: 'c15', cat: 'conexoes', name: 'Sentimento de Pertencimento' },
+        { id: 'c16', cat: 'conexoes', name: 'Tempo para Interesses / Hobbies' },
+        { id: 'c17', cat: 'conexoes', name: 'Descanso / Desconexão do Trabalho' }
+    ];
 
-    // Salvar registro
-    document.getElementById('mentalForm').addEventListener('submit', function(e) {
+    document.getElementById('reg-date').valueAsDate = new Date();
+
+    function renderForm() {
+        criteriaData.forEach(item => {
+            const container = document.getElementById(`cat-${item.cat}`);
+            if(!container) return;
+
+            const div = document.createElement('div');
+            div.className = 'criterion-item';
+            div.innerHTML = `
+                <label class="criterion-label">${item.name}</label>
+                <div class="rating-options">
+                    ${[1, 2, 3, 4, 5].map(val => `
+                        <button type="button" class="rating-btn" onclick="setRating('${item.id}', ${val}, this)">${val}</button>
+                    `).join('')}
+                </div>
+                <input type="hidden" id="input-${item.id}" name="${item.id}" value="3">
+                <input type="text" id="note-${item.id}" placeholder="Nota/Observação (opcional)...">
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function setRating(id, val, btn) {
+        document.getElementById(`input-${id}`).value = val;
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        if(tabName === 'registro') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('tab-registro').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('tab-relatorios').classList.add('active');
+            carregarHistorico();
+        }
+    }
+
+    document.getElementById('trackerForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        const date = document.getElementById('reg-date').value;
+        
+        let ratings = {};
+        let notes = {};
+        let totalScore = 0;
 
-        const humor = document.getElementById('humor').value;
-        const notas = document.getElementById('notas').value;
-        const data = new Date().toLocaleString('pt-BR');
+        criteriaData.forEach(item => {
+            const val = parseInt(document.getElementById(`input-${item.id}`).value) || 3;
+            const note = document.getElementById(`note-${item.id}`).value;
+            ratings[item.id] = val;
+            notes[item.id] = note;
+            totalScore += val;
+        });
 
-        const novoRegistro = { data, humor, notas };
+        const entry = { date, ratings, notes, totalScore, average: (totalScore / criteriaData.length).toFixed(1) };
 
-        let registros = JSON.parse(localStorage.getItem('mentalmente_registros')) || [];
-        registros.unshift(novoRegistro); // Adiciona no início da lista
+        let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
+        history.unshift(entry);
+        localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(history));
 
-        localStorage.setItem('mentalmente_registros', JSON.stringify(registros));
-
-        document.getElementById('mentalForm').reset();
-        carregarRegistros();
+        alert('Registo guardado com sucesso!');
+        switchTab('relatorios');
     });
 
-    // Função para exibir os registros na tela
-    function carregarRegistros() {
-        const lista = document.getElementById('listaRegistros');
-        const registros = JSON.parse(localStorage.getItem('mentalmente_registros')) || [];
+    function carregarHistorico() {
+        const container = document.getElementById('lista-historico');
+        const history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
 
-        if (registros.length === 0) {
-            lista.innerHTML = '<p style="text-align: center; color: #7F8C8D;">Nenhum registro encontrado.</p>';
+        if(history.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Nenhum registo guardado ainda.</p>';
             return;
         }
 
-        lista.innerHTML = registros.map(reg => `
-            <div class="registro-item">
-                <div class="registro-data">${reg.data}</div>
-                <div class="registro-humor">${reg.humor}</div>
-                <div>${reg.notas ? reg.notas : '<em>Sem observações</em>'}</div>
+        container.innerHTML = history.map(item => `
+            <div class="history-item">
+                <div class="history-date">📅 Data: ${item.date}</div>
+                <div class="history-score">Média Geral: ${item.average} / 5.0</div>
+                <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">
+                    ${Object.keys(item.notes).map(k => {
+                        const crit = criteriaData.find(c => c.id === k);
+                        return item.notes[k] ? `<div><strong>${crit.name}:</strong>${item.notes[k]}</div>` : '';
+                    }).join('')}
+                </div>
             </div>
         `).join('');
     }
 
-    // Função para exportar em PDF
     function gerarPDF() {
-        const elemento = document.getElementById('pdf-content');
-        
+        const elemento = document.getElementById('area-relatorio');
         const opcoes = {
             margin:       10,
-            filename:     'relatorio-mentalmente.pdf',
+            filename:     'relatorio-mentalmente-ahsd.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2 },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-
         html2pdf().set(opcoes).from(elemento).save();
     }
+
+    renderForm();
 </script>
 
 </body>
