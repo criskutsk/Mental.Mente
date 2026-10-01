@@ -1,492 +1,952 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental.Mente AH/SD</title>
-    <!-- Biblioteca html2pdf para exportar em PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --card-dark: #1e293b;
-            --accent: #6366f1;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Neuroemocional & AH/SD</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js para Gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- html2pdf.js para Exportação de Relatórios PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 600px; }
-        
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { color: #818cf8; font-size: 1.8rem; margin-bottom: 5px; }
-        header p { color: var(--text-muted); font-size: 0.85rem; }
+  <style>
+    :root {
+      --bg-dark: #0f111a;
+      --card-bg: #1a1d2e;
+      --card-inner-bg: #131522;
+      --primary: #6c5ce7;
+      --primary-hover: #5b4bc4;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border-color: #2d3748;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+    }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: var(--card-dark); color: var(--text-muted); border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { background: var(--accent); color: white; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding-bottom: 60px;
+    }
 
-        .card { background: var(--card-dark); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .category-title { font-size: 1.1rem; color: #a5b4fc; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        .criterion-item { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
-        .criterion-item:last-child { border-bottom: none; }
-        .criterion-label { display: block; font-size: 0.95rem; margin-bottom: 2px; font-weight: 600; color: #f1f5f9; }
-        .criterion-desc { font-size: 0.78rem; color: #cbd5e1; margin-bottom: 4px; line-height: 1.3; }
-        .criterion-scale { font-size: 0.75rem; color: #93c5fd; font-style: italic; margin-bottom: 8px; background: rgba(15, 23, 42, 0.6); padding: 4px 8px; border-radius: 4px; border-left: 2px solid var(--accent); }
+    .header-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .rating-options { display: flex; gap: 8px; margin-bottom: 8px; }
-        .rating-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #0f172a; color: var(--text-main); border-radius: 6px; cursor: pointer; text-align: center; font-weight: bold; }
-        .rating-btn.selected { background: var(--accent); border-color: #818cf8; }
-        
-        input[type="text"], input[type="date"] { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-size: 0.85rem; }
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      max-width: 800px;
+      margin: 15px auto 0 auto;
+      padding: 0 15px;
+    }
 
-        .btn-main { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
-        .btn-pdf { background: var(--success); margin-bottom: 15px; }
-        .btn-sec { background: #334155; padding: 10px; font-size: 0.85rem; border: none; color: white; border-radius: 6px; cursor: pointer; flex: 1; }
-        .btn-delete { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; float: right; }
+    .tab-btn {
+      background: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
 
-        .trend-card { background: #0f172a; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 15px; }
-        .trend-item { font-size: 0.85rem; margin-top: 6px; padding-bottom: 4px; border-bottom: 1px dashed #334155; }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-        .history-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--accent); }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .history-date { font-size: 0.85rem; color: #a5b4fc; font-weight: bold; }
-        .history-score { font-size: 1rem; font-weight: bold; color: #818cf8; margin-bottom: 8px; }
-        .cat-summary { font-size: 0.8rem; background: #1e293b; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; }
-        .notes-list { font-size: 0.8rem; color: #cbd5e1; margin-top: 8px; padding-left: 5px; }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
 
-        /* Formatação exclusiva para geração do PDF */
-        .pdf-mode { background: #ffffff !important; color: #1e293b !important; padding: 20px !important; }
-        .pdf-mode .card, .pdf-mode .history-item, .pdf-mode .trend-card { background: #f8fafc !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
-        .pdf-mode .btn-delete { display: none !important; }
-        .pdf-mode .history-score, .pdf-mode .category-title { color: #4f46e5 !important; }
-        .pdf-mode .cat-summary { background: #e2e8f0 !important; color: #0f172a !important; }
-        .pdf-mode .notes-list { color: #334155 !important; }
-    </style>
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      color: #a29bfe;
+      margin: 25px 0 15px 0;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .scale-desc {
+      background-color: var(--card-inner-bg);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .rating-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .btn-rating {
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-rating.selected {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    textarea {
+      width: 100%;
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      padding: 12px;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .summary-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .saldo-badge {
+      background-color: #d35400;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      display: inline-block;
+    }
+
+    .btn-action {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    .filter-select {
+      width: 100%;
+      background: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .report-item {
+      background-color: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .report-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    .date-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .date-picker {
+      background: var(--card-inner-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    #pdf-preview {
+      background: #ffffff;
+      color: #000000;
+      padding: 30px;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <h1>Mental.Mente AH/SD</h1>
-        <p>Monitorização Emocional, Saúde Integral e Desenvolvimento em AH/SD</p>
-    </header>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('registro')">📋 Registo Diário</button>
-        <button class="tab-btn" onclick="switchTab('relatorios')">📊 Relatórios & Saldo</button>
+  <header>
+    <div class="header-container">
+      <h1 style="font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+        🧠 <span>Dashboard Neuroemocional & AH/SD</span>
+      </h1>
+      <div class="date-picker-container">
+        <input type="date" id="data-registro" class="date-picker">
+      </div>
     </div>
+  </header>
 
-    <!-- TAB REGISTO DIÁRIO -->
-    <div id="tab-registro" class="tab-content active">
-        <div class="card">
-            <label class="criterion-label">Data do Registo:</label>
-            <input type="date" id="reg-date">
-        </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="alternarAba('registro')"><i class="fa-solid fa-pen-to-square"></i> Registro</button>
+    <button class="tab-btn" onclick="alternarAba('relatorios')"><i class="fa-solid fa-folder-open"></i> Relatórios</button>
+    <button class="tab-btn" onclick="alternarAba('evolucao')"><i class="fa-solid fa-chart-line"></i> Evolução</button>
+    <button class="tab-btn" onclick="alternarAba('backup')"><i class="fa-solid fa-database"></i> Backup</button>
+  </div>
 
-        <form id="trackerForm">
-            <div class="card">
-                <div class="category-title">🧠 Neuroemocional & AH/SD</div>
-                <div id="cat-neuro"></div>
-            </div>
-
-            <div class="card">
-                <div class="category-title">🎯 Foco & Cognição</div>
-                <div id="cat-foco"></div>
-            </div>
-
-            <div class="card">
-                <div class="category-title">🌱 Saúde Integral & Rotina</div>
-                <div id="cat-saude"></div>
-            </div>
-
-            <div class="card">
-                <div class="category-title">👥 Conexões & Lazer</div>
-                <div id="cat-conexoes"></div>
-            </div>
-
-            <button type="submit" class="btn-main">💾 Guardar Registo Diário</button>
-        </form>
-    </div>
-
-    <!-- TAB RELATÓRIOS -->
-    <div id="tab-relatorios" class="tab-content">
-        <button onclick="gerarPDF()" class="btn-main btn-pdf">📄 Baixar Relatório em PDF</button>
-
-        <div class="card" style="margin-bottom: 15px;">
-            <div style="display: flex; gap: 8px;">
-                <button onclick="exportarBackup()" class="btn-sec">📥 Exportar Backup</button>
-                <button onclick="document.getElementById('importFile').click()" class="btn-sec">📤 Importar Backup</button>
-                <input type="file" id="importFile" style="display:none;" onchange="importarBackup(event)" accept=".json">
-            </div>
-        </div>
-
-        <div id="area-relatorio" class="card">
-            <h2 style="font-size: 1.2rem; margin-bottom: 15px; text-align: center;">Histórico e Análise de Evolução</h2>
-            
-            <div id="trend-summary"></div>
-
-            <div id="lista-historico">
-                <p style="text-align: center; color: var(--text-muted);">Carregando dados...</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const categoriesInfo = {
-        neuro: '🧠 Neuroemocional & AH/SD',
-        foco: '🎯 Foco & Cognição',
-        saude: '🌱 Saúde Integral & Rotina',
-        conexoes: '👥 Conexões & Lazer'
-    };
-
-    const criteriaData = [
-        // 1. NEUROEMOCIONAL
-        { 
-            id: 'c1', cat: 'neuro', name: 'Intensidade Emocional', 
-            desc: 'Avalia a magnitude e força com que sente as emoções ao longo do dia.',
-            scale: '1: Extremamente desregulado / sobrecarregado | 3: Moderado | 5: Totalmente equilibrado e sereno'
-        },
-        { 
-            id: 'c2', cat: 'neuro', name: 'Sobrecarga Sensorial / Estímulos', 
-            desc: 'Sensibilidade a ruídos, luzes, luz solar, texturas ou excesso de informação.',
-            scale: '1: Totalmente hipersensível / esgotado | 3: Tolerável | 5: Sem incômodo sensorial'
-        },
-        { 
-            id: 'c3', cat: 'neuro', name: 'Regulação do Humor / Ansiedade', 
-            desc: 'Nível de oscilação do humor, angústia ou crise de ansiedade.',
-            scale: '1: Muita ansiedade / oscilação bruta | 3: Oscilação leve | 5: Humor estável e calmo'
-        },
-        { 
-            id: 'c4', cat: 'neuro', name: 'Autoaceitação & Mascaramento (Camouflage)', 
-            desc: 'Esforço para esconder traços AH/SD ou se forçar a se encaixar.',
-            scale: '1: Exaustão por mascaramento continuo | 3: Mascaramento pontual | 5: Autêntico / sem necessidade de mascarar'
-        },
-
-        // 2. FOCO & COGNIÇÃO
-        { 
-            id: 'c5', cat: 'foco', name: 'Hiperfoco & Produtividade', 
-            desc: 'Capacidade de canalizar o foco em tarefas relevantes sem esgotamento.',
-            scale: '1: Disperso / Hiperfoco destrutivo | 3: Foco razoável | 5: Hiperfoco produtivo e equilibrado'
-        },
-        { 
-            id: 'c6', cat: 'foco', name: 'Organização & Gestão de Tempo', 
-            desc: 'Facilidade para planejar, priorizar e cumprir os compromissos diários.',
-            scale: '1: Caótico / Sensação de perdido | 3: Parcialmente organizado | 5: Excelente gestão do tempo'
-        },
-        { 
-            id: 'c7', cat: 'foco', name: 'Inércia de Ação / Procrastinação', 
-            desc: 'Dificuldade para iniciar tarefas pendentes ou transitar entre atividades.',
-            scale: '1: Paralisado / Muita procrastinação | 3: Executou com esforço | 5: Fluxo de ação contínuo'
-        },
-        { 
-            id: 'c8', cat: 'foco', name: 'Tolerância à Frustração', 
-            desc: 'Reação a erros, imprevistos ou prazos e expectativas quebradas.',
-            scale: '1: Baixa tolerância / Irritação extrema | 3: Reação moderada | 5: Elevada resiliência'
-        },
-
-        // 3. SAÚDE INTEGRAL
-        { 
-            id: 'c9', cat: 'saude', name: 'Qualidade do Sono', 
-            desc: 'Tempo e profundidade do descanso noturno (ausência de insônia).',
-            scale: '1: Insônia / Sono muito agitado | 3: Restaurador mediano | 5: Sono profundo e reparador'
-        },
-        { 
-            id: 'c10', cat: 'saude', name: 'Nível de Energia Física', 
-            desc: 'Sensação geral de vitalidade e disposição física no dia.',
-            scale: '1: Exaustão física / Fadiga | 3: Energia suficiente | 5: Vitalidade e disposição plena'
-        },
-        { 
-            id: 'c11', cat: 'saude', name: 'Alimentação & Hidratação', 
-            desc: 'Cuidado com a ingestão regular de água e refeições nutritivas.',
-            scale: '1: Descuidou / Pula refeições | 3: Alimentação razoável | 5: Excelente nutrição e hidratação'
-        },
-        { 
-            id: 'c12', cat: 'saude', name: 'Atividade Física / Movimento', 
-            desc: 'Movimento corporal, caminhadas, alongamentos ou exercício estruturado.',
-            scale: '1: Sedentário no dia | 3: Movimento leve | 5: Exercício físico completo'
-        },
-        { 
-            id: 'c13', cat: 'saude', name: 'Tempo Conectado (Ecrãs/Telas)', 
-            desc: 'Uso de dispositivos eletrônicos sem gerar cansaço mental.',
-            scale: '1: Uso excessivo / Vício em telas | 3: Uso moderado | 5: Uso consciente e controlado'
-        },
-
-        // 4. CONEXÕES & LAZER
-        { 
-            id: 'c14', cat: 'conexoes', name: 'Qualidade das Conexões Sociais', 
-            desc: 'Interações com pessoas significativas com trocas reais.',
-            scale: '1: Conexões superficiais / Desgastantes | 3: Interações neutras | 5: Trocas profundas e estimulantes'
-        },
-        { 
-            id: 'c15', cat: 'conexoes', name: 'Sentimento de Pertencimento', 
-            desc: 'Sensação de ser compreendido e aceito no meio social ou familiar.',
-            scale: '1: Sensação profunda de inadequação | 3: Aceitável | 5: Forte sentimento de pertencimento'
-        },
-        { 
-            id: 'c16', cat: 'conexoes', name: 'Tempo para Interesses / Hobbies', 
-            desc: 'Dedicação a temas de interesse especial para recarga de energia.',
-            scale: '1: Nenhum tempo dedicado | 3: Pouco tempo | 5: Dedicação satisfatória aos hobbies'
-        },
-        { 
-            id: 'c17', cat: 'conexoes', name: 'Descanso / Desconexão do Trabalho', 
-            desc: 'Capacidade de desligar a mente das obrigações e relaxar verdadeiramente.',
-            scale: '1: Incapaz de desligar a mente | 3: Desconexão parcial | 5: Relaxamento e descanso completo'
-        }
-    ];
-
-    document.getElementById('reg-date').valueAsDate = new Date();
-
-    function renderForm() {
-        criteriaData.forEach(item => {
-            const container = document.getElementById(`cat-${item.cat}`);
-            if(!container) return;
-
-            const div = document.createElement('div');
-            div.className = 'criterion-item';
-            div.innerHTML = `
-                <label class="criterion-label">${item.name}</label>
-                <div class="criterion-desc">${item.desc}</div>
-                <div class="criterion-scale">💡 <strong>Escala:</strong> ${item.scale}</div>
-                <div class="rating-options">
-                    ${[1, 2, 3, 4, 5].map(val => `
-                        <button type="button" class="rating-btn" onclick="setRating('${item.id}', ${val}, this)">${val}</button>
-                    `).join('')}
-                </div>
-                <input type="hidden" id="input-${item.id}" name="${item.id}" value="3">
-                <input type="text" id="note-${item.id}" placeholder="Nota/Observação (opcional)...">
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function setRating(id, val, btn) {
-        document.getElementById(`input-${id}`).value = val;
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-    }
-
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        if(tabName === 'registro') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('tab-registro').classList.add('active');
-        } else {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('tab-relatorios').classList.add('active');
-            carregarHistorico();
-        }
-    }
-
-    document.getElementById('trackerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const date = document.getElementById('reg-date').value;
+  <div class="container">
+    
+    <!-- ABA 1: FORMULÁRIO DE REGISTRO DIÁRIO -->
+    <div id="aba-registro" class="tab-content active">
+      <form id="form-diario">
         
-        let ratings = {};
-        let notes = {};
-        let totalScore = 0;
-        let catTotals = { neuro: 0, foco: 0, saude: 0, conexoes: 0 };
-        let catCounts = { neuro: 0, foco: 0, saude: 0, conexoes: 0 };
+        <!-- SEÇÃO 1: NEUROEMOCIONAL & AH/SD -->
+        <div class="section-header">
+          🧠 <span>Neuroemocional & AH/SD</span>
+        </div>
 
-        criteriaData.forEach(item => {
-            const val = parseInt(document.getElementById(`input-${item.id}`).value) || 3;
-            const note = document.getElementById(`note-${item.id}`).value;
-            ratings[item.id] = val;
-            notes[item.id] = note;
-            totalScore += val;
+        <div class="card" data-criterio="ansiedade" data-area="neuroemocional">
+          <div class="card-title">Ansiedade & Ruminação</div>
+          <div class="scale-desc">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
 
-            catTotals[item.cat] += val;
-            catCounts[item.cat] += 1;
-        });
+        <div class="card" data-criterio="vitalidade" data-area="neuroemocional">
+          <div class="card-title">Vitalidade & Humor</div>
+          <div class="scale-desc">1 = Apatia/Exaustão extrema; 3 = Disposição moderada; 5 = Energia e motivação altas.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
 
-        let catAverages = {};
-        Object.keys(catTotals).forEach(cat => {
-            catAverages[cat] = (catTotals[cat] / catCounts[cat]).toFixed(1);
-        });
+        <div class="card" data-criterio="sobrecarga" data-area="neuroemocional">
+          <div class="card-title">Sobrecarga Sensorial</div>
+          <div class="scale-desc">1 = Hipersensibilidade/Irritação extrema; 3 = Desconforto pontual; 5 = Ambiente regulado.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
 
-        const entry = { 
-            id: Date.now(),
-            date, 
-            ratings, 
-            notes, 
-            totalScore, 
-            average: parseFloat((totalScore / criteriaData.length).toFixed(1)),
-            catAverages
-        };
+        <div class="card" data-criterio="produtividade" data-area="neuroemocional">
+          <div class="card-title">Produtividade Criativa / Trabalho</div>
+          <div class="scale-desc">1 = Bloqueio criativo; 3 = Entregas essenciais; 5 = Alto fluxo criativo e realização.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
 
-        let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
-        history.unshift(entry);
-        localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(history));
+        <div class="card" data-criterio="autocompaixao" data-area="neuroemocional">
+          <div class="card-title">Autocompaixão & Flexibilidade</div>
+          <div class="scale-desc">1 = Autocrítica destrutiva; 3 = Aceitação razoável; 5 = Diálogo interno acolhedor.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
 
-        alert('Registo guardado com sucesso!');
-        switchTab('relatorios');
+        <!-- SEÇÃO 2: FOCO & COGNIÇÃO -->
+        <div class="section-header">
+          🎯 <span>Foco & Cognição</span>
+        </div>
+
+        <div class="card" data-criterio="nutricao_intelectual" data-area="foco">
+          <div class="card-title">Nutrição Intelectual / Estimulação</div>
+          <div class="scale-desc">1 = Tédio/Subestimulação severa; 3 = Aprendizado básico; 5 = Hiperfoco produtivo/Estímulo ideal.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="foco_estudos" data-area="foco">
+          <div class="card-title">Foco nos Estudos / Projetos</div>
+          <div class="scale-desc">1 = Dispersão total; 3 = Foco parcial; 5 = Execução fluida sem distrações.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <!-- SEÇÃO 3: SAÚDE INTEGRAL & ROTINA -->
+        <div class="section-header">
+          🌱 <span>Saúde Integral & Rotina</span>
+        </div>
+
+        <div class="card" data-criterio="sono" data-area="saude">
+          <div class="card-title">Qualidade do Sono</div>
+          <div class="scale-desc">1 = Insônia/Sono não reparador; 3 = Sono mediano; 5 = Descanso profundo e revigorante.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="autocuidado" data-area="saude">
+          <div class="card-title">Rotinas de Autocuidado</div>
+          <div class="scale-desc">1 = Abandono total de si; 3 = Higiene e cuidados básicos; 5 = Rituais de bem-estar completos.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="alimentacao" data-area="saude">
+          <div class="card-title">Alimentação Equilibrada</div>
+          <div class="scale-desc">1 = Ultraprocessados/Compulsão; 3 = Alimentação razoável; 5 = Refeições nutritivas.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="hidratacao" data-area="saude">
+          <div class="card-title">Hidratação Adequada</div>
+          <div class="scale-desc">1 = Menos de 1L; 3 = ~1.5L de água; 5 = Meta atingida (2L+).</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="exercicios" data-area="saude">
+          <div class="card-title">Prática de Exercícios Físicos</div>
+          <div class="scale-desc">1 = Sedentarismo total; 3 = Caminhada leve; 5 = Treino completo.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="medicacao" data-area="saude">
+          <div class="card-title">Cuidados Médicos & Medicação</div>
+          <div class="scale-desc">1 = Esqueceu medicação; 3 = Medicação em dia; 5 = Cuidados de saúde perfeitos.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="organizacao" data-area="saude">
+          <div class="card-title">Rotina Doméstica & Organização</div>
+          <div class="scale-desc">1 = Caos na casa; 3 = Manutenção básica; 5 = Casa limpa e organizada.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="financeiro" data-area="saude">
+          <div class="card-title">Gestão & Gastos Financeiros</div>
+          <div class="scale-desc">1 = Gastos impulsivos; 3 = Apenas essenciais; 5 = Gastos estratégicos/Investimento.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <!-- SEÇÃO 4: CONEXÕES & LAZER -->
+        <div class="section-header">
+          👥 <span>Conexões & Lazer</span>
+        </div>
+
+        <div class="card" data-criterio="relacionamentos" data-area="conexoes">
+          <div class="card-title">Relacionamento Afetivo & Social</div>
+          <div class="scale-desc">1 = Conflito severo/Mascaramento; 3 = Trocas neutras; 5 = Conexão autêntica sem masking.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <div class="card" data-criterio="hobbies" data-area="conexoes">
+          <div class="card-title">Hobbies & Desconexão</div>
+          <div class="scale-desc">1 = Sem tempo para si; 3 = Lazer rápido; 5 = Imersão relaxante e estimulante.</div>
+          <div class="rating-buttons">
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 1)">1</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 2)">2</button>
+            <button type="button" class="btn-rating selected" onclick="selecionarNota(this, 3)">3</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 4)">4</button>
+            <button type="button" class="btn-rating" onclick="selecionarNota(this, 5)">5</button>
+          </div>
+          <textarea placeholder="Anotação / observação sobre este critério..."></textarea>
+        </div>
+
+        <!-- RESUMO DO DIA E BOTÃO SALVAR -->
+        <div class="summary-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <strong style="font-size: 1.1rem;">Saldo do Dia:</strong>
+            <span class="saldo-badge" id="saldo-texto">0 pts (Equilíbrio / Manutenção)</span>
+          </div>
+
+          <button type="button" class="btn-action" onclick="salvarRegistroDiario()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Registo Diário
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- ABA 2: RELATÓRIOS SALVOS E AÇÕES -->
+    <div id="aba-relatorios" class="tab-content">
+      <div class="card">
+        <h2 style="margin-bottom: 20px;">📊 Histórico de Relatórios Salvos</h2>
+        <div id="lista-relatorios-container">
+          <!-- Relatórios renderizados dinamicamente aqui -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: EVOLUÇÃO GRÁFICA POR ÁREA -->
+    <div id="aba-evolucao" class="tab-content">
+      <div class="card">
+        <h2 style="margin-bottom: 15px;">📈 Evolução Temporal por Área</h2>
+        
+        <select id="filtro-area-grafico" class="filter-select" onchange="atualizarGraficoEvolucao()">
+          <option value="todas">Geral (Média de Todas as Áreas)</option>
+          <option value="neuroemocional">Neuroemocional & AH/SD</option>
+          <option value="foco">Foco & Cognição</option>
+          <option value="saude">Saúde Integral & Rotina</option>
+          <option value="conexoes">Conexões & Lazer</option>
+        </select>
+
+        <div style="position: relative; height:350px; width:100%">
+          <canvas id="canvasEvolucao"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 4: BACKUP E RESTAURAÇÃO DE DADOS -->
+    <div id="aba-backup" class="tab-content">
+      <div class="card">
+        <h2>💾 Backup & Restauração de Dados</h2>
+        <p style="color: var(--text-muted); margin: 15px 0 20px 0;">Exporte seus dados em JSON para garantir a segurança das suas informações ou importar em outro dispositivo.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <button class="btn-action" onclick="exportarBackupJSON()"><i class="fa-solid fa-download"></i> Baixar Backup JSON</button>
+          
+          <label class="btn-action" style="background-color: #27ae60; cursor: pointer; text-align: center;">
+            <i class="fa-solid fa-upload"></i> Importar Backup JSON
+            <input type="file" id="input-importar-json" accept=".json" onchange="importarBackupJSON(event)" style="display: none;">
+          </label>
+
+          <button class="btn-action btn-danger" onclick="limparTodosOsDados()"><i class="fa-solid fa-trash"></i> Apagar Todos os Dados</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTAINER OCULTO PARA IMPRESSÃO DE PDF -->
+  <div id="pdf-preview"></div>
+
+  <script>
+    // Inicialização da Data Padrão (Hoje)
+    document.addEventListener('DOMContentLoaded', () => {
+      const hoje = new Date().toISOString().split('T')[0];
+      document.getElementById('data-registro').value = hoje;
+      carregarRegistroDaData(hoje);
+      
+      document.getElementById('data-registro').addEventListener('change', (e) => {
+        carregarRegistroDaData(e.target.value);
+      });
     });
 
-    function apagarRegisto(id) {
-        if(confirm('Tem certeza que deseja apagar este registo?')) {
-            let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
-            history = history.filter(item => item.id !== id && item.date !== id);
-            localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(history));
-            carregarHistorico();
-        }
+    // Navegação entre Abas
+    function alternarAba(nomeAba) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(conteudo => conteudo.classList.remove('active'));
+      
+      event.currentTarget.classList.add('active');
+      document.getElementById(`aba-${nomeAba}`).classList.add('active');
+
+      if (nomeAba === 'relatorios') carregarListaRelatorios();
+      if (nomeAba === 'evolucao') atualizarGraficoEvolucao();
     }
 
-    function carregarHistorico() {
-        const container = document.getElementById('lista-historico');
-        const trendContainer = document.getElementById('trend-summary');
-        const history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
-
-        if(history.length === 0) {
-            trendContainer.innerHTML = '';
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Nenhum registo guardado ainda.</p>';
-            return;
-        }
-
-        // Análise de Evolução Detalhada
-        if(history.length > 1) {
-            const rec = history[0];
-            const ant = history[1];
-            let diffGeral = (rec.average - ant.average).toFixed(1);
-            let iconGeral = diffGeral > 0 ? '📈 Melhora' : (diffGeral < 0 ? '📉 Queda' : '➡️ Estável');
-
-            let htmlTrend = `
-                <div class="trend-card">
-                    <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 8px; color: #818cf8;">
-                        Análise de Evolução Recente (${rec.date} vs ${ant.date})
-                    </div>
-                    <div class="trend-item"><strong>Média Geral:</strong> ${rec.average} (${iconGeral} de ${diffGeral})</div>
-            `;
-
-            Object.keys(categoriesInfo).forEach(cat => {
-                const valRec = parseFloat(rec.catAverages ? rec.catAverages[cat] : 0);
-                const valAnt = parseFloat(ant.catAverages ? ant.catAverages[cat] : 0);
-                const diff = (valRec - valAnt).toFixed(1);
-
-                let statusText = 'estável';
-                let colorClass = 'var(--warning)';
-
-                if(diff > 0) { statusText = `melhorou (+${diff})`; colorClass = 'var(--success)'; }
-                else if(diff < 0) { statusText = `diminuiu (${diff})`; colorClass = 'var(--danger)'; }
-
-                htmlTrend += `
-                    <div class="trend-item">
-                        <strong>${categoriesInfo[cat]}:</strong> <span style="color:${colorClass}">${statusText}</span> (Média: ${valRec})
-                    </div>
-                `;
-            });
-
-            htmlTrend += `</div>`;
-            trendContainer.innerHTML = htmlTrend;
-        } else {
-            trendContainer.innerHTML = `
-                <div class="trend-card">
-                    <div style="text-align: center; color: #818cf8; font-size: 0.9rem;">
-                        Primeiro registo guardado. Adicione mais registos para comparar a evolução por área.
-                    </div>
-                </div>
-            `;
-        }
-
-        // Lista do Histórico
-        container.innerHTML = history.map(item => {
-            const itemId = item.id || item.date;
-            return `
-                <div class="history-item">
-                    <div class="history-header">
-                        <span class="history-date">📅 Data: ${item.date}</span>
-                        <button class="btn-delete" onclick="apagarRegisto(${itemId})">🗑️ Apagar</button>
-                    </div>
-                    <div class="history-score">Média Geral: ${item.average} / 5.0</div>
-                    
-                    ${item.catAverages ? `
-                        <div class="cat-summary">
-                            <strong>Resumo por Áreas:</strong><br>
-                            🧠 Neuro: ${item.catAverages.neuro \vert{}\vert{} '-'} \vert{} 🎯 Foco: ${item.catAverages.foco || '-'} | 🌱 Saúde: ${item.catAverages.saude \vert{}\vert{} '-'} \vert{} 👥 Conexões: ${item.catAverages.conexoes || '-'}
-                        </div>
-                    ` : ''}
-
-                    <div class="notes-list">
-                        ${Object.keys(item.ratings || {}).map(k => {
-                            const crit = criteriaData.find(c => c.id === k);
-                            const nota = item.notes && item.notes[k] ? ` - <em>"${item.notes[k]}"</em>` : '';
-                            return crit ? `<div>• <strong>${crit.name}:</strong> ${item.ratings[k]}/5${nota}</div>` : '';
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-        }).join('');
+    // Seleção Visual de Notas (1 a 5)
+    function selecionarNota(botao, valor) {
+      const containerBotoes = botao.parentElement;
+      containerBotoes.querySelectorAll('.btn-rating').forEach(b => b.classList.remove('selected'));
+      botao.classList.add('selected');
+      calcularSaldo();
     }
 
-    function exportarBackup() {
-        const history = localStorage.getItem('mentalmente_ahsd_data');
-        if(!history || history === '[]') {
-            alert('Não existem dados para exportar.');
-            return;
-        }
-        const blob = new Blob([history], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `backup-mentalmente-${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-    }
+    // Obter os Dados Formulario
+    function extrairDadosFormulario() {
+      const cards = document.querySelectorAll('#aba-registro .card');
+      const criterios = {};
+      const mediasPorArea = {
+        neuroemocional: { soma: 0, count: 0 },
+        foco: { soma: 0, count: 0 },
+        saude: { soma: 0, count: 0 },
+        conexoes: { soma: 0, count: 0 }
+      };
 
-    function importarBackup(event) {
-        const file = event.target.files[0];
-        if(!file) return;
+      let somaGeral = 0;
+      let totalCriterios = 0;
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if(Array.isArray(data)) {
-                    localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(data));
-                    alert('Backup restaurado com sucesso!');
-                    carregarHistorico();
-                } else {
-                    alert('Ficheiro de backup inválido.');
-                }
-            } catch(err) {
-                alert('Erro ao ler o ficheiro de backup.');
-            }
-        };
-        reader.readAsText(file);
-    }
+      cards.forEach(card => {
+        const idCriterio = card.getAttribute('data-criterio');
+        const area = card.getAttribute('data-area');
+        const notaSelecionada = parseInt(card.querySelector('.btn-rating.selected')?.innerText || 3);
+        const observacao = card.querySelector('textarea')?.value || '';
 
-    function gerarPDF() {
-        const elemento = document.getElementById('area-relatorio');
-        
-        // Aplica o modo PDF para visualização limpa em papel A4
-        elemento.classList.add('pdf-mode');
-
-        const opcoes = {
-            margin:       10,
-            filename:     `relatorio-mentalmente-${new Date().toISOString().slice(0,10)}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        criterios[idCriterio] = {
+          nota: notaSelecionada,
+          observacao: observacao,
+          area: area
         };
 
-        html2pdf().set(opcoes).from(elemento).save().then(() => {
-            elemento.classList.remove('pdf-mode');
+        somaGeral += notaSelecionada;
+        totalCriterios++;
+
+        if (mediasPorArea[area]) {
+          mediasPorArea[area].soma += notaSelecionada;
+          mediasPorArea[area].count++;
+        }
+      });
+
+      const mediaGeral = totalCriterios > 0 ? (somaGeral / totalCriterios).toFixed(2) : 0;
+      const saldoCalculado = somaGeral - (totalCriterios * 3); // Cálculo relativo ao ponto médio 3
+
+      const mediasCalculadas = {};
+      for (const area in mediasPorArea) {
+        mediasCalculadas[area] = mediasPorArea[area].count > 0 ? 
+          (mediasPorArea[area].soma / mediasPorArea[area].count).toFixed(2) : 0;
+      }
+
+      return {
+        data: document.getElementById('data-registro').value,
+        criterios: criterios,
+        mediaGeral: parseFloat(mediaGeral),
+        saldo: saldoCalculado,
+        mediasPorArea: mediasCalculadas
+      };
+    }
+
+    // Recalcular Texto do Saldo
+    function calcularSaldo() {
+      const dados = extrairDadosFormulario();
+      const badge = document.getElementById('saldo-texto');
+      
+      let status = "Equilíbrio / Manutenção";
+      if (dados.saldo > 3) status = "Superávit Positivo / Alta Energia";
+      if (dados.saldo < -3) status = "Déficit / Necessidade de Descanso";
+
+      badge.innerText = `${dados.saldo > 0 ? '+' : ''}${dados.saldo} pts (${status})`;
+    }
+
+    // Salvar Registro Diário no localStorage
+    function salvarRegistroDiario() {
+      const dados = extrairDadosFormulario();
+      const chave = `registro_${dados.data}`;
+      localStorage.setItem(chave, JSON.stringify(dados));
+      alert(`Registro de ${dados.data} guardado com sucesso!`);
+    }
+
+    // Carregar Registro de uma Data Específica
+    function carregarRegistroDaData(dataStr) {
+      const chave = `registro_${dataStr}`;
+      const dadosSalvos = localStorage.getItem(chave);
+
+      if (!dadosSalvos) {
+        // Reset para o padrão de notas = 3
+        document.querySelectorAll('#aba-registro .card').forEach(card => {
+          card.querySelectorAll('.btn-rating').forEach((b, idx) => {
+            b.classList.toggle('selected', idx === 2);
+          });
+          if (card.querySelector('textarea')) card.querySelector('textarea').value = '';
         });
+        calcularSaldo();
+        return;
+      }
+
+      const dados = JSON.parse(dadosSalvos);
+      for (const idCriterio in dados.criterios) {
+        const item = dados.criterios[idCriterio];
+        const card = document.querySelector(`[data-criterio="${idCriterio}"]`);
+        if (card) {
+          card.querySelectorAll('.btn-rating').forEach(b => {
+            b.classList.toggle('selected', parseInt(b.innerText) === item.nota);
+          });
+          if (card.querySelector('textarea')) card.querySelector('textarea').value = item.observacao;
+        }
+      }
+      calcularSaldo();
     }
 
-    renderForm();
-</script>
+    // Carregar Lista de Relatórios com Opção de Apagar e Gerar PDF
+    function carregarListaRelatorios() {
+      const container = document.getElementById('lista-relatorios-container');
+      container.innerHTML = '';
 
+      const chaves = Object.keys(localStorage).filter(k => k.startsWith('registro_')).sort().reverse();
+
+      if (chaves.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Nenhum relatório salvo no histórico.</p>';
+        return;
+      }
+
+      chaves.forEach(chave => {
+        const dados = JSON.parse(localStorage.getItem(chave));
+        const item = document.createElement('div');
+        item.className = 'report-item';
+        item.innerHTML = `
+          <div>
+            <strong>📅 ${dados.data}</strong>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+              Saldo: ${dados.saldo > 0 ? '+' : ''}${dados.saldo} pts | Média: ${dados.mediaGeral}
+            </div>
+          </div>
+          <div class="report-actions">
+            <button class="btn-icon" style="background-color: var(--primary);" onclick="carregarParaEdicao('${dados.data}')"><i class="fa-solid fa-pen"></i> Editar</button>
+            <button class="btn-icon" style="background-color: #27ae60;" onclick="gerarPDFRelatorio('${dados.data}')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            <button class="btn-icon" style="background-color: var(--danger);" onclick="apagarRelatorio('${chave}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Editar Registro
+    function carregarParaEdicao(dataStr) {
+      document.getElementById('data-registro').value = dataStr;
+      carregarRegistroDaData(dataStr);
+      alternarAba('registro');
+    }
+
+    // Apagar Relatório Específico
+    function apagarRelatorio(chave) {
+      const dataFormatada = chave.replace('registro_', '');
+      if (confirm(`Tem certeza que deseja apagar o relatório do dia ${dataFormatada}?`)) {
+        localStorage.removeItem(chave);
+        carregarListaRelatorios();
+      }
+    }
+
+    // Exportar Relatório em PDF com html2pdf.js
+    function gerarPDFRelatorio(dataStr) {
+      const chave = `registro_${dataStr}`;
+      const dados = JSON.parse(localStorage.getItem(chave));
+      if (!dados) return;
+
+      const preview = document.getElementById('pdf-preview');
+      preview.style.display = 'block';
+
+      let htmlConteudo = `
+        <h1 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Relatório Neuroemocional & AH/SD</h1>
+        <p><strong>Data:</strong> ${dados.data}</p>
+        <p><strong>Saldo do Dia:</strong> ${dados.saldo} pts | <strong>Média Geral:</strong> ${dados.mediaGeral}</p>
+        <hr style="margin: 15px 0;">
+        <h3>Detalhamento por Critério</h3>
+      `;
+
+      for (const key in dados.criterios) {
+        const item = dados.criterios[key];
+        htmlConteudo += `
+          <div style="margin-bottom: 12px; padding: 8px; border-bottom: 1px solid #eee;">
+            <strong>${key.toUpperCase()}:</strong> Nota ${item.nota}/5
+            ${item.observacao ? `<br><small><em>Obs: ${item.observacao}</em></small>` : ''}
+          </div>
+        `;
+      }
+
+      preview.innerHTML = htmlConteudo;
+
+      const opt = {
+        margin:       10,
+        filename:     `Relatorio_Neuroemocional_${dataStr}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(preview).save().then(() => {
+        preview.style.display = 'none';
+      });
+    }
+
+    // Gráfico de Evolução com Chart.js
+    let instanciaChart = null;
+
+    function atualizarGraficoEvolucao() {
+      const filtro = document.getElementById('filtro-area-grafico').value;
+      const chaves = Object.keys(localStorage).filter(k => k.startsWith('registro_')).sort();
+
+      const datas = [];
+      const valores = [];
+
+      chaves.forEach(chave => {
+        const dados = JSON.parse(localStorage.getItem(chave));
+        datas.push(dados.data);
+
+        if (filtro === 'todas') {
+          valores.push(dados.mediaGeral);
+        } else {
+          valores.push(dados.mediasPorArea ? dados.mediasPorArea[filtro] || 0 : 0);
+        }
+      });
+
+      const ctx = document.getElementById('canvasEvolucao').getContext('2d');
+
+      if (instanciaChart) instanciaChart.destroy();
+
+      instanciaChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: datas,
+          datasets: [{
+            label: `Evolução: ${filtro.toUpperCase()}`,
+            data: valores,
+            borderColor: '#6c5ce7',
+            backgroundColor: 'rgba(108, 92, 231, 0.2)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 1, max: 5, grid: { color: '#2d3748' } },
+            x: { grid: { color: '#2d3748' } }
+          },
+          plugins: {
+            legend: { labels: { color: '#e2e8f0' } }
+          }
+        }
+      });
+    }
+
+    // Backup JSON: Exportar
+    function exportarBackupJSON() {
+      const todosOsDados = {};
+      Object.keys(localStorage).forEach(chave => {
+        if (chave.startsWith('registro_')) {
+          todosOsDados[chave] = JSON.parse(localStorage.getItem(chave));
+        }
+      });
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(todosOsDados, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `backup_neuroemocional_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Backup JSON: Importar
+    function importarBackupJSON(event) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const dadosImportados = JSON.parse(e.target.result);
+          Object.keys(dadosImportados).forEach(chave => {
+            localStorage.setItem(chave, JSON.stringify(dadosImportados[chave]));
+          });
+          alert('Backup importado com sucesso!');
+          carregarListaRelatorios();
+        } catch (err) {
+          alert('Erro ao carregar ficheiro JSON inválido.');
+        }
+      };
+      reader.readAsText(event.target.files[0]);
+    }
+
+    // Apagar Tudo
+    function limparTodosOsDados() {
+      if (confirm('ATENÇÃO: Esta ação apagar todos os registos guardados no navegador. Deseja continuar?')) {
+        Object.keys(localStorage).forEach(chave => {
+          if (chave.startsWith('registro_')) localStorage.removeItem(chave);
+        });
+        carregarListaRelatorios();
+        alert('Todos os dados foram removidos.');
+      }
+    }
+  </script>
 </body>
 </html>
