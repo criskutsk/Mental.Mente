@@ -215,16 +215,6 @@
     }
     .btn-apagar-diario:hover { background: rgba(239, 68, 68, 0.15); }
 
-    .anotacao-box {
-      background: #1e293b;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      color: #cbd5e1;
-      margin-top: 8px;
-      border-left: 3px solid #64748b;
-    }
-
     .caixa-analise {
       background: #0f172a;
       border-left: 4px solid #38bdf8;
@@ -677,7 +667,9 @@
       historico.forEach(reg => {
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         
-        let corSaldo = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
+        let corSaldoBadge = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
+        let corTextoDescricao = reg.saldo > 0 ? '#cbd5e1' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
+        
         let descricaoSaldo = reg.saldo > 0 
           ? 'Saldo Positivo — Dia com predomínio de autorregulação e recursos preservados.' 
           : (reg.saldo < 0 
@@ -688,30 +680,17 @@
           <div class="relatorio-item">
             <div class="relatorio-item-header">
               <span class="relatorio-data">📅 ${dataFormatada}</span>
-              <span style="color: ${corSaldo}; font-weight: bold; font-size:0.9rem;">
+              <span style="color: ${corSaldoBadge}; font-weight: bold; font-size:0.9rem;">
                 Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}
               </span>
               <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">🗑 Apagar</button>
             </div>
             
-            <div style="font-size:0.8rem; color:${corSaldo}; margin-bottom:10px; font-style:italic;">
+            <div style="font-size:0.8rem; color:${corTextoDescricao}; margin-top:4px; font-style:italic;">
               📌 ${descricaoSaldo}
             </div>
+          </div>
         `;
-
-        Object.keys(reg.criterios).forEach(key => {
-          const item = reg.criterios[key];
-          if (item.observacao || item.valor !== 3) {
-            html += `
-              <div class="anotacao-box">
-                <strong>${nomesCriterios[key] || key}:</strong> Pontuação: ${item.valor}/5
-                ${item.observacao ? `<br><em>"${item.observacao}"</em>` : ''}
-              </div>
-            `;
-          }
-        });
-
-        html += `</div>`;
       });
 
       container.innerHTML = html;
