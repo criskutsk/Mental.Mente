@@ -235,6 +235,20 @@
       line-height: 1.5;
       color: #e2e8f0;
     }
+
+    .area-resumo-bloco {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #334155;
+    }
+    .area-resumo-titulo {
+      font-weight: bold;
+      font-size: 0.88rem;
+      color: #818cf8;
+      margin-bottom: 6px;
+    }
   </style>
 
   <!-- Biblioteca jsPDF -->
@@ -558,6 +572,14 @@
       hobbies: "Hobbies & Desconexão"
     };
 
+    // Mapeamento de Categorias / Áreas
+    const categoriasAreas = {
+      "🧠 Neuroemocional & AH/SD": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
+      "🎯 Foco & Cognição": ["nutricao_intelectual", "foco_estudos", "produtividade_criativa"],
+      "🌱 Saúde Integral & Rotina": ["qualidade_sono", "rotinas_autocuidado", "alimentacao", "hidratacao", "exercicios", "cuidados_medicos", "rotina_domestica", "gestao_financeira"],
+      "👥 Conexões & Lazer": ["relacionamento", "hobbies"]
+    };
+
     // Alternar Abas
     function mudarAba(abaId, btnElement) {
       document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('active'));
@@ -628,7 +650,6 @@
       };
 
       let historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
-      // Substitui se já existir registro na mesma data
       historico = historico.filter(item => item.data !== dataHoje);
       historico.push(registro);
       
@@ -657,13 +678,24 @@
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         
         let corSaldo = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
+        let descricaoSaldo = reg.saldo > 0 
+          ? 'Saldo Positivo — Dia com predomínio de autorregulação e recursos preservados.' 
+          : (reg.saldo < 0 
+            ? 'Saldo Negativo — Dia com acúmulo de sobrecarga ou consumo excessivo de energia.' 
+            : 'Saldo Neutro — Dia em equilíbrio básico entre desgastes e recuperação.');
 
         html += `
           <div class="relatorio-item">
             <div class="relatorio-item-header">
               <span class="relatorio-data">📅 ${dataFormatada}</span>
-              <span style="color: ${corSaldo}; font-weight: bold; font-size:0.9rem;">Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}</span>
-              <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">🗑️️ Apagar</button>
+              <span style="color: ${corSaldo}; font-weight: bold; font-size:0.9rem;">
+                Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}
+              </span>
+              <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">🗑 Apagar</button>
+            </div>
+            
+            <div style="font-size:0.8rem; color:${corSaldo}; margin-bottom:10px; font-style:italic;">
+              📌 ${descricaoSaldo}
             </div>
         `;
 
@@ -672,7 +704,7 @@
           if (item.observacao || item.valor !== 3) {
             html += `
               <div class="anotacao-box">
-                <strong>${nomesCriterios[key] || key}:</strong> Nível ${item.valor} 
+                <strong>${nomesCriterios[key] || key}:</strong> Pontuação: ${item.valor}/5
                 ${item.observacao ? `<br><em>"${item.observacao}"</em>` : ''}
               </div>
             `;
@@ -722,29 +754,51 @@
         }
       `;
 
-      // Linha do tempo de observações
+      // Histórico de observações com Pontuação e Breve Relato sobre as 4 áreas
       let htmlObs = '';
       ultimos30.forEach(reg => {
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
-        let temObs = false;
-        let blocosObs = '';
+        let blocosAreas = '';
 
-        Object.keys(reg.criterios).forEach(key => {
-          const item = reg.criterios[key];
-          if (item.observacao) {
-            temObs = true;
-            blocosObs += `<div style="font-size:0.85rem; margin-top:4px; color:#cbd5e1;">• <strong>${nomesCriterios[key]}:</strong> ${item.observacao}</div>`;
-          }
-        });
+        Object.keys(categoriasAreas).forEach(nomeArea => {
+          const chavesArea = categoriasAreas[nomeArea];
+          let somaArea = 0;
+          let qtdArea = 0;
+          let obsLista = [];
 
-        if (temObs) {
-          htmlObs += `
-            <div style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #334155;">
-              <span style="color:#38bdf8; font-weight:bold; font-size:0.85rem;">${dataFormatada}</span>
-              ${blocosObs}
+          chavesArea.forEach(k => {
+            if (reg.criterios[k]) {
+              somaArea += reg.criterios[k].valor;
+              qtdArea++;
+              if (reg.criterios[k].observacao) {
+                obsLista.push(`• <strong>${nomesCriterios[k]}</strong> (Pontuação: ${reg.criterios[k].valor}/5): ${reg.criterios[k].observacao}`);
+              }
+            }
+          });
+
+          const mediaArea = qtdArea > 0 ? (somaArea / qtdArea).toFixed(1) : '3.0';
+          let estadoArea = mediaArea >= 3.8 ? 'Alto desempenho/Regulação' : (mediaArea <= 2.2 ? 'Ponto de atenção/Desgaste' : 'Estável/Equilibrado');
+
+          blocosAreas += `
+            <div class="area-resumo-bloco">
+              <div class="area-resumo-titulo">${nomeArea} — Média: ${mediaArea}/5 (${estadoArea})</div>
+              ${obsLista.length > 0 
+                ? obsLista.map(o => `<div style="font-size:0.83rem; color:#cbd5e1; margin-top:2px;">${o}</div>`).join('') 
+                : `<div style="font-size:0.8rem; color:#64748b; font-style:italic;">Sem anotações específicas nesta área.</div>`
+              }
             </div>
           `;
-        }
+        });
+
+        htmlObs += `
+          <div style="margin-bottom: 20px; padding: 12px; background:#0f172a; border-radius:8px; border:1px solid #334155;">
+            <div style="display:flex; justify-between; align-items:center; margin-bottom:6px;">
+              <span style="color:#38bdf8; font-weight:bold; font-size:0.95rem;">📅 ${dataFormatada}</span>
+              <span style="font-size:0.85rem; color:#94a3b8; font-weight:bold;">Saldo do dia: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}</span>
+            </div>
+            ${blocosAreas}
+          </div>
+        `;
       });
 
       obsContainer.innerHTML = htmlObs || '<div style="color:#94a3b8;">Nenhuma observação detalhada nos últimos registros.</div>';
