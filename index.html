@@ -22,11 +22,138 @@
     .aba-conteudo { display: none; }
     .aba-conteudo.active { display: block; }
 
-    /* Cards e Containers */
+    /* Estilos da Aba Registro */
+    .categoria-titulo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #818cf8;
+      margin: 20px 0 12px 0;
+      border-left: 4px solid #6366f1;
+      padding-left: 8px;
+    }
+
+    .criterio-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .criterio-nome {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .criterio-legenda {
+      background: #0f172a;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .botoes-escala {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .btn-escala {
+      flex: 1;
+      padding: 10px 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-escala.selected {
+      background: #6366f1;
+      color: #ffffff;
+      border-color: #818cf8;
+    }
+
+    .anotacao-criterio {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #f8fafc;
+      padding: 10px;
+      font-size: 0.85rem;
+      resize: vertical;
+      min-height: 48px;
+    }
+
+    .anotacao-criterio::placeholder {
+      color: #64748b;
+    }
+
+    /* Painel do Saldo do Dia e Guardar */
+    .painel-guardar {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .saldo-linha {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .saldo-badge {
+      background: #d97706;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: bold;
+    }
+
+    .btn-guardar {
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      transition: background 0.2s;
+    }
+
+    .btn-guardar:hover {
+      background: #4f46e5;
+    }
+
+    /* Estilos das Abas Relatórios e Evolução */
     .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
     .card-title { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-bottom: 10px; }
 
-    /* Ações Globais Discretas no Topo */
     .acoes-globais-topo {
       display: flex;
       flex-wrap: wrap;
@@ -57,7 +184,6 @@
     }
     .btn-discreto input[type="file"] { display: none; }
 
-    /* Estilo do Card Diário */
     .relatorio-item {
       background: #0f172a;
       border-radius: 8px;
@@ -82,6 +208,9 @@
       padding: 4px 8px;
       border-radius: 4px;
       transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     .btn-apagar-diario:hover { background: rgba(239, 68, 68, 0.15); }
 
@@ -95,7 +224,6 @@
       border-left: 3px solid #64748b;
     }
 
-    /* Caixa Descritiva de Evolução */
     .caixa-analise {
       background: #0f172a;
       border-left: 4px solid #38bdf8;
@@ -120,20 +248,262 @@
 
     <!-- Navegação por Abas -->
     <div class="nav-tabs">
-      <button class="tab-btn" onclick="mudarAba('registro', this)">📝 Registro</button>
-      <button class="tab-btn active" onclick="mudarAba('relatorios', this)">📁 Relatórios</button>
+      <button class="tab-btn active" onclick="mudarAba('registro', this)">📝 Registro</button>
+      <button class="tab-btn" onclick="mudarAba('relatorios', this)">📁 Relatórios</button>
       <button class="tab-btn" onclick="mudarAba('evolucao', this)">📈 Evolução</button>
     </div>
 
-    <!-- Aba 1: Registro -->
-    <div id="aba-registro" class="aba-conteudo">
-      <div class="card">
-        <p style="color: #94a3b8; text-align: center;">Área de formulário para novos registros diários.</p>
+    <!-- ==================== ABA 1: REGISTRO ==================== -->
+    <div id="aba-registro" class="aba-conteudo active">
+      
+      <!-- Seção: Neuroemocional & AH/SD -->
+      <div class="categoria-titulo">🧠 Neuroemocional & AH/SD</div>
+
+      <div class="criterio-card" data-key="ansiedade">
+        <div class="criterio-nome">Ansiedade & Ruminação</div>
+        <div class="criterio-legenda">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
       </div>
+
+      <div class="criterio-card" data-key="vitalidade">
+        <div class="criterio-nome">Vitalidade & Humor</div>
+        <div class="criterio-legenda">1 = Apatia/Exaustão extrema; 3 = Disposição moderada; 5 = Energia e motivação altas.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="sobrecarga">
+        <div class="criterio-nome">Sobrecarga Sensorial</div>
+        <div class="criterio-legenda">1 = Hipersensibilidade/Irritação extrema; 3 = Desconforto pontual; 5 = Ambiente regulado.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="autocompaixao">
+        <div class="criterio-nome">Autocompaixão & Flexibilidade</div>
+        <div class="criterio-legenda">1 = Autocrítica destrutiva; 3 = Aceitação razoável; 5 = Diálogo interno acolhedor.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <!-- Seção: Foco & Cognição -->
+      <div class="categoria-titulo">🎯 Foco & Cognição</div>
+
+      <div class="criterio-card" data-key="nutricao_intelectual">
+        <div class="criterio-nome">Nutrição Intelectual / Estimulação</div>
+        <div class="criterio-legenda">1 = Tédio/Subestimulação severa; 3 = Aprendizado básico; 5 = Hiperfoco produtivo/Estímulo ideal.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="foco_estudos">
+        <div class="criterio-nome">Foco nos Estudos / Projetos</div>
+        <div class="criterio-legenda">1 = Dispersão total; 3 = Foco parcial; 5 = Execução fluida sem distrações.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="produtividade_criativa">
+        <div class="criterio-nome">Produtividade Criativa / Trabalho</div>
+        <div class="criterio-legenda">1 = Bloqueio criativo; 3 = Entregas essenciais; 5 = Alto fluxo criativo e realização.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <!-- Seção: Saúde Integral & Rotina -->
+      <div class="categoria-titulo">🌱 Saúde Integral & Rotina</div>
+
+      <div class="criterio-card" data-key="qualidade_sono">
+        <div class="criterio-nome">Qualidade do Sono</div>
+        <div class="criterio-legenda">1 = Insônia/Sono não reparador; 3 = Sono mediano; 5 = Descanso profundo e revigorante.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="rotinas_autocuidado">
+        <div class="criterio-nome">Rotinas de Autocuidado</div>
+        <div class="criterio-legenda">1 = Abandono total de si; 3 = Higiene e cuidados básicos; 5 = Rituais de bem-estar completos.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="alimentacao">
+        <div class="criterio-nome">Alimentação Equilibrada</div>
+        <div class="criterio-legenda">1 = Ultraprocessados/Compulsão; 3 = Alimentação razoável; 5 = Refeições nutritivas.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="hidratacao">
+        <div class="criterio-nome">Hidratação Adequada</div>
+        <div class="criterio-legenda">1 = Menos de 1L; 3 = ~1.5L de água; 5 = Meta atingida (2L+).</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="exercicios">
+        <div class="criterio-nome">Prática de Exercícios Físicos</div>
+        <div class="criterio-legenda">1 = Sedentarismo total; 3 = Caminhada leve; 5 = Treino completo.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="cuidados_medicos">
+        <div class="criterio-nome">Cuidados Médicos & Medicação</div>
+        <div class="criterio-legenda">1 = Esqueceu medicação; 3 = Medicação em dia; 5 = Cuidados de saúde perfeitos.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="rotina_domestica">
+        <div class="criterio-nome">Rotina Doméstica & Organização</div>
+        <div class="criterio-legenda">1 = Caos na casa; 3 = Manutenção básica; 5 = Casa limpa e organizada.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="gestao_financeira">
+        <div class="criterio-nome">Gestão & Gastos Financeiros</div>
+        <div class="criterio-legenda">1 = Gastos impulsivos; 3 = Apenas essenciais; 5 = Gastos estratégicos/Investimento.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <!-- Seção: Conexões & Lazer -->
+      <div class="categoria-titulo">👥 Conexões & Lazer</div>
+
+      <div class="criterio-card" data-key="relacionamento_social">
+        <div class="criterio-nome">Relacionamento Afetivo & Social</div>
+        <div class="criterio-legenda">1 = Conflito severo/Mascaramento; 3 = Trocas neutras; 5 = Conexão autêntica sem masking.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <div class="criterio-card" data-key="hobbies_desconexao">
+        <div class="criterio-nome">Hobbies & Desconexão</div>
+        <div class="criterio-legenda">1 = Sem tempo para si; 3 = Lazer rápido; 5 = Imersão relaxante e estimulante.</div>
+        <div class="botoes-escala">
+          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+        </div>
+        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+      </div>
+
+      <!-- Painel Inferior: Saldo & Guardar -->
+      <div class="painel-guardar">
+        <div class="saldo-linha">
+          <span>Saldo do Dia:</span>
+          <span class="saldo-badge" id="saldo-dia-texto">0 pts (Equilíbrio / Manutenção)</span>
+        </div>
+        <button class="btn-guardar" onclick="salvarRegistroDiario()">
+          💾 Guardar Registo Diário
+        </button>
+      </div>
+
     </div>
 
-    <!-- Aba 2: Relatórios -->
-    <div id="aba-relatorios" class="aba-conteudo active">
+    <!-- ==================== ABA 2: RELATÓRIOS ==================== -->
+    <div id="aba-relatorios" class="aba-conteudo">
       <div class="card">
         <!-- Ações Globais Discretas no Topo -->
         <div class="acoes-globais-topo">
@@ -158,7 +528,7 @@
       </div>
     </div>
 
-    <!-- Aba 3: Evolução -->
+    <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
         <div class="card-title">📊 Análise Descritiva de Evolução (30 Dias)</div>
@@ -170,6 +540,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <script>
@@ -210,6 +581,97 @@
       renderizarTudo();
     }
 
+    // --- LÓGICA DA ABA REGISTRO ---
+    function selecionarValor(elemento, valor) {
+      const containerBotoes = elemento.parentElement;
+      containerBotoes.querySelectorAll('.btn-escala').forEach(btn => btn.classList.remove('selected'));
+      elemento.classList.add('selected');
+      calcularSaldoDoDia();
+    }
+
+    function calcularSaldoDoDia() {
+      const cards = document.querySelectorAll('#aba-registro .criterio-card');
+      let pontos = 0;
+
+      cards.forEach(card => {
+        const btnSelecionado = card.querySelector('.btn-escala.selected');
+        if (btnSelecionado) {
+          const val = parseInt(btnSelecionado.innerText);
+          pontos += (val - 3); // Escala normalizada (-2 a +2)
+        }
+      });
+
+      const badge = document.getElementById('saldo-dia-texto');
+      let status = "Equilíbrio / Manutenção";
+      let cor = "#d97706"; // Laranja/Amarelo
+
+      if (pontos > 3) {
+        status = "Saldo Positivo / Regulado";
+        cor = "#10b981"; // Verde
+      } else if (pontos < -3) {
+        status = "Sobrecarga / Atenção";
+        cor = "#ef4444"; // Vermelho
+      }
+
+      badge.innerText = `${pontos} pts (${status})`;
+      badge.style.backgroundColor = cor;
+    }
+
+    function salvarRegistroDiario() {
+      const hojeStr = new Date().toISOString().slice(0, 10);
+      
+      // Coletar observações gerais dos campos
+      let anotacoes = [];
+      const cards = document.querySelectorAll('#aba-registro .criterio-card');
+      
+      let valAnsiedade = 3, valVitalidade = 3, valSobrecarga = 3, valFoco = 3;
+
+      cards.forEach(card => {
+        const nome = card.querySelector('.criterio-nome').innerText;
+        const key = card.getAttribute('data-key');
+        const btnSel = card.querySelector('.btn-escala.selected');
+        const val = btnSel ? parseInt(btnSel.innerText) : 3;
+        const texto = card.querySelector('.anotacao-criterio').value.trim();
+
+        if (key === 'ansiedade') valAnsiedade = val;
+        if (key === 'vitalidade') valVitalidade = val;
+        if (key === 'sobrecarga') valSobrecarga = val;
+        if (key === 'foco_estudos') valFoco = val;
+
+        if (texto) {
+          anotacoes.push(`[${nome}: ${val}/5] ${texto}`);
+        }
+      });
+
+      // Mapear métricas simplificadas para exibição no card do relatório
+      const humorTxt = valAnsiedade >= 4 ? 'Calmo' : (valAnsiedade <= 2 ? 'Ansioso' : 'Estável');
+      const focoTxt = valFoco >= 4 ? 'Alto' : (valFoco <= 2 ? 'Baixo' : 'Médio');
+      const sobrecargaTxt = valSobrecarga <= 2 ? 'Alta' : (valSobrecarga >= 4 ? 'Baixa' : 'Média');
+
+      const observacoesFinais = anotacoes.length > 0 
+        ? anotacoes.join('\n') 
+        : 'Registro diário concluído com parâmetros em nível regular.';
+
+      const novoRegistro = {
+        data: hojeStr,
+        humor: humorTxt,
+        foco: focoTxt,
+        sobrecarga: sobrecargaTxt,
+        observacoes: observacoesFinais
+      };
+
+      const idxExistente = bancoDeDados.findIndex(item => item.data === hojeStr);
+      if (idxExistente !== -1) {
+        bancoDeDados[idxExistente] = novoRegistro;
+      } else {
+        bancoDeDados.push(novoRegistro);
+      }
+
+      salvarDadosLocais();
+      alert('Registo Diário guardado com sucesso!');
+      mudarAba('relatorios', document.querySelectorAll('.tab-btn')[1]);
+    }
+
     // --- GERADOR DA ANÁLISE DESCRITIVA DE EVOLUÇÃO ---
     function gerarTextoDescritivoEvolucao(relatorios) {
       if (!relatorios || relatorios.length === 0) {
@@ -241,6 +703,7 @@
     function renderizarTudo() {
       renderizarRelatorios();
       renderizarEvolucaoApp();
+      calcularSaldoDoDia();
     }
 
     function renderizarRelatorios() {
@@ -272,7 +735,7 @@
             <strong>Sobrecarga:</strong> ${relatorio.sobrecarga}
           </div>
           <div class="anotacao-box">
-            ${relatorio.observacoes || 'Sem anotações neste dia.'}
+            ${relatorio.observacoes ? relatorio.observacoes.replace(/\n/g, '<br>') : 'Sem anotações neste dia.'}
           </div>
         `;
         container.appendChild(item);
@@ -306,13 +769,13 @@
         elem.style.marginBottom = "12px";
         elem.innerHTML = `
           <strong style="color:#f8fafc; font-size:0.88rem;">${dForm}</strong> - <span style="color:#94a3b8; font-size:0.85rem;">Humor: ${r.humor} | Foco: ${r.foco}</span>
-          <div class="anotacao-box">${r.observacoes || 'Sem anotações.'}</div>
+          <div class="anotacao-box">${r.observacoes ? r.observacoes.replace(/\n/g, '<br>') : 'Sem anotações.'}</div>
         `;
         historicoContainer.appendChild(elem);
       });
     }
 
-    // --- AÇÕES GLOBAIS NO TOPO (BAIXAR / IMPORTAR / PDF MÊS) ---
+    // --- AÇÕES GLOBAIS (BAIXAR / IMPORTAR / PDF MÊS) ---
     function baixarBackupGeralJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bancoDeDados, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -347,7 +810,6 @@
       reader.readAsText(file);
     }
 
-    // --- PDF GERAL DO MÊS (TODOS OS RELATÓRIOS DO MÊS + EVOLUÇÃO) ---
     async function gerarPDFGeralMes() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -356,7 +818,6 @@
       const mesAtual = hoje.getMonth();
       const anoAtual = hoje.getFullYear();
 
-      // Filtrar relatórios do mês atual (ou dos últimos 30 dias se o mês tiver poucos registros)
       const relatoriosDoMes = bancoDeDados.filter(item => {
         const d = new Date(item.data + 'T00:00:00');
         return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
@@ -364,7 +825,6 @@
 
       const relatoriosParaPDF = relatoriosDoMes.length > 0 ? relatoriosDoMes : bancoDeDados;
 
-      // 1. Cabeçalho
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.text("Relatório Neuroemocional & AH/SD", 14, 18);
@@ -377,7 +837,6 @@
 
       let yPos = 35;
 
-      // 2. Análise Descritiva de Evolução do Mês
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("1. Análise Descritiva de Evolução", 14, yPos);
@@ -393,7 +852,6 @@
       doc.line(14, yPos, 196, yPos);
       yPos += 8;
 
-      // 3. Relatórios Diários e Anotações
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("2. Relatórios e Anotações Diárias do Mês", 14, yPos);
