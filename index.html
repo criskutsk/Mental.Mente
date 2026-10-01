@@ -11,7 +11,6 @@
             --bg-dark: #0f172a;
             --card-dark: #1e293b;
             --accent: #6366f1;
-            --accent-hover: #4f46e5;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
@@ -44,20 +43,30 @@
         .rating-btn { flex: 1; padding: 8px 0; border: 1px solid var(--border); background: #0f172a; color: var(--text-main); border-radius: 6px; cursor: pointer; text-align: center; }
         .rating-btn.selected { background: var(--accent); border-color: #818cf8; }
         
-        input[type="text"], textarea, select { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-size: 0.85rem; }
-        textarea { height: 60px; resize: vertical; }
+        input[type="text"], input[type="date"] { width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-size: 0.85rem; }
 
         .btn-main { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
         .btn-pdf { background: var(--success); margin-bottom: 15px; }
         .btn-sec { background: #334155; padding: 10px; font-size: 0.85rem; border: none; color: white; border-radius: 6px; cursor: pointer; flex: 1; }
+        .btn-delete { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; float: right; }
 
-        .trend-card { background: #0f172a; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .trend-title { font-size: 0.85rem; color: var(--text-muted); }
-        .trend-value { font-size: 1.2rem; font-weight: bold; margin-top: 4px; }
+        .trend-card { background: #0f172a; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .trend-item { font-size: 0.85rem; margin-top: 6px; padding-bottom: 4px; border-bottom: 1px dashed #334155; }
 
-        .history-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
-        .history-date { font-size: 0.8rem; color: var(--text-muted); }
-        .history-score { font-size: 1.1rem; font-weight: bold; color: #818cf8; margin: 4px 0; }
+        .history-item { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--accent); }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .history-date { font-size: 0.85rem; color: #a5b4fc; font-weight: bold; }
+        .history-score { font-size: 1rem; font-weight: bold; color: #818cf8; margin-bottom: 8px; }
+        .cat-summary { font-size: 0.8rem; background: #1e293b; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; }
+        .notes-list { font-size: 0.8rem; color: #cbd5e1; margin-top: 8px; padding-left: 5px; }
+
+        /* Formatação exclusiva para geração do PDF */
+        .pdf-mode { background: #ffffff !important; color: #1e293b !important; padding: 20px !important; }
+        .pdf-mode .card, .pdf-mode .history-item, .pdf-mode .trend-card { background: #f8fafc !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
+        .pdf-mode .btn-delete { display: none !important; }
+        .pdf-mode .history-score, .pdf-mode .category-title { color: #4f46e5 !important; }
+        .pdf-mode .cat-summary { background: #e2e8f0 !important; color: #0f172a !important; }
+        .pdf-mode .notes-list { color: #334155 !important; }
     </style>
 </head>
 <body>
@@ -81,25 +90,21 @@
         </div>
 
         <form id="trackerForm">
-            <!-- 1. NEUROEMOCIONAL -->
             <div class="card">
                 <div class="category-title">🧠 Neuroemocional & AH/SD</div>
                 <div id="cat-neuro"></div>
             </div>
 
-            <!-- 2. FOCO & COGNIÇÃO -->
             <div class="card">
                 <div class="category-title">🎯 Foco & Cognição</div>
                 <div id="cat-foco"></div>
             </div>
 
-            <!-- 3. SAÚDE INTEGRAL -->
             <div class="card">
                 <div class="category-title">🌱 Saúde Integral & Rotina</div>
                 <div id="cat-saude"></div>
             </div>
 
-            <!-- 4. CONEXÕES & LAZER -->
             <div class="card">
                 <div class="category-title">👥 Conexões & Lazer</div>
                 <div id="cat-conexoes"></div>
@@ -134,6 +139,13 @@
 </div>
 
 <script>
+    const categoriesInfo = {
+        neuro: '🧠 Neuroemocional & AH/SD',
+        foco: '🎯 Foco & Cognição',
+        saude: '🌱 Saúde Integral & Rotina',
+        conexoes: '👥 Conexões & Lazer'
+    };
+
     const criteriaData = [
         { id: 'c1', cat: 'neuro', name: 'Intensidade Emocional' },
         { id: 'c2', cat: 'neuro', name: 'Sobrecarga Sensorial / Estímulos' },
@@ -205,6 +217,8 @@
         let ratings = {};
         let notes = {};
         let totalScore = 0;
+        let catTotals = { neuro: 0, foco: 0, saude: 0, conexoes: 0 };
+        let catCounts = { neuro: 0, foco: 0, saude: 0, conexoes: 0 };
 
         criteriaData.forEach(item => {
             const val = parseInt(document.getElementById(`input-${item.id}`).value) || 3;
@@ -212,9 +226,25 @@
             ratings[item.id] = val;
             notes[item.id] = note;
             totalScore += val;
+
+            catTotals[item.cat] += val;
+            catCounts[item.cat] += 1;
         });
 
-        const entry = { date, ratings, notes, totalScore, average: parseFloat((totalScore / criteriaData.length).toFixed(1)) };
+        let catAverages = {};
+        Object.keys(catTotals).forEach(cat => {
+            catAverages[cat] = (catTotals[cat] / catCounts[cat]).toFixed(1);
+        });
+
+        const entry = { 
+            id: Date.now(),
+            date, 
+            ratings, 
+            notes, 
+            totalScore, 
+            average: parseFloat((totalScore / criteriaData.length).toFixed(1)),
+            catAverages
+        };
 
         let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
         history.unshift(entry);
@@ -223,6 +253,15 @@
         alert('Registo guardado com sucesso!');
         switchTab('relatorios');
     });
+
+    function apagarRegisto(id) {
+        if(confirm('Tem certeza que deseja apagar este registo?')) {
+            let history = JSON.parse(localStorage.getItem('mentalmente_ahsd_data')) || [];
+            history = history.filter(item => item.id !== id && item.date !== id);
+            localStorage.setItem('mentalmente_ahsd_data', JSON.stringify(history));
+            carregarHistorico();
+        }
+    }
 
     function carregarHistorico() {
         const container = document.getElementById('lista-historico');
@@ -235,53 +274,79 @@
             return;
         }
 
-        // Análise de Tendência
+        // Análise de Evolução Detalhada
         if(history.length > 1) {
-            const recente = history[0].average;
-            const anterior = history[1].average;
-            const diff = (recente - anterior).toFixed(1);
+            const rec = history[0];
+            const ant = history[1];
+            let diffGeral = (rec.average - ant.average).toFixed(1);
+            let iconGeral = diffGeral > 0 ? '📈 Melhora' : (diffGeral < 0 ? '📉 Queda' : '➡️ Estável');
 
-            let status = '';
-            let cor = '';
-
-            if(diff > 0) {
-                status = `📈 A melhorar (+${diff} em relação ao registo anterior)`;
-                cor = 'var(--success)';
-            } else if(diff < 0) {
-                status = `📉 A requerer atenção (${diff} em relação ao registo anterior)`;
-                cor = 'var(--danger)';
-            } else {
-                status = '➡️ Estável (Igual ao registo anterior)';
-                cor = 'var(--warning)';
-            }
-
-            trendContainer.innerHTML = `
+            let htmlTrend = `
                 <div class="trend-card">
-                    <div class="trend-title">Análise de Evolução Recente</div>
-                    <div class="trend-value" style="color: ${cor};">${status}</div>
-                </div>
+                    <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 8px; color: #818cf8;">
+                        Análise de Evolução Recente (${rec.date} vs ${ant.date})
+                    </div>
+                    <div class="trend-item"><strong>Média Geral:</strong> ${rec.average} (${iconGeral} de ${diffGeral})</div>
             `;
+
+            Object.keys(categoriesInfo).forEach(cat => {
+                const valRec = parseFloat(rec.catAverages ? rec.catAverages[cat] : 0);
+                const valAnt = parseFloat(ant.catAverages ? ant.catAverages[cat] : 0);
+                const diff = (valRec - valAnt).toFixed(1);
+
+                let statusText = 'estável';
+                let colorClass = 'var(--warning)';
+
+                if(diff > 0) { statusText = `melhorou (+${diff})`; colorClass = 'var(--success)'; }
+                else if(diff < 0) { statusText = `diminuiu (${diff})`; colorClass = 'var(--danger)'; }
+
+                htmlTrend += `
+                    <div class="trend-item">
+                        <strong>${categoriesInfo[cat]}:</strong> <span style="color:${colorClass}">${statusText}</span> (Média: ${valRec})
+                    </div>
+                `;
+            });
+
+            htmlTrend += `</div>`;
+            trendContainer.innerHTML = htmlTrend;
         } else {
             trendContainer.innerHTML = `
                 <div class="trend-card">
-                    <div class="trend-title">Análise de Evolução</div>
-                    <div class="trend-value" style="color: #818cf8;">Primeiro registo guardado. Adicione mais registos para comparar a evolução.</div>
+                    <div style="text-align: center; color: #818cf8; font-size: 0.9rem;">
+                        Primeiro registo guardado. Adicione mais registos para comparar a evolução por área.
+                    </div>
                 </div>
             `;
         }
 
-        container.innerHTML = history.map(item => `
-            <div class="history-item">
-                <div class="history-date">📅 Data: ${item.date}</div>
-                <div class="history-score">Média Geral: ${item.average} / 5.0</div>
-                <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">
-                    ${Object.keys(item.notes || {}).map(k => {
-                        const crit = criteriaData.find(c => c.id === k);
-                        return item.notes[k] ? `<div><strong>${crit ? crit.name : k}:</strong> ${item.notes[k]}</div>` : '';
-                    }).join('')}
+        // Lista do Histórico
+        container.innerHTML = history.map(item => {
+            const itemId = item.id || item.date;
+            return `
+                <div class="history-item">
+                    <div class="history-header">
+                        <span class="history-date">📅 Data: ${item.date}</span>
+                        <button class="btn-delete" onclick="apagarRegisto(${itemId})">🗑️ Apagar</button>
+                    </div>
+                    <div class="history-score">Média Geral: ${item.average} / 5.0</div>
+                    
+                    ${item.catAverages ? `
+                        <div class="cat-summary">
+                            <strong>Resumo por Áreas:</strong><br>
+                            🧠 Neuro: ${item.catAverages.neuro \vert{}\vert{} '-'} \vert{} 🎯 Foco: ${item.catAverages.foco || '-'} | 🌱 Saúde: ${item.catAverages.saude \vert{}\vert{} '-'} \vert{} 👥 Conexões: ${item.catAverages.conexoes || '-'}
+                        </div>
+                    ` : ''}
+
+                    <div class="notes-list">
+                        ${Object.keys(item.ratings || {}).map(k => {
+                            const crit = criteriaData.find(c => c.id === k);
+                            const nota = item.notes && item.notes[k] ? ` - <em>"${item.notes[k]}"</em>` : '';
+                            return crit ? `<div>• <strong>${crit.name}:</strong> ${item.ratings[k]}/5${nota}</div>` : '';
+                        }).join('')}
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function exportarBackup() {
@@ -322,14 +387,21 @@
 
     function gerarPDF() {
         const elemento = document.getElementById('area-relatorio');
+        
+        // Aplica o modo PDF para visualização limpa em papel A4
+        elemento.classList.add('pdf-mode');
+
         const opcoes = {
             margin:       10,
-            filename:     'relatorio-mentalmente-ahsd.pdf',
+            filename:     `relatorio-mentalmente-${new Date().toISOString().slice(0,10)}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { scale: 2, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        html2pdf().set(opcoes).from(elemento).save();
+
+        html2pdf().set(opcoes).from(elemento).save().then(() => {
+            elemento.classList.remove('pdf-mode');
+        });
     }
 
     renderForm();
