@@ -56,35 +56,88 @@
       white-space: nowrap;
     }
 
-    .select-perfil {
+    /* Estilo do Menu Customizado */
+    .custom-dropdown {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-dropdown-btn {
       width: 100%;
       background: #0f172a;
       border: 1px solid #475569;
       color: #f8fafc;
-      padding: 8px 10px;
+      padding: 10px 12px;
       border-radius: 6px;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       outline: none;
       cursor: pointer;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      appearance: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
     }
 
-    .select-perfil optgroup {
-      background-color: #334155;
-      color: #38bdf8;
+    .custom-dropdown-content {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 1000;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+
+    .custom-dropdown-content.open {
+      display: block;
+    }
+
+    .dropdown-group-title {
+      font-size: 0.8rem;
       font-weight: 700;
-      font-size: 0.78rem;
-      padding: 6px;
+      color: #38bdf8;
+      background: #334155;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .select-perfil option {
-      background-color: #0f172a;
-      color: #f8fafc;
-      font-size: 0.76rem;
-      padding: 6px;
+    .dropdown-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .dropdown-item {
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    .dropdown-item.selected::after {
+      content: "●";
+      color: #38bdf8;
+      font-size: 0.8rem;
     }
 
     .seletor-data-input {
@@ -389,34 +442,42 @@
       <div class="seletor-topo-container">
         <div class="perfil-box">
           <span class="perfil-label">📋 Perfil / Laudo:</span>
-          <select id="select-perfil-diagnostico" class="select-perfil" onchange="alterarPerfilDiagnostico(this.value)">
-            <optgroup label="Neurodivergências & Desenvolvimento">
-              <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
-              <option value="dupla_excepcionalidade">Dupla Excepcionalidade (AH/SD + Neurodivergência)</option>
-              <option value="tdah">TDAH (Déficit de Atenção / Hiperatividade)</option>
-              <option value="tea">TEA (Espectro Autista)</option>
-            </optgroup>
-            
-            <optgroup label="Transtornos de Humor & Afetivos">
-              <option value="transtorno_bipolar">Transtorno Bipolar / Ciclotimia</option>
-              <option value="depressao">Transtorno Depressivo (Unipolar)</option>
-            </optgroup>
+          
+          <!-- Menu customizado com o design solicitado -->
+          <div class="custom-dropdown" id="custom-dropdown-perfil">
+            <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown(event)">
+              <span id="custom-dropdown-selected-text">Selecionar Perfil...</span>
+              <span>▼</span>
+            </button>
+            <div class="custom-dropdown-content" id="custom-dropdown-list">
+              
+              <div class="dropdown-group-title">Neurodivergências & Desenvolvimento</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('ahsd', 'AH/SD (Altas Habilidades / Superdotação)')">AH/SD (Altas Habilidades / Superdotação)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('dupla_excepcionalidade', 'Dupla Excepcionalidade (AH/SD + Neurodivergência)')">Dupla Excepcionalidade (AH/SD + Neurodivergência)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('tdah', 'TDAH (Déficit de Atenção / Hiperatividade)')">TDAH (Déficit de Atenção / Hiperatividade)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('tea', 'TEA (Espectro Autista)')">TEA (Espectro Autista)</div>
 
-            <optgroup label="Transtornos de Personalidade">
-              <option value="borderline">Transtorno de Personalidade Borderline (TPB)</option>
-              <option value="personalidade_geral">Outros Transtornos de Personalidade</option>
-            </optgroup>
+              <div class="dropdown-group-title">Transtornos de Humor & Afetivos</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('transtorno_bipolar', 'Transtorno Bipolar / Ciclotimia')">Transtorno Bipolar / Ciclotimia</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('depressao', 'Transtorno Depressivo (Unipolar)')">Transtorno Depressivo (Unipolar)</div>
 
-            <optgroup label="Saúde Específica & Comportamental">
-              <option value="transtornos_alimentares">Transtornos Alimentares</option>
-            </optgroup>
+              <div class="dropdown-group-title">Transtornos de Personalidade</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('borderline', 'Transtorno de Personalidade Borderline (TPB)')">Transtorno de Personalidade Borderline (TPB)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('personalidade_geral', 'Outros Transtornos de Personalidade')">Outros Transtornos de Personalidade</div>
 
-            <optgroup label="Momentos Vitais & Saúde Mental Geral">
-              <option value="burnout">Burnout / Exaustão Profissional & Acadêmica</option>
-              <option value="luto_perdas">Luto, Crises e Rupturas Relacionais</option>
-              <option value="geral">Geral / Saúde Mental & Bem-Estar</option>
-            </optgroup>
-          </select>
+              <div class="dropdown-group-title">Saúde Específica & Comportamental</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('transtornos_alimentares', 'Transtornos Alimentares')">Transtornos Alimentares</div>
+
+              <div class="dropdown-group-title">Momentos Vitais & Saúde Mental Geral</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('burnout', 'Burnout / Exaustão Profissional & Acadêmica')">Burnout / Exaustão Profissional & Acadêmica</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('luto_perdas', 'Luto, Crises e Rupturas Relacionais')">Luto, Crises e Rupturas Relacionais</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('geral', 'Geral / Saúde Mental & Bem-Estar')">Geral / Saúde Mental & Bem-Estar</div>
+
+            </div>
+          </div>
+          <!-- Input oculto para manter compatibilidade com o script de salvamento -->
+          <input type="hidden" id="select-perfil-diagnostico" value="ahsd">
+
         </div>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
@@ -793,6 +854,32 @@
     let instChartLinha = null;
     let instChartRadar = null;
 
+    // Funções do Menu Customizado
+    function toggleDropdown(event) {
+      event.stopPropagation();
+      const content = document.getElementById('custom-dropdown-list');
+      content.classList.toggle('open');
+    }
+
+    window.addEventListener('click', function() {
+      const content = document.getElementById('custom-dropdown-list');
+      if (content && content.classList.contains('open')) {
+        content.classList.remove('open');
+      }
+    });
+
+    function selecionarPerfilCustom(valorChave, textoNome) {
+      document.getElementById('select-perfil-diagnostico').value = valorChave;
+      document.getElementById('custom-dropdown-selected-text').innerText = textoNome;
+      
+      // Atualizar classe selecionada nos itens
+      document.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+
+      document.getElementById('custom-dropdown-list').classList.remove('open');
+      alterarPerfilDiagnostico(valorChave);
+    }
+
     // Alternar Perfil Diagnóstico
     function alterarPerfilDiagnostico(perfilChave) {
       localStorage.setItem('dashboard_neuro_perfil', perfilChave);
@@ -908,7 +995,7 @@
         dadosCriterios[key] = { valor: val, observacao: obs };
       });
 
-      const perfilAtual = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const perfilAtual = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
 
       const registro = {
         data: dataSelecionada,
@@ -1009,7 +1096,7 @@
       const dataInicio = formatarDataBR(ultimos30[0].data);
       const dataFim = formatarDataBR(ultimos30[qtdRegistros - 1].data);
 
-      const perfilChave = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
       const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
 
       let diasSobrecargaOk = 0;
@@ -1201,7 +1288,7 @@
         return;
       }
 
-      const perfilChave = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
       const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
 
       doc.setFont("helvetica", "bold");
@@ -1277,9 +1364,12 @@
       inputData.value = hoje;
 
       const perfilSalvo = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const nomeInicial = perfisFoco[perfilSalvo] ? perfisFoco[perfilSalvo].nome : perfisFoco.ahsd.nome;
+      
       document.getElementById('select-perfil-diagnostico').value = perfilSalvo;
+      document.getElementById('custom-dropdown-selected-text').innerText = nomeInicial;
+      
       alterarPerfilDiagnostico(perfilSalvo);
-
       carregarRegistroData(hoje);
     };
   </script>
