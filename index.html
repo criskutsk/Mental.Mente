@@ -8,40 +8,40 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
     
-    /* Variáveis de Tema Escuro (Padrão) */
+    /* Variáveis de Tema Noite (Inspirado no Azul Profundo & Noite) */
     :root {
-      --bg-body: #0f172a;
-      --text-main: #f8fafc;
-      --bg-container: #1e293b;
-      --border-color: #334155;
-      --border-light: #475569;
+      --bg-body: #0c1222;
+      --text-main: #f1f5f9;
+      --bg-container: #151d30;
+      --border-color: #25334d;
+      --border-light: #33486b;
       --text-muted: #94a3b8;
       --text-dimmed: #cbd5e1;
       --accent-color: #38bdf8;
       --accent-hover: #0284c7;
-      --btn-bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-prioritario: #1e2942;
-      --legenda-bg: #0f172a;
-      --cat-bg: #334155;
+      --btn-bg: #0c1222;
+      --card-bg: #151d30;
+      --card-prioritario: #19243f;
+      --legenda-bg: #0c1222;
+      --cat-bg: #22314f;
     }
 
-    /* Variáveis de Tema Claro (Delicado) */
+    /* Variáveis de Tema Dia (Inspirado nos Tons Terrosos, Ocre & Solar) */
     [data-theme="light"] {
-      --bg-body: #f8fafc;
-      --text-main: #1e293b;
+      --bg-body: #fbf9f6;
+      --text-main: #2c241d;
       --bg-container: #ffffff;
-      --border-color: #e2e8f0;
-      --border-light: #cbd5e1;
-      --text-muted: #64748b;
-      --text-dimmed: #475569;
-      --accent-color: #0ea5e9;
-      --accent-hover: #0284c7;
-      --btn-bg: #f1f5f9;
+      --border-color: #e6dfd5;
+      --border-light: #d4cbbd;
+      --text-muted: #7c7063;
+      --text-dimmed: #52473c;
+      --accent-color: #b45309; /* Tom Ocre / Terroso Solar */
+      --accent-hover: #92400e;
+      --btn-bg: #f4efe6;
       --card-bg: #ffffff;
-      --card-prioritario: #f0f9ff;
-      --legenda-bg: #f8fafc;
-      --cat-bg: #e2e8f0;
+      --card-prioritario: #fef3c755;
+      --legenda-bg: #fbf9f6;
+      --cat-bg: #f0ebe1;
     }
 
     body { background-color: var(--bg-body); color: var(--text-main); padding: 12px; display: flex; flex-direction: column; min-height: 100vh; }
@@ -55,7 +55,7 @@
       margin-bottom: 16px; 
       padding: 0 4px;
     }
-    .header h1 { font-size: 1.3rem; color: var(--text-main); font-weight: 600; }
+    .header h1 { font-size: 1.3rem; color: var(--text-main); font-weight: 600; letter-spacing: -0.3px; }
 
     /* Botão de Tema Delicado */
     .theme-toggle-btn {
@@ -248,7 +248,7 @@
       color: var(--text-dimmed);
       margin: 18px 0 10px 0;
       background: var(--cat-bg);
-      border-left: 4px solid #6366f1;
+      border-left: 4px solid var(--accent-color);
       padding: 8px 10px;
       border-radius: 4px;
     }
@@ -263,7 +263,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.01);
     }
 
-    /* Destaque para critérios prioritários do perfil */
     .criterio-card.prioritario {
       border: 2px solid var(--accent-color);
       background: var(--card-prioritario);
@@ -276,7 +275,7 @@
       font-weight: bold;
       color: var(--accent-color);
       margin-bottom: 6px;
-      background: rgba(14, 165, 233, 0.1);
+      background: var(--cat-bg);
       padding: 2px 8px;
       border-radius: 4px;
     }
@@ -318,9 +317,9 @@
     }
 
     .btn-escala.selected {
-      background: #6366f1;
+      background: var(--accent-color);
       color: #ffffff;
-      border-color: #818cf8;
+      border-color: var(--accent-hover);
     }
 
     .anotacao-criterio {
@@ -369,7 +368,7 @@
     }
 
     .btn-guardar {
-      background: #6366f1;
+      background: var(--accent-color);
       color: #ffffff;
       border: none;
       padding: 12px 16px;
@@ -386,7 +385,7 @@
     }
 
     .btn-guardar:hover {
-      background: #4f46e5;
+      background: var(--accent-hover);
     }
 
     /* Estilos das Abas Relatórios e Evolução */
@@ -484,7 +483,7 @@
       margin-top: 8px;
     }
 
-    /* Rodapé em Linha Única Ajustado */
+    /* Rodapé */
     .app-footer {
       text-align: center;
       padding: 14px 4px;
@@ -511,7 +510,7 @@
       white-space: nowrap;
     }
     .footer-link:hover {
-      color: #818cf8;
+      opacity: 0.8;
     }
 
     /* Modal de Termos e Privacidade */
@@ -519,7 +518,7 @@
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(12, 18, 34, 0.8);
       z-index: 2000;
       justify-content: center;
       align-items: center;
@@ -602,7 +601,7 @@
         <div class="perfil-box">
           <span class="perfil-label">📋 Perfil / Laudo:</span>
           
-          <!-- Menu customizado com o design solicitado -->
+          <!-- Menu customizado -->
           <div class="custom-dropdown" id="custom-dropdown-perfil">
             <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown(event)">
               <span id="custom-dropdown-selected-text">Selecionar Perfil...</span>
@@ -634,7 +633,6 @@
 
             </div>
           </div>
-          <!-- Input oculto para manter compatibilidade com o script de salvamento -->
           <input type="hidden" id="select-perfil-diagnostico" value="ahsd">
 
         </div>
@@ -927,7 +925,7 @@
 
   </div>
 
-  <!-- Rodapé Informativo em Linha Única (Apenas as informações solicitadas) -->
+  <!-- Rodapé -->
   <footer class="app-footer">
     <span>Armazenamento Local (LGPD) &bull;</span>
     <button class="footer-link" onclick="abrirModalTermos()">Termos de Uso & Privacidade</button>
@@ -954,59 +952,21 @@
   </div>
 
   <script>
-    // Configurações e Foco Clínico por Perfil
     const perfisFoco = {
-      ahsd: {
-        nome: "AH/SD (Altas Habilidades / Superdotação)",
-        prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"]
-      },
-      dupla_excepcionalidade: {
-        nome: "Dupla Excepcionalidade (AH/SD + Neurodivergência)",
-        prioridades: ["nutricao_intelectual", "foco_estudos", "sobrecarga", "autocompaixao"]
-      },
-      tdah: {
-        nome: "TDAH (Déficit de Atenção / Hiperatividade)",
-        prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"]
-      },
-      tea: {
-        nome: "TEA (Transtorno do Espectro Autista)",
-        prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"]
-      },
-      transtorno_bipolar: {
-        nome: "Transtorno Bipolar / Ciclotimia",
-        prioridades: ["vitalidade", "qualidade_sono", "cuidados_medicos", "ansiedade"]
-      },
-      depressao: {
-        nome: "Transtorno Depressivo (Unipolar)",
-        prioridades: ["vitalidade", "qualidade_sono", "rotinas_autocuidado", "alimentacao"]
-      },
-      borderline: {
-        nome: "Transtorno de Personalidade Borderline (TPB)",
-        prioridades: ["ansiedade", "vitalidade", "relacionamento", "autocompaixao"]
-      },
-      personalidade_geral: {
-        nome: "Outros Transtornos de Personalidade",
-        prioridades: ["autocompaixao", "relacionamento", "rotina_domestica", "ansiedade"]
-      },
-      transtornos_alimentares: {
-        nome: "Transtornos Alimentares",
-        prioridades: ["alimentacao", "autocompaixao", "rotinas_autocuidado", "ansiedade"]
-      },
-      burnout: {
-        nome: "Burnout / Exaustão Profissional & Acadêmica",
-        prioridades: ["qualidade_sono", "vitalidade", "hobbies", "sobrecarga"]
-      },
-      luto_perdas: {
-        nome: "Luto, Crises e Rupturas Relacionais",
-        prioridades: ["vitalidade", "ansiedade", "autocompaixao", "relacionamento"]
-      },
-      geral: {
-        nome: "Geral / Saúde Mental & Bem-Estar",
-        prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"]
-      }
+      ahsd: { nome: "AH/SD (Altas Habilidades / Superdotação)", prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"] },
+      dupla_excepcionalidade: { nome: "Dupla Excepcionalidade (AH/SD + Neurodivergência)", prioridades: ["nutricao_intelectual", "foco_estudos", "sobrecarga", "autocompaixao"] },
+      tdah: { nome: "TDAH (Déficit de Atenção / Hiperatividade)", prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"] },
+      tea: { nome: "TEA (Transtorno do Espectro Autista)", prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"] },
+      transtorno_bipolar: { nome: "Transtorno Bipolar / Ciclotimia", prioridades: ["vitalidade", "qualidade_sono", "cuidados_medicos", "ansiedade"] },
+      depressao: { nome: "Transtorno Depressivo (Unipolar)", prioridades: ["vitalidade", "qualidade_sono", "rotinas_autocuidado", "alimentacao"] },
+      borderline: { nome: "Transtorno de Personalidade Borderline (TPB)", prioridades: ["ansiedade", "vitalidade", "relacionamento", "autocompaixao"] },
+      personalidade_geral: { nome: "Outros Transtornos de Personalidade", prioridades: ["autocompaixao", "relacionamento", "rotina_domestica", "ansiedade"] },
+      transtornos_alimentares: { nome: "Transtornos Alimentares", prioridades: ["alimentacao", "autocompaixao", "rotinas_autocuidado", "ansiedade"] },
+      burnout: { nome: "Burnout / Exaustão Profissional & Acadêmica", prioridades: ["qualidade_sono", "vitalidade", "hobbies", "sobrecarga"] },
+      luto_perdas: { nome: "Luto, Crises e Rupturas Relacionais", prioridades: ["vitalidade", "ansiedade", "autocompaixao", "relacionamento"] },
+      geral: { nome: "Geral / Saúde Mental & Bem-Estar", prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"] }
     };
 
-    // Nomes dos Critérios
     const nomesCriterios = {
       ansiedade: "Ansiedade & Ruminação",
       vitalidade: "Vitalidade & Humor",
@@ -1027,7 +987,6 @@
       hobbies: "Hobbies & Desconexão"
     };
 
-    // Categorias/Dimensões
     const categoriasAreas = {
       "Neuroemocional & AH/SD": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
       "Foco & Cognição": ["nutricao_intelectual", "foco_estudos", "produtividade_criativa"],
@@ -1035,11 +994,9 @@
       "Conexões & Lazer": ["relacionamento", "hobbies"]
     };
 
-    // Instâncias Globais dos Gráficos
     let instChartLinha = null;
     let instChartRadar = null;
 
-    // Alternar Tema (Claro Delicado / Escuro)
     function alternarTema() {
       const body = document.body;
       const btn = document.getElementById('theme-toggle');
@@ -1055,13 +1012,11 @@
         localStorage.setItem('dashboard_neuro_tema', 'dark');
       }
 
-      // Re-renderiza gráficos para atualizar cores do grid/texto se estiver na aba de evolução
       if (document.getElementById('aba-evolucao').classList.contains('active')) {
         renderizarEvolucao();
       }
     }
 
-    // Funções do Menu Customizado
     function toggleDropdown(event) {
       event.stopPropagation();
       const content = document.getElementById('custom-dropdown-list');
@@ -1086,7 +1041,6 @@
       alterarPerfilDiagnostico(valorChave);
     }
 
-    // Funções do Modal de Termos
     function abrirModalTermos() {
       document.getElementById('modal-termos').classList.add('open');
     }
@@ -1101,10 +1055,8 @@
       }
     }
 
-    // Alternar Perfil Diagnóstico
     function alterarPerfilDiagnostico(perfilChave) {
       localStorage.setItem('dashboard_neuro_perfil', perfilChave);
-      
       const config = perfisFoco[perfilChave] || perfisFoco.ahsd;
 
       document.querySelectorAll('.criterio-card').forEach(card => {
@@ -1117,7 +1069,6 @@
       });
     }
 
-    // Alternar Abas
     function mudarAba(abaId, btnElement) {
       document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -1129,7 +1080,6 @@
       if (abaId === 'evolucao') renderizarEvolucao();
     }
 
-    // Seleção visual dos botões de escala
     function selecionarValor(btn, valor) {
       const card = btn.closest('.criterio-card');
       card.querySelectorAll('.btn-escala').forEach(b => b.classList.remove('selected'));
@@ -1137,7 +1087,6 @@
       atualizarSaldoDia();
     }
 
-    // Calcular Saldo do Dia em Tempo Real
     function calcularSaldoAtual() {
       let saldoTotal = 0;
       document.querySelectorAll('.criterio-card').forEach(card => {
@@ -1166,7 +1115,6 @@
       }
     }
 
-    // Carregar registro de uma data específica ao mudar o Calendário
     function carregarRegistroData(dataSelecionada) {
       if (!dataSelecionada) return;
       const historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
@@ -1198,7 +1146,6 @@
       atualizarSaldoDia();
     }
 
-    // Salvar Registro Diário no LocalStorage
     function salvarRegistroDiario() {
       const dataSelecionada = document.getElementById('data-registro').value;
       if (!dataSelecionada) {
@@ -1207,12 +1154,10 @@
       }
 
       const dadosCriterios = {};
-
       document.querySelectorAll('.criterio-card').forEach(card => {
         const key = card.getAttribute('data-key');
         const val = parseInt(card.querySelector('.btn-escala.selected').innerText);
         const obs = card.querySelector('.anotacao-criterio').value.trim();
-        
         dadosCriterios[key] = { valor: val, observacao: obs };
       });
 
@@ -1234,13 +1179,11 @@
       alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} salvo com sucesso!`);
     }
 
-    // Obter dados do LocalStorage
     function obterHistorico() {
       const dados = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
       return dados.sort((a, b) => a.data.localeCompare(b.data));
     }
 
-    // Renderizar Aba Relatórios
     function renderizarRelatorios() {
       const container = document.getElementById('lista-relatorios');
       const historico = obterHistorico().slice().reverse();
@@ -1253,7 +1196,6 @@
       let html = '';
       historico.forEach(reg => {
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
-        
         let corSaldoBadge = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
         let corTextoDescricao = reg.saldo > 0 ? 'var(--text-dimmed)' : (reg.saldo < 0 ? '#ef4444' : '#d97706');
         
@@ -1272,7 +1214,6 @@
               </span>
               <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">🗑 Apagar</button>
             </div>
-            
             <div style="font-size:0.8rem; color:${corTextoDescricao}; margin-top:4px; font-style:italic;">
               📌 ${descricaoSaldo}
             </div>
@@ -1283,7 +1224,6 @@
       container.innerHTML = html;
     }
 
-    // Apagar Registro Individual
     function apagarRegistro(data) {
       if (confirm(`Deseja apagar o registro do dia ${data}?`)) {
         let historico = JSON.parse(localStorage.getItem('dashboard_neuro_dados') || '[]');
@@ -1296,13 +1236,11 @@
       }
     }
 
-    // Formatar data para DD/MM/AAAA
     function formatarDataBR(strData) {
       const [ano, mes, dia] = strData.split('-');
       return `${dia}/${mes}/${ano}`;
     }
 
-    // Renderizar Aba Evolução em Estilo Prontuário Clínico
     function renderizarEvolucao() {
       const historico = obterHistorico();
       const resumoContainer = document.getElementById('caixa-resumo-evolucao');
@@ -1334,7 +1272,7 @@
         textoTendencia = `Início do acompanhamento diário com foco no perfil <strong>${perfilNome}</strong>. Em <strong>100% dos registros</strong>, os níveis de autorregulação apresentam estado inicial preservado.`;
       } else {
         if (pctSobrecargaOk >= 60) {
-          textoTendencia = `Observa-se uma <strong>melhora na estabilidade emocional</strong> nos registros mais recentes. Em <strong>${pctSobrecargaOk}% dos dias registrados</strong>, os níveis de sobrecarga mantiveram-se sob controle (baixa/média).`;
+          textoTendencia = `Observa-se uma <strong>melhora na estabilidade emocional</strong> nos registros mais recentes. Em <strong>${pctSobrecargaOk}% dos dias registrados</strong>, os níveis de sobrecarga mantiveram-se sob controle.`;
         } else {
           textoTendencia = `Identifica-se período de <strong>maior vulnerabilidade neuroemocional</strong> para o perfil selecionado. Em apenas <strong>${pctSobrecargaOk}% dos dias</strong> a sobrecarga esteve totalmente sob controle.`;
         }
@@ -1356,13 +1294,7 @@
         textoResumoAnotacoes = `Destaque para o registro de <strong>${dataObs}</strong> com relato registrado (${obsLista.join(', ')}).`;
       } else {
         const dataDestaque = formatarDataBR(regMaisRecente.data);
-        const focoLvl = regMaisRecente.criterios.foco_estudos ? regMaisRecente.criterios.foco_estudos.valor : 3;
-        const sobLvl = regMaisRecente.criterios.sobrecarga ? regMaisRecente.criterios.sobrecarga.valor : 3;
-        
-        const descFoco = focoLvl >= 4 ? "foco alto" : (focoLvl <= 2 ? "dispersão" : "foco moderado");
-        const descSob = sobLvl >= 4 ? "sobrecarga baixa" : (sobLvl <= 2 ? "sobrecarga elevada" : "sobrecarga moderada");
-
-        textoResumoAnotacoes = `Destaque para o registro de <strong>${dataDestaque}</strong> com ${descFoco} e ${descSob}.`;
+        textoResumoAnotacoes = `Destaque para o registro recente de <strong>${dataDestaque}</strong>.`;
       }
 
       resumoContainer.innerHTML = `
@@ -1371,12 +1303,11 @@
         <div class="prontuario-topico">• <strong>Resumo das Anotações:</strong> ${textoResumoAnotacoes}</div>
       `;
 
-      // Cores adaptativas para gráficos
       const isDark = document.body.getAttribute('data-theme') === 'dark';
-      const gridColor = isDark ? '#334155' : '#e2e8f0';
-      const tickColor = isDark ? '#94a3b8' : '#64748b';
+      const gridColor = isDark ? '#25334d' : '#e6dfd5';
+      const tickColor = isDark ? '#94a3b8' : '#7c7063';
+      const accentColor = isDark ? '#38bdf8' : '#b45309';
 
-      // Dados para Gráfico de Linha
       const labelsDatas = ultimos30.map(item => {
         const [ano, mes, dia] = item.data.split('-');
         return `${dia}/${mes}`;
@@ -1393,7 +1324,7 @@
           datasets: [{
             label: 'Saldo Diário',
             data: valoresSaldos,
-            borderColor: '#6366f1',
+            borderColor: accentColor,
             borderWidth: 2,
             pointBackgroundColor: coresPontos,
             pointRadius: 4,
@@ -1412,7 +1343,6 @@
         }
       });
 
-      // Dados para Gráfico de Radar
       const mediasAreas = [];
       const nomesAreas = Object.keys(categoriasAreas);
 
@@ -1443,9 +1373,9 @@
           datasets: [{
             label: 'Média de Nível (1 a 5)',
             data: mediasAreas,
-            backgroundColor: isDark ? 'rgba(99, 102, 241, 0.2)' : 'rgba(14, 165, 233, 0.15)',
-            borderColor: '#818cf8',
-            pointBackgroundColor: '#0ea5e9'
+            backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(180, 83, 9, 0.12)',
+            borderColor: accentColor,
+            pointBackgroundColor: accentColor
           }]
         },
         options: {
@@ -1466,7 +1396,6 @@
       });
     }
 
-    // Exportar Backup JSON
     function exportarBackupJSON() {
       const historico = localStorage.getItem('dashboard_neuro_dados') || '[]';
       const blob = new Blob([historico], { type: 'application/json' });
@@ -1478,7 +1407,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Importar Backup JSON
     function importarBackupJSON(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1503,7 +1431,6 @@
       reader.readAsText(file);
     }
 
-    // Gerar PDF do Mês com Análise de 30 Dias no Topo e Perfil
     function gerarPDFMensal() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -1546,7 +1473,6 @@
       doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 53);
 
       let y = 61;
-
       historico.forEach((reg) => {
         if (y > 270) {
           doc.addPage();
@@ -1583,9 +1509,7 @@
       doc.save(`Relatorio_Neuroemocional_${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
-    // Inicialização do aplicativo
     window.onload = function() {
-      // Recuperar tema salvo
       const temaSalvo = localStorage.getItem('dashboard_neuro_tema') || 'dark';
       document.body.setAttribute('data-theme', temaSalvo);
       document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '☀️' : '🌙';
