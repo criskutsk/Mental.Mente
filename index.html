@@ -416,27 +416,31 @@
       margin-top: 8px;
     }
 
-    /* Rodapé Informativo / Termos (Opção A) */
+    /* Rodapé em Linha Única Ajustado */
     .app-footer {
       text-align: center;
-      padding: 16px 0;
+      padding: 14px 4px;
       margin-top: 20px;
       border-top: 1px solid #1e293b;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #64748b;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow-x: auto;
     }
     .footer-link {
       background: none;
       border: none;
       color: #38bdf8;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-decoration: underline;
       padding: 0;
+      white-space: nowrap;
     }
     .footer-link:hover {
       color: #818cf8;
@@ -852,11 +856,10 @@
 
   </div>
 
-  <!-- Rodapé Informativo (Opção A) -->
+  <!-- Rodapé Informativo em Linha Única -->
   <footer class="app-footer">
-    <span>Dashboard Neuroemocional &bull; Armazenamento Local (LGPD)</span>
-    <span>&bull;</span>
-    <button class="footer-link" onclick="abrirModalTermos()">ℹ️ Termos de Uso & Privacidade</button>
+    <span>Dashboard Neuroemocional &bull; Armazenamento Local (LGPD) &bull;</span>
+    <button class="footer-link" onclick="abrirModalTermos()">Termos de Uso & Privacidade</button>
   </footer>
 
   <!-- Modal de Termos e Política de Privacidade -->
