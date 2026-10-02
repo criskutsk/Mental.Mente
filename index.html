@@ -373,10 +373,32 @@
         <div class="perfil-box">
           <span class="perfil-label">📋 Perfil / Laudo:</span>
           <select id="select-perfil-diagnostico" class="select-perfil" onchange="alterarPerfilDiagnostico(this.value)">
-            <option value="ahsd">AH/SD (Altas Habilidades)</option>
-            <option value="tdah">TDAH (Déficit de Atenção/Hiperatividade)</option>
-            <option value="tea">TEA (Espectro Autista)</option>
-            <option value="geral">Geral / Saúde Mental</option>
+            <optgroup label="🧠 Neurodivergências & Desenvolvimento">
+              <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
+              <option value="dupla_excepcionalidade">Dupla Excepcionalidade (AH/SD + Neurodivergência)</option>
+              <option value="tdah">TDAH (Déficit de Atenção / Hiperatividade)</option>
+              <option value="tea">TEA (Espectro Autista)</option>
+            </optgroup>
+            
+            <optgroup label="🌊 Transtornos de Humor & Afetivos">
+              <option value="transtorno_bipolar">Transtorno Bipolar / Ciclotimia</option>
+              <option value="depressao">Transtorno Depressivo (Unipolar)</option>
+            </optgroup>
+
+            <optgroup label="🧩 Transtornos de Personalidade">
+              <option value="borderline">Transtorno de Personalidade Borderline (TPB)</option>
+              <option value="personalidade_geral">Outros Transtornos de Personalidade</option>
+            </optgroup>
+
+            <optgroup label="🍽️ Saúde Específica & Comportamental">
+              <option value="transtornos_alimentares">Transtornos Alimentares</option>
+            </optgroup>
+
+            <optgroup label="🌱 Momentos Vitais & Saúde Mental Geral">
+              <option value="burnout">Burnout / Exaustão Profissional & Acadêmica</option>
+              <option value="luto_perdas">Luto, Crises e Rupturas Relacionais</option>
+              <option value="geral">Geral / Saúde Mental & Bem-Estar</option>
+            </optgroup>
           </select>
         </div>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
@@ -675,6 +697,10 @@
         nome: "AH/SD (Altas Habilidades / Superdotação)",
         prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"]
       },
+      dupla_excepcionalidade: {
+        nome: "Dupla Excepcionalidade (AH/SD + Neurodivergência)",
+        prioridades: ["nutricao_intelectual", "foco_estudos", "sobrecarga", "autocompaixao"]
+      },
       tdah: {
         nome: "TDAH (Déficit de Atenção / Hiperatividade)",
         prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"]
@@ -683,8 +709,36 @@
         nome: "TEA (Transtorno do Espectro Autista)",
         prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"]
       },
+      transtorno_bipolar: {
+        nome: "Transtorno Bipolar / Ciclotimia",
+        prioridades: ["vitalidade", "qualidade_sono", "cuidados_medicos", "ansiedade"]
+      },
+      depressao: {
+        nome: "Transtorno Depressivo (Unipolar)",
+        prioridades: ["vitalidade", "qualidade_sono", "rotinas_autocuidado", "alimentacao"]
+      },
+      borderline: {
+        nome: "Transtorno de Personalidade Borderline (TPB)",
+        prioridades: ["ansiedade", "vitalidade", "relacionamento", "autocompaixao"]
+      },
+      personalidade_geral: {
+        nome: "Outros Transtornos de Personalidade",
+        prioridades: ["autocompaixao", "relacionamento", "rotina_domestica", "ansiedade"]
+      },
+      transtornos_alimentares: {
+        nome: "Transtornos Alimentares",
+        prioridades: ["alimentacao", "autocompaixao", "rotinas_autocuidado", "ansiedade"]
+      },
+      burnout: {
+        nome: "Burnout / Exaustão Profissional & Acadêmica",
+        prioridades: ["qualidade_sono", "vitalidade", "hobbies", "sobrecarga"]
+      },
+      luto_perdas: {
+        nome: "Luto, Crises e Rupturas Relacionais",
+        prioridades: ["vitalidade", "ansiedade", "autocompaixao", "relacionamento"]
+      },
       geral: {
-        nome: "Geral / Saúde Mental & Humor",
+        nome: "Geral / Saúde Mental & Bem-Estar",
         prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"]
       }
     };
@@ -1212,5 +1266,6 @@
       carregarRegistroData(hoje);
     };
   </script>
+
 </body>
 </html>
