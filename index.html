@@ -14,28 +14,52 @@
     .header { text-align: center; margin-bottom: 20px; }
     .header h1 { font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; }
 
-    /* Seletor de Data / Calendário */
-    .seletor-data-container {
+    /* Barra Superior: Calendário e Perfil/Laudo */
+    .seletor-topo-container {
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 10px;
       padding: 12px 16px;
       margin-bottom: 20px;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
+      gap: 12px;
     }
+
+    .perfil-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .perfil-label {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .select-perfil {
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+    }
+
     .seletor-data-input {
       background: #0f172a;
       border: 1px solid #475569;
       color: #f8fafc;
       padding: 8px 12px;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       outline: none;
       cursor: pointer;
-      width: 100%;
-      max-width: 200px;
     }
     .seletor-data-input::-webkit-calendar-picker-indicator {
       filter: invert(1);
@@ -69,6 +93,25 @@
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 14px;
+      transition: all 0.3s ease;
+    }
+
+    /* Destaque para critérios prioritários do perfil */
+    .criterio-card.prioritario {
+      border: 2px solid #38bdf8;
+      background: #1e2942;
+    }
+
+    .criterio-card.prioritario::before {
+      content: "⭐ Foco Clínico do Perfil";
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
     }
 
     .criterio-nome {
@@ -243,7 +286,6 @@
     }
     .btn-apagar-diario:hover { background: rgba(239, 68, 68, 0.15); }
 
-    /* Caixa estilo Prontuário Médico/Psicológico */
     .caixa-prontuario {
       background: #0f172a;
       border-left: 4px solid #38bdf8;
@@ -297,8 +339,17 @@
     <!-- ==================== ABA 1: REGISTRO ==================== -->
     <div id="aba-registro" class="aba-conteudo active">
       
-      <!-- Seletor de Data por Calendário -->
-      <div class="seletor-data-container">
+      <!-- Seletor de Data e Perfil Diagnóstico / Laudo -->
+      <div class="seletor-topo-container">
+        <div class="perfil-box">
+          <span class="perfil-label">📋 Perfil / Laudo:</span>
+          <select id="select-perfil-diagnostico" class="select-perfil" onchange="alterarPerfilDiagnostico(this.value)">
+            <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
+            <option value="tdah">TDAH (Transtorno do Déficit de Atenção/Hiperatividade)</option>
+            <option value="tea">TEA (Transtorno do Espectro Autista)</option>
+            <option value="geral">Geral / Transtornos de Humor & Saúde Mental</option>
+          </select>
+        </div>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
 
@@ -589,6 +640,26 @@
   </div>
 
   <script>
+    // Configurações e Foco Clínico por Perfil
+    const perfisFoco = {
+      ahsd: {
+        nome: "AH/SD (Altas Habilidades / Superdotação)",
+        prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"]
+      },
+      tdah: {
+        nome: "TDAH (Transtorno do Déficit de Atenção/Hiperatividade)",
+        prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"]
+      },
+      tea: {
+        nome: "TEA (Transtorno do Espectro Autista)",
+        prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"]
+      },
+      geral: {
+        nome: "Geral / Transtornos de Humor & Saúde Mental",
+        prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"]
+      }
+    };
+
     // Nomes dos Critérios
     const nomesCriterios = {
       ansiedade: "Ansiedade & Ruminação",
@@ -621,6 +692,22 @@
     // Instâncias Globais dos Gráficos
     let instChartLinha = null;
     let instChartRadar = null;
+
+    // Alternar Perfil Diagnóstico
+    function alterarPerfilDiagnostico(perfilChave) {
+      localStorage.setItem('dashboard_neuro_perfil', perfilChave);
+      
+      const config = perfisFoco[perfilChave] || perfisFoco.ahsd;
+
+      document.querySelectorAll('.criterio-card').forEach(card => {
+        const key = card.getAttribute('data-key');
+        if (config.prioridades.includes(key)) {
+          card.classList.add('prioritario');
+        } else {
+          card.classList.remove('prioritario');
+        }
+      });
+    }
 
     // Alternar Abas
     function mudarAba(abaId, btnElement) {
@@ -721,8 +808,11 @@
         dadosCriterios[key] = { valor: val, observacao: obs };
       });
 
+      const perfilAtual = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+
       const registro = {
         data: dataSelecionada,
+        perfil: perfilAtual,
         timestamp: new Date().getTime(),
         saldo: calcularSaldoAtual(),
         criterios: dadosCriterios
@@ -819,40 +909,36 @@
       const dataInicio = formatarDataBR(ultimos30[0].data);
       const dataFim = formatarDataBR(ultimos30[qtdRegistros - 1].data);
 
-      // Métricas de Controle de Sobrecarga (Sobrecarga Sensorial / Ansiedade)
+      const perfilChave = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
+
       let diasSobrecargaOk = 0;
       ultimos30.forEach(reg => {
         const nivelSobrecarga = reg.criterios.sobrecarga ? reg.criterios.sobrecarga.valor : 3;
-        // Nível >= 3 significa sobrecarga sob controle/baixa
         if (nivelSobrecarga >= 3) diasSobrecargaOk++;
       });
       const pctSobrecargaOk = Math.round((diasSobrecargaOk / qtdRegistros) * 100);
 
-      // Análise de Tendência Descritiva
       let textoTendencia = "";
       const regMaisRecente = ultimos30[qtdRegistros - 1];
 
       if (qtdRegistros === 1) {
-        textoTendencia = `Início do acompanhamento diário. Em <strong>100% dos registros</strong>, os níveis de autorregulação apresentam estado inicial preservado.`;
+        textoTendencia = `Início do acompanhamento diário com foco no perfil <strong>${perfilNome}</strong>. Em <strong>100% dos registros</strong>, os níveis de autorregulação apresentam estado inicial preservado.`;
       } else {
         if (pctSobrecargaOk >= 60) {
           textoTendencia = `Observa-se uma <strong>melhora na estabilidade emocional</strong> nos registros mais recentes. Em <strong>${pctSobrecargaOk}% dos dias registrados</strong>, os níveis de sobrecarga mantiveram-se sob controle (baixa/média).`;
         } else {
-          textoTendencia = `Identifica-se período de <strong>maior vulnerabilidade neuroemocional</strong>. Em apenas <strong>${pctSobrecargaOk}% dos dias</strong> a sobrecarga esteve totalmente sob controle, exigindo maior atenção às rotinas de descanso.`;
+          textoTendencia = `Identifica-se período de <strong>maior vulnerabilidade neuroemocional</strong> para o perfil selecionado. Em apenas <strong>${pctSobrecargaOk}% dos dias</strong> a sobrecarga esteve totalmente sob controle.`;
         }
       }
 
-      // Resumo das Anotações e Destaques
       let textoResumoAnotacoes = "";
-      
-      // Busca registro recente com observações ou de maior destaque
       const regComObs = ultimos30.slice().reverse().find(r => {
         return Object.values(r.criterios).some(c => c.observacao && c.observacao.length > 0);
       });
 
       if (regComObs) {
         const dataObs = formatarDataBR(regComObs.data);
-        // Coleta itens com observação
         const obsLista = [];
         Object.keys(regComObs.criterios).forEach(k => {
           if (regComObs.criterios[k].observacao) {
@@ -861,7 +947,6 @@
         });
         textoResumoAnotacoes = `Destaque para o registro de <strong>${dataObs}</strong> com relato registrado (${obsLista.join(', ')}).`;
       } else {
-        // Sem anotações escritas, gera destaque sintético pelas notas
         const dataDestaque = formatarDataBR(regMaisRecente.data);
         const focoLvl = regMaisRecente.criterios.foco_estudos ? regMaisRecente.criterios.foco_estudos.valor : 3;
         const sobLvl = regMaisRecente.criterios.sobrecarga ? regMaisRecente.criterios.sobrecarga.valor : 3;
@@ -872,9 +957,8 @@
         textoResumoAnotacoes = `Destaque para o registro de <strong>${dataDestaque}</strong> com ${descFoco} e ${descSob}.`;
       }
 
-      // Montagem final do Prontuário exatamente como no modelo visual da imagem
       resumoContainer.innerHTML = `
-        <div class="prontuario-subtitulo">Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro${qtdRegistros > 1 ? 's' : ''}):</div>
+        <div class="prontuario-subtitulo">Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro${qtdRegistros > 1 ? 's' : ''}) — <strong>Perfil: ${perfilNome}</strong>:</div>
         <div class="prontuario-topico">• <strong>Tendência:</strong> ${textoTendencia}</div>
         <div class="prontuario-topico">• <strong>Resumo das Anotações:</strong> ${textoResumoAnotacoes}</div>
       `;
@@ -1006,7 +1090,7 @@
       reader.readAsText(file);
     }
 
-    // Gerar PDF do Mês com Análise de 30 Dias no Topo
+    // Gerar PDF do Mês com Análise de 30 Dias no Topo e Perfil
     function gerarPDFMensal() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -1017,13 +1101,16 @@
         return;
       }
 
+      const perfilChave = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(15);
       doc.text("Relatório Mensal - Dashboard Neuroemocional", 14, 18);
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
-      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 24);
+      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} | Perfil Clínico: ${perfilNome}`, 14, 24);
 
       const ultimos30 = historico.slice(0, 30);
       const qtdRegistros = ultimos30.length;
@@ -1083,11 +1170,16 @@
       doc.save(`Relatorio_Neuroemocional_${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
-    // Inicialização do aplicativo e data de hoje por padrão
+    // Inicialização do aplicativo
     window.onload = function() {
       const hoje = new Date().toISOString().split('T')[0];
       const inputData = document.getElementById('data-registro');
       inputData.value = hoje;
+
+      const perfilSalvo = localStorage.getItem('dashboard_neuro_perfil') || 'ahsd';
+      document.getElementById('select-perfil-diagnostico').value = perfilSalvo;
+      alterarPerfilDiagnostico(perfilSalvo);
+
       carregarRegistroData(hoje);
     };
   </script>
