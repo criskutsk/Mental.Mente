@@ -63,13 +63,28 @@
       color: #f8fafc;
       padding: 10px 12px;
       border-radius: 6px;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       outline: none;
       cursor: pointer;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
       appearance: auto;
+    }
+
+    .select-perfil optgroup {
+      background-color: #1e293b;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.78rem;
+      padding: 4px;
+    }
+
+    .select-perfil option {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-size: 0.8rem;
+      padding: 6px;
     }
 
     .seletor-data-input {
@@ -108,12 +123,14 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.05rem;
-      font-weight: bold;
-      color: #818cf8;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #cbd5e1;
       margin: 18px 0 10px 0;
+      background: #334155;
       border-left: 4px solid #6366f1;
-      padding-left: 8px;
+      padding: 8px 10px;
+      border-radius: 4px;
     }
 
     .criterio-card {
@@ -132,7 +149,7 @@
     }
 
     .criterio-card.prioritario::before {
-      content: "⭐ Foco Clínico do Perfil";
+      content: "Foco Clínico do Perfil";
       display: inline-block;
       font-size: 0.72rem;
       font-weight: bold;
@@ -373,28 +390,28 @@
         <div class="perfil-box">
           <span class="perfil-label">📋 Perfil / Laudo:</span>
           <select id="select-perfil-diagnostico" class="select-perfil" onchange="alterarPerfilDiagnostico(this.value)">
-            <optgroup label="🧠 Neurodivergências & Desenvolvimento">
+            <optgroup label="Neurodivergências & Desenvolvimento">
               <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
               <option value="dupla_excepcionalidade">Dupla Excepcionalidade (AH/SD + Neurodivergência)</option>
               <option value="tdah">TDAH (Déficit de Atenção / Hiperatividade)</option>
               <option value="tea">TEA (Espectro Autista)</option>
             </optgroup>
             
-            <optgroup label="🌊 Transtornos de Humor & Afetivos">
+            <optgroup label="Transtornos de Humor & Afetivos">
               <option value="transtorno_bipolar">Transtorno Bipolar / Ciclotimia</option>
               <option value="depressao">Transtorno Depressivo (Unipolar)</option>
             </optgroup>
 
-            <optgroup label="🧩 Transtornos de Personalidade">
+            <optgroup label="Transtornos de Personalidade">
               <option value="borderline">Transtorno de Personalidade Borderline (TPB)</option>
               <option value="personalidade_geral">Outros Transtornos de Personalidade</option>
             </optgroup>
 
-            <optgroup label="🍽️ Saúde Específica & Comportamental">
+            <optgroup label="Saúde Específica & Comportamental">
               <option value="transtornos_alimentares">Transtornos Alimentares</option>
             </optgroup>
 
-            <optgroup label="🌱 Momentos Vitais & Saúde Mental Geral">
+            <optgroup label="Momentos Vitais & Saúde Mental Geral">
               <option value="burnout">Burnout / Exaustão Profissional & Acadêmica</option>
               <option value="luto_perdas">Luto, Crises e Rupturas Relacionais</option>
               <option value="geral">Geral / Saúde Mental & Bem-Estar</option>
@@ -405,7 +422,7 @@
       </div>
 
       <!-- Seção: Neuroemocional & AH/SD -->
-      <div class="categoria-titulo">🧠 Neuroemocional & AH/SD</div>
+      <div class="categoria-titulo">Neuroemocional & AH/SD</div>
 
       <div class="criterio-card" data-key="ansiedade">
         <div class="criterio-nome">Ansiedade & Ruminação</div>
@@ -460,7 +477,7 @@
       </div>
 
       <!-- Seção: Foco & Cognição -->
-      <div class="categoria-titulo">🎯 Foco & Cognição</div>
+      <div class="categoria-titulo">Foco & Cognição</div>
 
       <div class="criterio-card" data-key="nutricao_intelectual">
         <div class="criterio-nome">Nutrição Intelectual / Estimulação</div>
@@ -502,7 +519,7 @@
       </div>
 
       <!-- Seção: Saúde Integral & Rotina -->
-      <div class="categoria-titulo">🌱 Saúde Integral & Rotina</div>
+      <div class="categoria-titulo">Saúde Integral & Rotina</div>
 
       <div class="criterio-card" data-key="qualidade_sono">
         <div class="criterio-nome">Qualidade do Sono</div>
@@ -609,7 +626,7 @@
       </div>
 
       <!-- Seção: Conexões & Lazer -->
-      <div class="categoria-titulo">👥 Conexões & Lazer</div>
+      <div class="categoria-titulo">Conexões & Lazer</div>
 
       <div class="criterio-card" data-key="relacionamento">
         <div class="criterio-nome">Relacionamento Afetivo / Social</div>
