@@ -7,68 +7,97 @@
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; padding: 16px; }
+    body { background-color: #0f172a; color: #f8fafc; padding: 12px; }
     
     .container { max-width: 800px; margin: 0 auto; }
     
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; }
+    .header { text-align: center; margin-bottom: 16px; }
+    .header h1 { font-size: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: #ffffff; }
 
-    /* Barra Superior: Calendário e Perfil/Laudo */
+    /* Barra Superior Responsiva: Calendário e Perfil */
     .seletor-topo-container {
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
+      padding: 12px;
+      margin-bottom: 16px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .seletor-topo-container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
 
     .perfil-box {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) {
+      .perfil-box {
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+      }
     }
 
     .perfil-label {
       font-size: 0.85rem;
       font-weight: bold;
       color: #38bdf8;
+      white-space: nowrap;
     }
 
     .select-perfil {
+      width: 100%;
       background: #0f172a;
       border: 1px solid #475569;
       color: #f8fafc;
-      padding: 8px 12px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      appearance: auto;
+    }
+
+    .seletor-data-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      padding: 10px 12px;
       border-radius: 6px;
       font-size: 0.88rem;
       outline: none;
       cursor: pointer;
     }
 
-    .seletor-data-input {
-      background: #0f172a;
-      border: 1px solid #475569;
-      color: #f8fafc;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
-      outline: none;
-      cursor: pointer;
+    @media (min-width: 600px) {
+      .seletor-data-input {
+        width: 170px;
+      }
     }
+
     .seletor-data-input::-webkit-calendar-picker-indicator {
       filter: invert(1);
       cursor: pointer;
     }
 
     /* Navegação */
-    .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab-btn { flex: 1; padding: 10px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+    .nav-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .tab-btn { flex: 1; padding: 10px 4px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; text-align: center; }
     .tab-btn.active { background: #334155; color: #fff; border-color: #64748b; }
 
     .aba-conteudo { display: none; }
@@ -79,10 +108,10 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: bold;
       color: #818cf8;
-      margin: 20px 0 12px 0;
+      margin: 18px 0 10px 0;
       border-left: 4px solid #6366f1;
       padding-left: 8px;
     }
@@ -91,8 +120,8 @@
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
       transition: all 0.3s ease;
     }
 
@@ -115,31 +144,31 @@
     }
 
     .criterio-nome {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: bold;
       color: #f8fafc;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .criterio-legenda {
       background: #0f172a;
       border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
+      padding: 8px 10px;
+      font-size: 0.78rem;
       color: #94a3b8;
-      margin-bottom: 12px;
-      line-height: 1.4;
+      margin-bottom: 10px;
+      line-height: 1.35;
     }
 
     .botoes-escala {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     .btn-escala {
       flex: 1;
-      padding: 10px 0;
+      padding: 8px 0;
       background: #0f172a;
       border: 1px solid #334155;
       color: #cbd5e1;
@@ -162,26 +191,26 @@
       border: 1px solid #334155;
       border-radius: 6px;
       color: #f8fafc;
-      padding: 10px;
-      font-size: 0.85rem;
+      padding: 8px;
+      font-size: 0.82rem;
       resize: vertical;
-      min-height: 48px;
+      min-height: 44px;
     }
 
     .anotacao-criterio::placeholder {
       color: #64748b;
     }
 
-    /* Painel do Saldo do Dia e Guardar */
+    /* Painel do Saldo do Dia e Salvar */
     .painel-guardar {
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 12px;
-      padding: 16px;
-      margin-top: 24px;
+      padding: 14px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .saldo-linha {
@@ -189,15 +218,15 @@
       align-items: center;
       justify-content: space-between;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .saldo-badge {
       background: #d97706;
       color: #ffffff;
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 20px;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: bold;
     }
 
@@ -205,10 +234,10 @@
       background: #6366f1;
       color: #ffffff;
       border: none;
-      padding: 12px 20px;
+      padding: 12px 16px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -223,16 +252,16 @@
     }
 
     /* Estilos das Abas Relatórios e Evolução */
-    .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
-    .card-title { font-size: 1.15rem; font-weight: bold; color: #38bdf8; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .card { background: #1e293b; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #334155; }
+    .card-title { font-size: 1.05rem; font-weight: bold; color: #38bdf8; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
     .acoes-globais-topo {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
       border-bottom: 1px solid #334155;
     }
     
@@ -240,13 +269,13 @@
       background: transparent;
       border: 1px solid #475569;
       color: #cbd5e1;
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.2s;
     }
     .btn-discreto:hover {
@@ -259,25 +288,25 @@
     .relatorio-item {
       background: #0f172a;
       border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
       border: 1px solid #334155;
     }
     .relatorio-item-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-    .relatorio-data { font-weight: bold; color: #38bdf8; font-size: 0.95rem; }
+    .relatorio-data { font-weight: bold; color: #38bdf8; font-size: 0.9rem; }
 
     .btn-apagar-diario {
       background: transparent;
       border: none;
       color: #ef4444;
       cursor: pointer;
-      font-size: 0.85rem;
-      padding: 4px 8px;
+      font-size: 0.8rem;
+      padding: 4px 6px;
       border-radius: 4px;
       transition: background 0.2s;
       display: flex;
@@ -289,21 +318,21 @@
     .caixa-prontuario {
       background: #0f172a;
       border-left: 4px solid #38bdf8;
-      padding: 16px;
+      padding: 14px;
       border-radius: 8px;
-      font-size: 0.92rem;
-      line-height: 1.6;
+      font-size: 0.88rem;
+      line-height: 1.55;
       color: #e2e8f0;
     }
 
     .prontuario-subtitulo {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #cbd5e1;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .prontuario-topico {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .prontuario-topico strong {
@@ -313,8 +342,8 @@
     .chart-box {
       position: relative;
       width: 100%;
-      height: 260px;
-      margin-top: 10px;
+      height: 250px;
+      margin-top: 8px;
     }
   </style>
 
@@ -339,15 +368,15 @@
     <!-- ==================== ABA 1: REGISTRO ==================== -->
     <div id="aba-registro" class="aba-conteudo active">
       
-      <!-- Seletor de Data e Perfil Diagnóstico / Laudo -->
+      <!-- Seletor de Data e Perfil Diagnóstico -->
       <div class="seletor-topo-container">
         <div class="perfil-box">
           <span class="perfil-label">📋 Perfil / Laudo:</span>
           <select id="select-perfil-diagnostico" class="select-perfil" onchange="alterarPerfilDiagnostico(this.value)">
-            <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
-            <option value="tdah">TDAH (Transtorno do Déficit de Atenção/Hiperatividade)</option>
-            <option value="tea">TEA (Transtorno do Espectro Autista)</option>
-            <option value="geral">Geral / Transtornos de Humor & Saúde Mental</option>
+            <option value="ahsd">AH/SD (Altas Habilidades)</option>
+            <option value="tdah">TDAH (Déficit de Atenção/Hiperatividade)</option>
+            <option value="tea">TEA (Espectro Autista)</option>
+            <option value="geral">Geral / Saúde Mental</option>
           </select>
         </div>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
@@ -592,7 +621,7 @@
           <span>Saldo do Dia:</span>
           <span id="saldo-badge" class="saldo-badge">0 (Equilíbrio)</span>
         </div>
-        <button class="btn-guardar" onclick="salvarRegistroDiario()">💾 Guardar Registo Diário</button>
+        <button class="btn-guardar" onclick="salvarRegistroDiario()">💾 Salvar Registro Diário</button>
       </div>
 
     </div>
@@ -647,7 +676,7 @@
         prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"]
       },
       tdah: {
-        nome: "TDAH (Transtorno do Déficit de Atenção/Hiperatividade)",
+        nome: "TDAH (Déficit de Atenção / Hiperatividade)",
         prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"]
       },
       tea: {
@@ -655,7 +684,7 @@
         prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"]
       },
       geral: {
-        nome: "Geral / Transtornos de Humor & Saúde Mental",
+        nome: "Geral / Saúde Mental & Humor",
         prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"]
       }
     };
@@ -823,7 +852,7 @@
       historico.push(registro);
       
       localStorage.setItem('dashboard_neuro_dados', JSON.stringify(historico));
-      alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} guardado com sucesso!`);
+      alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} salvo com sucesso!`);
     }
 
     // Obter dados do LocalStorage
