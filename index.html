@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Neuroemocional</title>
   
-  <!-- Biblioteca jsPDF para exportação em PDF -->
+  <!-- Bibliotecas para PDF e Gráficos -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
     
-    /* Variáveis de Tema Noite */
+    /* Tema Noite */
     :root {
       --bg-body: #0f141e;
       --text-main: #f3f4f6;
@@ -29,7 +30,7 @@
       --cat-bg: #222e47;
     }
 
-    /* Variáveis de Tema Dia */
+    /* Tema Dia */
     [data-theme="light"] {
       --bg-body: #fbf9f6;
       --text-main: #4a423b;
@@ -140,11 +141,11 @@
       background: var(--btn-bg); border: 1px solid var(--border-light); border-radius: 8px;
       padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
-    .btn-pdf {
-      background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 6px;
+    .btn-acao {
+      background: var(--accent-color); color: #fff; border: none; padding: 6px 12px; border-radius: 6px;
       font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;
     }
-    .btn-pdf:hover { background: #dc2626; }
+    .btn-acao:hover { background: var(--accent-hover); }
 
     .app-footer {
       text-align: center; padding: 14px 4px; margin-top: 20px; border-top: 1px solid var(--border-color);
@@ -186,7 +187,6 @@
         <input type="date" id="data-registro" class="seletor-data-input">
       </div>
 
-      <!-- Container onde os critérios do perfil selecionado aparecem dinamicamente -->
       <div id="container-criterios"></div>
 
       <div class="painel-guardar">
@@ -212,7 +212,9 @@
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
         <div class="card-title">📈 Acompanhamento Gráfico</div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">Evolução das notas médias armazenadas por data.</p>
+        <div style="position: relative; height:300px; width:100%">
+          <canvas id="graficoEvolucao"></canvas>
+        </div>
       </div>
     </div>
 
@@ -221,9 +223,7 @@
     </footer>
 
   </div>
-
   <script>
-    // Banco completo de critérios clínicos por perfil
     const perfisDados = {
       ahsd: {
         nome: "AH/SD (Altas Habilidades / Superdotação)",
@@ -277,6 +277,8 @@
       }
     };
 
+    let meuGrafico = null;
+
     function alternarTema() {
       const body = document.body;
       const btn = document.getElementById('theme-toggle');
@@ -287,6 +289,7 @@
         body.setAttribute('data-theme', 'light');
         btn.textContent = '🌙';
       }
+      if (meuGrafico) atualizarGrafico();
     }
 
     function mudarAba(abaId, elemento) {
@@ -295,6 +298,7 @@
       document.getElementById('aba-' + abaId).classList.add('active');
       elemento.classList.add('active');
       if (abaId === 'relatorios') carregarHistorico();
+      if (abaId === 'evolucao') atualizarGrafico();
     }
 
     function renderizarCriterios() {
@@ -320,7 +324,6 @@
           </div>
         `;
       });
-      
       container.innerHTML = html;
     }
 
@@ -344,7 +347,6 @@
         const btnSelecionado = card.querySelector('.btn-escala.selected');
         const valor = btnSelecionado ? parseInt(btnSelecionado.textContent) : 3;
         const anotacao = card.querySelector('.anotacao-criterio').value;
-        
         criteriosSalvos.push({ id, nome, valor, anotacao });
       });
 
@@ -415,7 +417,7 @@
               <div style="font-weight: bold; font-size: 0.88rem; color: var(--text-main);">${reg.perfilNome}</div>
               <div style="font-size: 0.78rem; color: var(--text-muted);">Data: ${reg.data}</div>
             </div>
-            <button class="btn-pdf" onclick="baixarPdfSalvo(${reg.id})">📥 Baixar PDF</button>
+            <button class="btn-acao" onclick="baixarPdfSalvo(${reg.id})">📥 PDF</button>
           </div>
         `;
       });
@@ -428,9 +430,53 @@
       if (reg) gerarPDF(reg);
     }
 
-    // Inicialização ao carregar a página
+    function atualizarGrafico() {
+      const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+      let historico = JSON.parse(localStorage.getItem('dash_neuro_historico') || '[]').reverse();
+      
+      const datas = historico.map(r => r.data);
+      const medias = historico.map(r => {
+        const soma = r.criterios.reduce((acc, c) => acc + c.valor, 0);
+        return (soma / r.criterios.length).toFixed(1);
+      });
+
+      const isDark = document.body.getAttribute('data-theme') !== 'light';
+      const textColor = isDark ? '#f3f4f6' : '#4a423b';
+      const gridColor = isDark ? '#26334d' : '#e8e2d8';
+
+      if (meuGrafico) meuGrafico.destroy();
+
+      meuGrafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: datas,
+          datasets: [{
+            label: 'Média Geral Diária',
+            data: medias,
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 1, max: 5, ticks: { color: textColor }, grid: { color: gridColor } },
+            x: { ticks: { color: textColor }, grid: { color: gridColor } }
+          },
+          plugins: {
+            legend: { labels: { color: textColor } }
+          }
+        }
+      });
+    }
+
     document.getElementById('data-registro').valueAsDate = new Date();
     renderizarCriterios();
   </script>
 </body>
 </html>
+
