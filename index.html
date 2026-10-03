@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Neuroemocional</title>
+  <title>Clínica de Psicologia - Dashboard Neuroemocional</title>
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
@@ -17,8 +17,8 @@
       --border-light: #374a6d;
       --text-muted: #9ca3af;
       --text-dimmed: #d1d5db;
-      --accent-color: #38bdf8;
-      --accent-hover: #0ea5e9;
+      --accent-color: #d4a373;
+      --accent-hover: #bc8a5f;
       --btn-bg: #0f141e;
       --card-bg: #182030;
       --card-prioritario: #212c44;
@@ -35,8 +35,8 @@
       --border-light: #d6cebf;
       --text-muted: #8c7f73;
       --text-dimmed: #5e5349;
-      --accent-color: #b86b43;
-      --accent-hover: #9e5835;
+      --accent-color: #b8866b;
+      --accent-hover: #9e6f55;
       --btn-bg: #f4efe9;
       --card-bg: #ffffff;
       --card-prioritario: #faf4ed;
@@ -369,7 +369,7 @@
     }
 
     .saldo-badge {
-      background: var(--accent-color);
+      background: #b8866b;
       color: #ffffff;
       padding: 5px 12px;
       border-radius: 20px;
@@ -401,6 +401,97 @@
     .card { background: var(--bg-container); border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid var(--border-color); }
     .card-title { font-size: 1.05rem; font-weight: bold; color: var(--accent-color); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
+    .acoes-globais-topo {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .btn-discreto {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-dimmed);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-discreto:hover {
+      background: var(--cat-bg);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+    .btn-discreto input[type="file"] { display: none; }
+
+    .relatorio-item {
+      background: var(--legenda-bg);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+    }
+    .relatorio-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .relatorio-data { font-weight: bold; color: var(--accent-color); font-size: 0.9rem; }
+
+    .btn-apagar-diario {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-apagar-diario:hover { background: rgba(239, 68, 68, 0.15); }
+
+    .caixa-prontuario {
+      background: var(--legenda-bg);
+      border-left: 4px solid var(--accent-color);
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text-dimmed);
+    }
+
+    .prontuario-subtitulo {
+      font-size: 0.9rem;
+      color: var(--text-dimmed);
+      margin-bottom: 12px;
+    }
+
+    .prontuario-topico {
+      margin-bottom: 8px;
+    }
+
+    .prontuario-topico strong {
+      color: var(--text-main);
+    }
+
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      margin-top: 8px;
+    }
+
     .app-footer {
       text-align: center;
       padding: 14px 4px;
@@ -412,8 +503,94 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    .footer-link {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 0.72rem;
+      text-decoration: underline;
+      padding: 0;
+      white-space: nowrap;
+    }
+    .footer-link:hover {
+      opacity: 0.8;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 20, 30, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--bg-container);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    }
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: var(--text-main); }
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 0.82rem;
+      color: var(--text-dimmed);
+      line-height: 1.5;
+    }
+    .modal-body h3 {
+      color: var(--accent-color);
+      font-size: 0.9rem;
+      margin: 12px 0 6px 0;
+    }
+    .modal-body h3:first-child { margin-top: 0; }
+    .modal-body p { margin-bottom: 8px; }
+    
+    .autor-credito {
+      margin-top: 16px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
     }
   </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body data-theme="light">
 
@@ -421,7 +598,7 @@
     
     <!-- Cabeçalho com Logo Ocupando Todo o Espaço Horizontal -->
     <div class="header-marca">
-      <img src="logo.png" alt="Dashboard Neuroemocional" class="logo-img">
+      <img src="logo.png" alt="Clínica de Psicologia" class="logo-img">
     </div>
 
     <div class="header-topo">
@@ -443,18 +620,45 @@
       <div class="seletor-topo-container">
         <div class="perfil-box">
           <span class="perfil-label">Perfil / Laudo:</span>
-          <select id="select-perfil-diagnostico" class="seletor-data-input" style="width: 100%;">
-            <option value="ahsd">AH/SD (Altas Habilidades / Superdotação)</option>
-            <option value="borderline">Transtorno de Personalidade Borderline (TPB)</option>
-            <option value="tdah">TDAH (Déficit de Atenção / Hiperatividade)</option>
-            <option value="tea">TEA (Espectro Autista)</option>
-            <option value="geral">Geral / Saúde Mental & Bem-Estar</option>
-          </select>
+          
+          <div class="custom-dropdown" id="custom-dropdown-perfil">
+            <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown(event)">
+              <span id="custom-dropdown-selected-text">Selecionar Perfil...</span>
+              <span>▼</span>
+            </button>
+            <div class="custom-dropdown-content" id="custom-dropdown-list">
+              
+              <div class="dropdown-group-title">Neurodivergências & Desenvolvimento</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('ahsd', 'AH/SD (Altas Habilidades / Superdotação)')">AH/SD (Altas Habilidades / Superdotação)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('dupla_excepcionalidade', 'Dupla Excepcionalidade (AH/SD + Neurodivergência)')">Dupla Excepcionalidade (AH/SD + Neurodivergência)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('tdah', 'TDAH (Déficit de Atenção / Hiperatividade)')">TDAH (Déficit de Atenção / Hiperatividade)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('tea', 'TEA (Espectro Autista)')">TEA (Espectro Autista)</div>
+
+              <div class="dropdown-group-title">Transtornos de Humor & Afetivos</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('transtorno_bipolar', 'Transtorno Bipolar / Ciclotimia')">Transtorno Bipolar / Ciclotimia</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('depressao', 'Transtorno Depressivo (Unipolar)')">Transtorno Depressivo (Unipolar)</div>
+
+              <div class="dropdown-group-title">Transtornos de Personalidade</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('borderline', 'Transtorno de Personalidade Borderline (TPB)')">Transtorno de Personalidade Borderline (TPB)</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('personalidade_geral', 'Outros Transtornos de Personalidade')">Outros Transtornos de Personalidade</div>
+
+              <div class="dropdown-group-title">Saúde Específica & Comportamental</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('transtornos_alimentares', 'Transtornos Alimentares')">Transtornos Alimentares</div>
+
+              <div class="dropdown-group-title">Momentos Vitais & Saúde Mental Geral</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('burnout', 'Burnout / Exaustão Profissional & Acadêmica')">Burnout / Exaustão Profissional & Acadêmica</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('luto_perdas', 'Luto, Crises e Rupturas Relacionais')">Luto, Crises e Rupturas Relacionais</div>
+              <div class="dropdown-item" onclick="selecionarPerfilCustom('geral', 'Geral / Saúde Mental & Bem-Estar')">Geral / Saúde Mental & Bem-Estar</div>
+
+            </div>
+          </div>
+          <input type="hidden" id="select-perfil-diagnostico" value="ahsd">
+
         </div>
-        <input type="date" id="data-registro" class="seletor-data-input">
+        <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
 
-      <!-- Exemplo de Criterio -->
+      <!-- Seção: Neuroemocional & AH/SD -->
       <div class="categoria-titulo">Neuroemocional & AH/SD</div>
 
       <div class="criterio-card" data-key="ansiedade">
@@ -462,7 +666,7 @@
         <div class="criterio-legenda">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
         <div class="botoes-escala">
           <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarVOlor(this, 2)">2</button>
+          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
           <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
           <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
           <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
@@ -470,71 +674,4 @@
         <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
       </div>
 
-      <div class="painel-guardar">
-        <div class="saldo-linha">
-          <span>Status do Registro:</span>
-          <span class="saldo-badge">Pronto para Salvar</span>
-        </div>
-        <button class="btn-guardar" onclick="salvarRegistro()">💾 Salvar Registro Diário</button>
-      </div>
-
-    </div>
-
-    <!-- ==================== ABA 2: RELATÓRIOS ==================== -->
-    <div id="aba-relatorios" class="aba-conteudo">
-      <div class="card">
-        <div class="card-title">📁 Histórico de Registros</div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">Seus relatórios salvos aparecerão aqui.</p>
-      </div>
-    </div>
-
-    <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
-    <div id="aba-evolucao" class="aba-conteudo">
-      <div class="card">
-        <div class="card-title">📈 Gráfico de Evolução</div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">Acompanhamento gráfico do seu progresso emocional.</p>
-      </div>
-    </div>
-
-    <footer class="app-footer">
-      Dashboard Neuroemocional • Cuidando de todas as fases da sua história
-    </footer>
-
-  </div>
-
-  <script>
-    function alternarTema() {
-      const body = document.body;
-      const btn = document.getElementById('theme-toggle');
-      if (body.getAttribute('data-theme') === 'light') {
-        body.setAttribute('data-theme', 'dark');
-        btn.textContent = '☀️';
-      } else {
-        body.setAttribute('data-theme', 'light');
-        btn.textContent = '🌙';
-      }
-    }
-
-    function mudarAba(abaId, elemento) {
-      document.querySelectorAll('.aba-conteudo').forEach(aba => aba.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('aba-' + abaId).classList.add('active');
-      elemento.classList.add('active');
-    }
-
-    function selecionarValor(botao, valor) {
-      const grupo = botao.parentElement;
-      grupo.querySelectorAll('.btn-escala').forEach(b => b.classList.remove('selected'));
-      botao.classList.add('selected');
-    }
-
-    function salvarRegistro() {
-      alert('Registro salvo com sucesso!');
-    }
-
-    // Definir data atual automaticamente ao abrir
-    document.getElementById('data-registro').valueAsDate = new Date();
-  </script>
-</body>
-</html>
-
+      <div class="criterio-card" data-key="vita
