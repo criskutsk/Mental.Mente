@@ -1344,12 +1344,20 @@
       const dataInicio = formatarDataBR(ultimos30[qtdRegistros - 1].data);
       const dataFim = formatarDataBR(ultimos30[0].data);
       
+      // Contagem de gatilhos comuns (ex: critérios com nível 1 ou 2)
+      let contGatilhos = 0;
+      ultimos30.forEach(reg => {
+        Object.values(reg.criterios).forEach(c => {
+          if (c.valor <= 2) contGatilhos++;
+        });
+      });
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
       doc.text("1. SÍNTESE DO PERÍODO E MAPEAMENTO DE GATILHOS", 14, 32);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text(`Janela temporal: ${dataInicio} a ${dataFim} | Total de registros diários: ${qtdRegistros}`, 14, 38);
+      doc.text(`Janela: ${dataInicio} a ${dataFim} | Registros: ${qtdRegistros} | Pontos de atenção/gatilhos detectados: ${contGatilhos}`, 14, 38);
       
       doc.setDrawColor(200, 200, 200);
       doc.line(14, 42, 196, 42);
@@ -1369,25 +1377,44 @@
         doc.setFontSize(9.5);
         doc.text(`Data: ${dataFormatada} | Saldo Emocional: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
         y += 6;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8.5);
         
         Object.keys(reg.criterios).forEach(key => {
           const item = reg.criterios[key];
           if (item.observacao || item.valor !== 3) {
-            const linha = ` - ${nomesCriterios[key] || key}: Nível ${item.valor} ${item.observacao ? `("${item.observacao}")` : ''}`;
-            const linhasTratadas = doc.splitTextToSize(linha, 180);
+            // Imprime o nome do critério e o nível em cor padrão
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8.5);
+            doc.setTextColor(60, 60, 60);
+            
+            const parteBase = ` - ${nomesCriterios[key] || key}: Nível ${item.valor}`;
             
             if (y > 265) {
               doc.addPage();
               y = 20;
             }
-            doc.text(linhasTratadas, 16, y);
-            y += (linhasTratadas.length * 4.5);
+            doc.text(parteBase, 16, y);
+            
+            // Se houver observação entre parênteses, imprime em destaque colorido (ex: azul/roxo escuro ou tom destacado)
+            if (item.observacao) {
+              const parteObs = ` ("${item.observacao}")`;
+              // Calcula a largura da parte base para posicionar a observação logo ao lado
+              const larguraBase = doc.getTextWidth(parteBase);
+              
+              doc.setTextColor(150, 60, 40); // Cor destacada (ex: terracota/vinho) para as anotações
+              doc.setFont("helvetica", "italic");
+              
+              const linhasObs = doc.splitTextToSize(parteObs, 180 - larguraBase);
+              doc.text(linhasObs, 16 + larguraBase, y);
+            }
+            
+            y += 5;
           }
         });
         y += 4;
       });
+
+      // Restaura a cor padrão de texto
+      doc.setTextColor(0, 0, 0);
 
       // Incorporação da Pauta para a Sessão (Anotações Gerais)
       const pautaTexto = localStorage.getItem('dashboard_clinica_pauta') || '';
@@ -1424,6 +1451,7 @@
       
       doc.setFont("helvetica", "italic");
       doc.setFontSize(7.5);
+      doc.setTextColor(100, 100, 100);
       const avisoLegal = "Nota técnica: esta avaliação não substitui um profissional psicologo/psiquiatra é apenas um instrumento de anotações que pode contribuir com a relação terapêutica entre paciente e profissional.";
       const linhasAviso = doc.splitTextToSize(avisoLegal, 180);
       doc.text(linhasAviso, 14, y);
@@ -1433,7 +1461,7 @@
     window.onload = function() {
       const temaSalvo = localStorage.getItem('dashboard_clinica_tema') || 'light';
       document.body.setAttribute('data-theme', temaSalvo);
-      document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '🌙' : '☀️';
+      document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '🌙' : '☀️️';
       const hoje = new Date().toISOString().split('T')[0];
       const inputData = document.getElementById('data-registro');
       inputData.value = hoje;
