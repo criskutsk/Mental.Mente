@@ -1344,29 +1344,42 @@
       const dataInicio = formatarDataBR(ultimos30[qtdRegistros - 1].data);
       const dataFim = formatarDataBR(ultimos30[0].data);
       
-      // Contagem de gatilhos comuns (ex: critérios com nível 1 ou 2)
-      let contGatilhos = 0;
+      // Mapeamento e contagem exata de nível 1 (críticos/gatilhos) e incidências positivas/negativas recorrentes
+      let contNivel1 = 0;
+      let contPositivos = 0;
+      let contNegativos = 0;
+      const frequenciaCriteriosNivel1 = {};
+
       ultimos30.forEach(reg => {
-        Object.values(reg.criterios).forEach(c => {
-          if (c.valor <= 2) contGatilhos++;
+        Object.keys(reg.criterios).forEach(key => {
+          const val = reg.criterios[key].valor;
+          if (val === 1) {
+            contNivel1++;
+            frequenciaCriteriosNivel1[key] = (frequenciaCriteriosNivel1[key] || 0) + 1;
+          }
+          if (val >= 4) contPositivos++;
+          if (val <= 2) contNegativos++;
         });
       });
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text("1. SÍNTESE DO PERÍODO E MAPEAMENTO DE GATILHOS", 14, 32);
+      doc.text("1. SÍNTESE DO PERÍODO E INCIDÊNCIAS", 14, 32);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.text(`Janela: ${dataInicio} a ${dataFim} | Registros: ${qtdRegistros} | Pontos de atenção/gatilhos detectados: ${contGatilhos}`, 14, 38);
+      doc.setFontSize(8.5);
+      doc.text(`Janela: ${dataInicio} a ${dataFim} | Registros analisados: ${qtdRegistros}`, 14, 38);
+      doc.text(`• Critérios marcados com Nível 1 (Gatilhos Críticos): ${contNivel1}`, 16, 44);
+      doc.text(`• Incidências Positivas Recorrentes (Níveis 4 e 5): ${contPositivos}`, 16, 50);
+      doc.text(`• Incidências Negativas Recorrentes (Níveis 1 e 2): ${contNegativos}`, 16, 56);
       
       doc.setDrawColor(200, 200, 200);
-      doc.line(14, 42, 196, 42);
+      doc.line(14, 60, 196, 60);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text("2. HISTÓRICO DIÁRIO E NOTAS COMPORTAMENTAIS", 14, 49);
+      doc.text("2. HISTÓRICO DIÁRIO E NOTAS COMPORTAMENTAIS", 14, 67);
       
-      let y = 57;
+      let y = 74;
       historico.forEach((reg) => {
         if (y > 265) {
           doc.addPage();
@@ -1375,16 +1388,22 @@
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9.5);
+        doc.setTextColor(0, 0, 0);
         doc.text(`Data: ${dataFormatada} | Saldo Emocional: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
         y += 6;
         
         Object.keys(reg.criterios).forEach(key => {
           const item = reg.criterios[key];
           if (item.observacao || item.valor !== 3) {
-            // Imprime o nome do critério e o nível em cor padrão
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(8.5);
-            doc.setTextColor(60, 60, 60);
+            
+            // Destaca no histórico se o critério for exatamente Nível 1
+            if (item.valor === 1) {
+              doc.setFont("helvetica", "bold");
+              doc.setTextColor(180, 40, 40); // Vermelho de destaque para nível 1
+            } else {
+              doc.setFont("helvetica", "normal");
+              doc.setTextColor(60, 60, 60);
+            }
             
             const parteBase = ` - ${nomesCriterios[key] || key}: Nível ${item.valor}`;
             
@@ -1394,13 +1413,11 @@
             }
             doc.text(parteBase, 16, y);
             
-            // Se houver observação entre parênteses, imprime em destaque colorido (ex: azul/roxo escuro ou tom destacado)
             if (item.observacao) {
               const parteObs = ` ("${item.observacao}")`;
-              // Calcula a largura da parte base para posicionar a observação logo ao lado
               const larguraBase = doc.getTextWidth(parteBase);
               
-              doc.setTextColor(150, 60, 40); // Cor destacada (ex: terracota/vinho) para as anotações
+              doc.setTextColor(150, 60, 40); // Cor destacada (terracota) para observações
               doc.setFont("helvetica", "italic");
               
               const linhasObs = doc.splitTextToSize(parteObs, 180 - larguraBase);
@@ -1461,7 +1478,7 @@
     window.onload = function() {
       const temaSalvo = localStorage.getItem('dashboard_clinica_tema') || 'light';
       document.body.setAttribute('data-theme', temaSalvo);
-      document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '🌙' : '☀️️';
+      document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '🌙' : '☀️';
       const hoje = new Date().toISOString().split('T')[0];
       const inputData = document.getElementById('data-registro');
       inputData.value = hoje;
