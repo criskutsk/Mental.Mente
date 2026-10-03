@@ -558,6 +558,7 @@
       <button class="tab-btn active" onclick="mudarAba('registro', this)">Registro</button>
       <button class="tab-btn" onclick="mudarAba('relatorios', this)">Relatórios</button>
       <button class="tab-btn" onclick="mudarAba('evolucao', this)">Evolução</button>
+      <button class="tab-btn" onclick="mudarAba('pauta', this)">Pauta Terapia</button>
     </div>
     <!-- ==================== ABA 1: REGISTRO ==================== -->
     <div id="aba-registro" class="aba-conteudo active">
@@ -852,6 +853,17 @@
         </div>
       </div>
     </div>
+    <!-- ==================== ABA 4: PAUTA TERAPIA ==================== -->
+    <div id="aba-pauta" class="aba-conteudo">
+      <div class="card">
+        <div class="card-title">Pauta para a Sessão / Perguntas ao Terapeuta</div>
+        <div style="font-size:0.82rem; color:var(--text-dimmed); margin-bottom: 10px;">
+          Escreva abaixo os tópicos, reflexões ou perguntas gerais que deseja levar para a sua próxima sessão terapêutica. Este conteúdo será incorporado automaticamente no seu PDF mensal.
+        </div>
+        <textarea id="input-pauta-sessao" class="anotacao-criterio" style="min-height: 180px;" placeholder="Digite aqui as anotações gerais para a terapia..."></textarea>
+        <button class="btn-guardar" style="margin-top: 12px;" onclick="salvarPauta()">Salvar Pauta</button>
+      </div>
+    </div>
   </div>
   <!-- Rodapé -->
   <footer class="app-footer">
@@ -990,6 +1002,7 @@
       btnElement.classList.add('active');
       if (abaId === 'relatorios') renderizarRelatorios();
       if (abaId === 'evolucao') renderizarEvolucao();
+      if (abaId === 'pauta') carregarPauta();
     }
     function selecionarValor(btn, valor) {
       const card = btn.closest('.criterio-card');
@@ -1075,6 +1088,15 @@
       
       localStorage.setItem('dashboard_clinica_dados', JSON.stringify(historico));
       alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} salvo com sucesso!`);
+    }
+    function salvarPauta() {
+      const textoPauta = document.getElementById('input-pauta-sessao').value;
+      localStorage.setItem('dashboard_clinica_pauta', textoPauta);
+      alert('Pauta para a sessão salva com sucesso!');
+    }
+    function carregarPauta() {
+      const pautaSalva = localStorage.getItem('dashboard_clinica_pauta') || '';
+      document.getElementById('input-pauta-sessao').value = pautaSalva;
     }
     function obterHistorico() {
       const dados = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
@@ -1378,6 +1400,29 @@
         y += 4;
       });
 
+      // Incorporação da Pauta para a Sessão (Anotações Gerais)
+      const pautaTexto = localStorage.getItem('dashboard_clinica_pauta') || '';
+      if (pautaTexto.trim() !== '') {
+        if (y > 230) {
+          doc.addPage();
+          y = 20;
+        } else {
+          y += 6;
+        }
+        doc.setDrawColor(200, 200, 200);
+        doc.line(14, y, 196, y);
+        y += 6;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text("4. PAUTA PARA A SESSÃO / ANOTAÇÕES GERAIS", 14, y);
+        y += 6;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        const linhasPauta = doc.splitTextToSize(pautaTexto, 180);
+        doc.text(linhasPauta, 14, y);
+        y += (linhasPauta.length * 5) + 6;
+      }
+
       if (y > 250) {
         doc.addPage();
         y = 20;
@@ -1411,7 +1456,9 @@
       
       alterarPerfilDiagnostico(perfilSalvo);
       carregarRegistroData(hoje);
+      carregarPauta();
     };
   </script>
 </body>
 </html>
+
