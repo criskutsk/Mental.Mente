@@ -558,7 +558,6 @@
       <button class="tab-btn active" onclick="mudarAba('registro', this)">Registro</button>
       <button class="tab-btn" onclick="mudarAba('relatorios', this)">Relatórios</button>
       <button class="tab-btn" onclick="mudarAba('evolucao', this)">Evolução</button>
-      <button class="tab-btn" onclick="mudarAba('pauta', this)">Pauta Terapia</button>
     </div>
     <!-- ==================== ABA 1: REGISTRO ==================== -->
     <div id="aba-registro" class="aba-conteudo active">
@@ -832,7 +831,7 @@
         <!-- Itens inseridos via JS -->
       </div>
     </div>
-    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS & PRONTUÁRIO) ==================== -->
+    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS, PRONTUÁRIO & PAUTA) ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
         <div class="card-title">Análise Descritiva de Evolução (30 Dias)</div>
@@ -852,15 +851,12 @@
           <canvas id="chartCategoriasRadar"></canvas>
         </div>
       </div>
-    </div>
-    <!-- ==================== ABA 4: PAUTA TERAPIA ==================== -->
-    <div id="aba-pauta" class="aba-conteudo">
       <div class="card">
         <div class="card-title">Pauta para a Sessão / Perguntas ao Terapeuta</div>
         <div style="font-size:0.82rem; color:var(--text-dimmed); margin-bottom: 10px;">
           Escreva abaixo os tópicos, reflexões ou perguntas gerais que deseja levar para a sua próxima sessão terapêutica. Este conteúdo será incorporado automaticamente no seu PDF mensal.
         </div>
-        <textarea id="input-pauta-sessao" class="anotacao-criterio" style="min-height: 180px;" placeholder="Digite aqui as anotações gerais para a terapia..."></textarea>
+        <textarea id="input-pauta-sessao" class="anotacao-criterio" style="min-height: 150px;" placeholder="Digite aqui as anotações gerais para a terapia..."></textarea>
         <button class="btn-guardar" style="margin-top: 12px;" onclick="salvarPauta()">Salvar Pauta</button>
       </div>
     </div>
@@ -1001,8 +997,10 @@
       document.getElementById(`aba-${abaId}`).classList.add('active');
       btnElement.classList.add('active');
       if (abaId === 'relatorios') renderizarRelatorios();
-      if (abaId === 'evolucao') renderizarEvolucao();
-      if (abaId === 'pauta') carregarPauta();
+      if (abaId === 'evolucao') {
+        renderizarEvolucao();
+        carregarPauta();
+      }
     }
     function selecionarValor(btn, valor) {
       const card = btn.closest('.criterio-card');
@@ -1096,7 +1094,8 @@
     }
     function carregarPauta() {
       const pautaSalva = localStorage.getItem('dashboard_clinica_pauta') || '';
-      document.getElementById('input-pauta-sessao').value = pautaSalva;
+      const inputPauta = document.getElementById('input-pauta-sessao');
+      if (inputPauta) inputPauta.value = pautaSalva;
     }
     function obterHistorico() {
       const dados = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
@@ -1461,4 +1460,3 @@
   </script>
 </body>
 </html>
-
