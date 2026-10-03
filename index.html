@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clínica de Psicologia - Dashboard Neuroemocional</title>
+  <title>Dashboard Psicoeducativo de Autorregulação</title>
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
@@ -546,7 +546,7 @@
     
     <!-- Cabeçalho com Logo Ocupando Todo o Espaço Horizontal -->
     <div class="header-marca">
-      <img src="logo.png" alt="Clínica de Psicologia" class="logo-img">
+      <img src="logo.png" alt="Dashboard Psicoeducativo" class="logo-img">
     </div>
     <div class="header-topo">
       <button class="theme-toggle-btn" id="theme-toggle" onclick="alternarTema()" title="Alternar tema claro/escuro">
@@ -1294,7 +1294,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `backup_clinica_psicologia_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `backup_psicoeducativo_${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -1331,13 +1331,13 @@
       const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
       const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
       
-      // Cabeçalho técnico do Relatório
+      // Cabeçalho Psicoeducativo e Funcional
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("RELATÓRIO MENSAL - CLÍNICA DE PSICOLOGIA", 14, 18);
+      doc.setFontSize(13);
+      doc.text("RELATÓRIO PSICOEDUCATIVO DE AUTORREGULAÇÃO", 14, 18);
       doc.setFontSize(8.5);
       doc.setFont("helvetica", "normal");
-      doc.text(`Data de Emissão: ${new Date().toLocaleDateString('pt-BR')} | Perfil Clínico Monitorado: ${perfilNome}`, 14, 24);
+      doc.text(`Data de Emissão: ${new Date().toLocaleDateString('pt-BR')} | Perfil Acompanhado: ${perfilNome}`, 14, 24);
       
       const ultimos30 = historico.slice(0, 30);
       const qtdRegistros = ultimos30.length;
@@ -1346,29 +1346,19 @@
       
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text("1. PARÂMETROS E ANÁLISE DESCRITIVA DE EVOLUÇÃO (30 DIAS)", 14, 32);
+      doc.text("1. SÍNTESE DO PERÍODO E MAPEAMENTO DE GATILHOS", 14, 32);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text(`Janela temporal analisada: ${dataInicio} a ${dataFim} (Total de registros válidos: ${qtdRegistros})`, 14, 38);
+      doc.text(`Janela temporal: ${dataInicio} a ${dataFim} | Total de registros diários: ${qtdRegistros}`, 14, 38);
       
       doc.setDrawColor(200, 200, 200);
       doc.line(14, 42, 196, 42);
-      
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.text("2. SOLICITAÇÃO DE GRÁFICOS E MÉTRICAS DE REGULAÇÃO", 14, 49);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.text("• Perfil de Regulação por Dimensão (Neuroemocional, Cognição, Saúde e Lazer).", 16, 55);
-      doc.text("• Tendência do Saldo Emocional Consolidado (Últimos 30 Dias).", 16, 61);
-      
-      doc.line(14, 66, 196, 66);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text("3. HISTÓRICO TÉCNICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 73);
+      doc.text("2. HISTÓRICO DIÁRIO E NOTAS COMPORTAMENTAIS", 14, 49);
       
-      let y = 81;
+      let y = 57;
       historico.forEach((reg) => {
         if (y > 265) {
           doc.addPage();
@@ -1377,7 +1367,7 @@
         const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9.5);
-        doc.text(`Data: ${dataFormatada} | Saldo Consolidado: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
+        doc.text(`Data: ${dataFormatada} | Saldo Emocional: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
         y += 6;
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8.5);
@@ -1413,7 +1403,7 @@
         y += 6;
         doc.setFont("helvetica", "bold");
         doc.setFontSize(10);
-        doc.text("4. PAUTA PARA A SESSÃO / ANOTAÇÕES GERAIS", 14, y);
+        doc.text("3. PAUTA PARA A SESSÃO / REFLEXÕES DO PACIENTE", 14, y);
         y += 6;
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9);
@@ -1433,12 +1423,12 @@
       y += 6;
       
       doc.setFont("helvetica", "italic");
-      doc.setFontSize(8);
-      const avisoLegal = "Nota técnica: esta avaliação não substitui um profissional psicologia/psiquiatra é apenas um instrumento de anotações que pode contribuir com a relação terapêutica entre paciente e profissional.";
+      doc.setFontSize(7.5);
+      const avisoLegal = "Nota técnica: esta avaliação não substitui um profissional psicologo/psiquiatra é apenas um instrumento de anotações que pode contribuir com a relação terapêutica entre paciente e profissional.";
       const linhasAviso = doc.splitTextToSize(avisoLegal, 180);
       doc.text(linhasAviso, 14, y);
 
-      doc.save(`Relatorio_Clinica_Psicologia_${new Date().toISOString().split('T')[0]}.pdf`);
+      doc.save(`Relatorio_Psicoeducativo_${new Date().toISOString().split('T')[0]}.pdf`);
     }
     window.onload = function() {
       const temaSalvo = localStorage.getItem('dashboard_clinica_tema') || 'light';
