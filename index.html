@@ -908,21 +908,18 @@
       }
     };
 
-    // Fallback genérico para perfis não detalhados individualmente
     function obterPerfilConfig(chave) {
       return perfisDados[chave] || perfisDados["geral"];
     }
 
-    // Estado da Aplicação
     let dadosApp = {
       perfilAtual: "ahsd",
-      registros: {} // chave: "YYYY-MM-DD" -> { saldo: X, valores: {key: valor}, notas: {key: texto} }
+      registros: {} 
     };
 
     let chartRadar = null;
     let chartLinha = null;
 
-    // Inicialização ao carregar a página
     window.addEventListener("DOMContentLoaded", () => {
       const hojeStr = new Date().toISOString().split("T")[0];
       document.getElementById("data-registro").value = hojeStr;
@@ -933,7 +930,6 @@
       atualizarEstatisticasECharts();
     });
 
-    // Alternância de Tema
     function alternarTema() {
       const body = document.body;
       const btn = document.getElementById("theme-toggle");
@@ -946,7 +942,6 @@
       }
     }
 
-    // Sistema de Abas
     function mudarAba(nomeAba, btnEl) {
       document.querySelectorAll(".aba-conteudo").forEach(el => el.classList.remove("active"));
       document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
@@ -961,7 +956,6 @@
       }
     }
 
-    // Dropdown Customizado de Perfil
     function toggleDropdown(event) {
       event.stopPropagation();
       const content = document.getElementById("custom-dropdown-list");
@@ -979,7 +973,6 @@
       document.getElementById("custom-dropdown-selected-text").textContent = nomeExibicao;
       document.getElementById("select-perfil-diagnostico").value = chave;
       
-      // Atualiza classe selected nos itens
       document.querySelectorAll(".dropdown-item").forEach(item => item.classList.remove("selected"));
       event.currentTarget.classList.add("selected");
 
@@ -992,7 +985,6 @@
       atualizarEstatisticasECharts();
     }
 
-    // Renderização dos Critérios baseados no Perfil
     function renderizarCriteriosPerfil(perfilChave) {
       const config = obterPerfilConfig(perfilChave);
       const container = document.getElementById("container-criterios-dinamicos");
@@ -1028,7 +1020,6 @@
       });
     }
 
-    // Seleção de Valor na Escala (1 a 5)
     function selecionarValor(btnEl, valor) {
       const botoes = btnEl.parentElement.querySelectorAll(".btn-escala");
       botoes.forEach(b => b.classList.remove("selected"));
@@ -1036,20 +1027,15 @@
       calcularSaldoDiario();
     }
 
-    // Cálculo do Saldo Emocional do Dia
     function calcularSaldoDiario() {
       const cards = document.querySelectorAll("#container-criterios-dinamicos .criterio-card");
       let soma = 0;
-      let total = 0;
 
       cards.forEach(card => {
         const sel = card.querySelector(".btn-escala.selected");
         if (sel) {
           const v = parseInt(sel.textContent);
-          // Escala de 1 a 5 convertida para saldo -2 a +2 (-2, -1, 0, +1, +2) ou média ponderada
-          // Vamos usar pontuação linear simples: (v - 3) somada
           soma += (v - 3);
-          total++;
         }
       });
 
@@ -1060,7 +1046,6 @@
       return saldoFinal;
     }
 
-    // Salvar Registro Diário
     function salvarRegistroDiario() {
       const dataStr = document.getElementById("data-registro").value;
       if (!dataStr) {
@@ -1096,7 +1081,6 @@
       atualizarEstatisticasECharts();
     }
 
-    // Carregar Registro de uma Data Específica
     function carregarRegistroData(dataStr) {
       const reg = dadosApp.registros[dataStr];
       const cards = document.querySelectorAll("#container-criterios-dinamicos .criterio-card");
@@ -1106,9 +1090,8 @@
         const botoes = card.querySelectorAll(".btn-escala");
         const textarea = card.querySelector(".anotacao-criterio");
 
-        // Reseta para padrão (3)
         botoes.forEach(b => b.classList.remove("selected"));
-        botoes[2].classList.add("selected"); // valor 3
+        botoes[2].classList.add("selected"); 
         textarea.value = "";
 
         if (reg && reg.valores && reg.valores[key] !== undefined) {
@@ -1127,7 +1110,6 @@
       calcularSaldoDiario();
     }
 
-    // Persistência localStorage
     function salvarNoLocalStorage() {
       localStorage.setItem("clinica_psico_dashboard", JSON.stringify(dadosApp));
     }
@@ -1149,7 +1131,6 @@
       }
     }
 
-    // Apagar Registro Individual
     function apagarRegistro(dataStr) {
       if (confirm(`Deseja realmente apagar o registro do dia ${dataStr.split("-").reverse().join("/")}?`)) {
         delete dadosApp.registros[dataStr];
@@ -1160,7 +1141,6 @@
       }
     }
 
-    // Renderizar Relatórios e Prontuário
     function renderizarRelatorios() {
       const containerHistorico = document.getElementById("container-historico-relatorios");
       const containerProntuario = document.getElementById("container-prontuario");
@@ -1173,7 +1153,6 @@
         return;
       }
 
-      // Renderiza Histórico
       containerHistorico.innerHTML = "";
       datas.forEach(dataStr => {
         const reg = dadosApp.registros[dataStr];
@@ -1181,7 +1160,7 @@
         const sinalSaldo = reg.saldo > 0 ? "+" : "";
         
         let htmlItens = "";
-        for (const [k, v] > of Object.entries(reg.valores || {})) {
+        for (const [k, v] of Object.entries(reg.valores || {})) {
           const notaStr = reg.notas && reg.notas[k] ? ` ("${reg.notas[k]}")` : "";
           htmlItens += `<div style="font-size: 0.78rem; color: var(--text-dimmed); margin-left: 10px;"> - ${formatarNomeCriterio(k)}: Nível ${v}${notaStr}</div>`;
         }
@@ -1191,19 +1170,18 @@
         itemDiv.innerHTML = `
           <div class="relatorio-item-header">
             <span class="relatorio-data">Data: ${dataFormatada} | Saldo: ${sinalSaldo}${reg.saldo}</span>
-            <button class="btn-apagar-diario" onclick="apagarRegistro('${dataStr}')">🗑️️ Apagar</button>
+            <button class="btn-apagar-diario" onclick="apagarRegistro('${dataStr}')">🗑 Apagar</button>
           </div>
           ${htmlItens}
         `;
         containerHistorico.appendChild(itemDiv);
       });
 
-      // Renderiza Prontuário Consolidado (Últimos 30 dias)
       const perfilConf = obterPerfilConfig(dadosApp.perfilAtual);
       const totalRegs = datas.length;
-      let soma Saldos = 0;
-      datas.forEach(d => soma Saldos += dadosApp.registros[d].saldo);
-      const mediaSaldo = (soma Saldos / totalRegs).toFixed(1);
+      let somaSaldos = 0;
+      datas.forEach(d => somaSaldos += dadosApp.registros[d].saldo);
+      const mediaSaldo = (somaSaldos / totalRegs).toFixed(1);
 
       containerProntuario.innerHTML = `
         <div class="prontuario-topico"><strong>Perfil Clínico Ativo:</strong> ${perfilConf.titulo}</div>
@@ -1231,12 +1209,10 @@
       return mapaNomes[key] || key;
     }
 
-    // Gráficos (Chart.js)
     function atualizarEstatisticasECharts() {
       const datas = Object.keys(dadosApp.registros).sort();
       if (datas.length === 0) return;
 
-      // Dados para o Gráfico de Linha (Saldo dos últimos 30 dias)
       const ultimos30Datas = datas.slice(-30);
       const labelsLinha = ultimos30Datas.map(d => d.split("-").reverse().join("/"));
       const valoresLinha = ultimos30Datas.map(d => dadosApp.registros[d].saldo);
@@ -1274,7 +1250,6 @@
         }
       });
 
-      // Dados para o Gráfico Radar (Média por Dimensão)
       const dimensoesSoma = {};
       const dimensoesCont = {};
 
@@ -1320,7 +1295,6 @@
       });
     }
 
-    // Modal de Termos
     function abrirModalTermos() {
       document.getElementById("modal-termos").classList.add("open");
     }
@@ -1328,7 +1302,6 @@
       document.getElementById("modal-termos").classList.remove("open");
     }
 
-    // Exportação JSON
     function exportarJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dadosApp, null, 2));
       const downloadAnchor = document.createElement('a');
@@ -1339,7 +1312,6 @@
       downloadAnchor.remove();
     }
 
-    // Importação JSON
     function importarJSON(event) {
       const fileReader = new FileReader();
       if (event.target.files[0]) {
@@ -1367,7 +1339,6 @@
       }
     }
 
-    // Geração de PDF Técnico com Gráficos e Aviso Legal Discreto
     async function gerarPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('p', 'mm', 'a4');
@@ -1377,10 +1348,9 @@
 
       let yPos = 15;
 
-      // Cabeçalho do PDF
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      doc.setTextColor(184, 134, 107); // Cor Accent
+      doc.setTextColor(184, 134, 107);
       doc.text("Relatório Mensal - Clínica de Psicologia", 14, yPos);
       
       yPos += 7;
@@ -1451,7 +1421,6 @@
         yPos += 3;
       });
 
-      // Inserção dos Gráficos no PDF
       if (chartRadar && chartLinha) {
         doc.addPage();
         yPos = 15;
@@ -1462,7 +1431,6 @@
         doc.text("VISUALIZAÇÃO GRÁFICA DE TENDÊNCIAS", 14, yPos);
         yPos += 10;
 
-        // Captura Gráfico Radar
         const canvasRadar = document.getElementById("graficoRadarDimensao");
         const imgRadar = canvasRadar.toDataURL("image/png");
         doc.setFont("helvetica", "bold");
@@ -1471,7 +1439,6 @@
         yPos += 4;
         doc.addImage(imgRadar, 'PNG', 14, yPos, 90, 60);
 
-        // Captura Gráfico Linha
         const canvasLinha = document.getElementById("graficoLinhaSaldo");
         const imgLinha = canvasLinha.toDataURL("image/png");
         doc.text("Tendência do Saldo Emocional (30 Dias)", 114, yPos - 4);
@@ -1480,7 +1447,6 @@
         yPos += 75;
       }
 
-      // Adicionar Aviso Legal Discreto no Rodapé de todas as páginas ou na última
       const pageCount = doc.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
