@@ -658,900 +658,845 @@
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
 
-      <!-- Seção: Neuroemocional & AH/SD -->
-      <div class="categoria-titulo">Neuroemocional & AH/SD</div>
+      <!-- Dinâmica de Critérios Inserida no Container de Registro -->
+      <div id="container-criterios-dinamicos"></div>
 
-      <div class="criterio-card" data-key="ansiedade">
-        <div class="criterio-nome">Ansiedade & Ruminação</div>
-        <div class="criterio-legenda">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="vitalidade">
-        <div class="criterio-nome">Vitalidade & Humor</div>
-        <div class="criterio-legenda">1 = Apatia/Exaustão extrema; 3 = Disposição moderada; 5 = Energia e motivação altas.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="sobrecarga">
-        <div class="criterio-nome">Sobrecarga Sensorial</div>
-        <div class="criterio-legenda">1 = Hipersensibilidade/Irritação extrema; 3 = Desconforto pontual; 5 = Ambiente regulado.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="autocompaixao">
-        <div class="criterio-nome">Autocompaixão & Flexibilidade</div>
-        <div class="criterio-legenda">1 = Autocrítica destrutiva; 3 = Aceitação razoável; 5 = Diálogo interno acolhedor.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <!-- Seção: Foco & Cognição -->
-      <div class="categoria-titulo">Foco & Cognição</div>
-
-      <div class="criterio-card" data-key="nutricao_intelectual">
-        <div class="criterio-nome">Nutrição Intelectual / Estimulação</div>
-        <div class="criterio-legenda">1 = Tédio/Subestimulação severa; 3 = Aprendizado básico; 5 = Hiperfoco produtivo/Estímulo ideal.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="foco_estudos">
-        <div class="criterio-nome">Foco nos Estudos / Projetos</div>
-        <div class="criterio-legenda">1 = Dispersão total; 3 = Foco parcial; 5 = Execução fluida sem distrações.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="produtividade_criativa">
-        <div class="criterio-nome">Produtividade Criativa / Trabalho</div>
-        <div class="criterio-legenda">1 = Bloqueio criativo; 3 = Entregas essenciais; 5 = Alto fluxo criativo e realização.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <!-- Seção: Saúde Integral & Rotina -->
-      <div class="categoria-titulo">Saúde Integral & Rotina</div>
-
-      <div class="criterio-card" data-key="qualidade_sono">
-        <div class="criterio-nome">Qualidade do Sono</div>
-        <div class="criterio-legenda">1 = Insônia/Sono não reparador; 3 = Sono mediano; 5 = Descanso profundo e revigorante.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="rotinas_autocuidado">
-        <div class="criterio-nome">Rotinas de Autocuidado</div>
-        <div class="criterio-legenda">1 = Abandono total de si; 3 = Higiene e cuidados básicos; 5 = Rituais de bem-estar completos.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="alimentacao">
-        <div class="criterio-nome">Alimentação Equilibrada</div>
-        <div class="criterio-legenda">1 = Ultraprocessados/Compulsão; 3 = Alimentação razoável; 5 = Refeições nutritivas.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="hidratacao">
-        <div class="criterio-nome">Hidratação</div>
-        <div class="criterio-legenda">1 = Sem consumo de água; 3 = Ingestão moderada; 5 = Metas de hidratação atingidas.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="exercicios">
-        <div class="criterio-nome">Exercícios / Movimento</div>
-        <div class="criterio-legenda">1 = Sedentarismo absoluto; 3 = Movimentação leve; 5 = Treino/Atividade completa.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="cuidados_medicos">
-        <div class="criterio-nome">Cuidados Médicos & Medicação</div>
-        <div class="criterio-legenda">1 = Esqueceu medicação/sintomas ignorados; 3 = Parcialmente cumprido; 5 = Prescrições e rotina em dia.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="rotina_domestica">
-        <div class="criterio-nome">Rotina Doméstica / Organização</div>
-        <div class="criterio-legenda">1 = Caos/Acúmulo; 3 = Tarefas básicas em dia; 5 = Ambiente limpo e estruturado.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="gestao_financeira">
-        <div class="criterio-nome">Gestão Financeira</div>
-        <div class="criterio-legenda">1 = Impulsividade/Estresse financeiro; 3 = Gastos sob controle; 5 = Planejamento e economia rigorosos.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <!-- Seção: Conexões & Lazer -->
-      <div class="categoria-titulo">Conexões & Lazer</div>
-
-      <div class="criterio-card" data-key="relacionamento">
-        <div class="criterio-nome">Relacionamento Afetivo / Social</div>
-        <div class="criterio-legenda">1 = Isolamento doloroso/Conflito; 3 = Trocas superficiais; 5 = Conexão profunda e acolhedora.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <div class="criterio-card" data-key="hobbies">
-        <div class="criterio-nome">Hobbies & Desconexão</div>
-        <div class="criterio-legenda">1 = Sem tempo para si/Cansaço; 3 = Lazer passivo; 5 = Imersão em hobbies/Desconexão real.</div>
-        <div class="botoes-escala">
-          <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
-          <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
-          <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
-        </div>
-        <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
-      </div>
-
-      <!-- Painel Fixo de Saldo e Ação -->
+      <!-- Painel Inferior de Guardar -->
       <div class="painel-guardar">
         <div class="saldo-linha">
-          <span>Saldo do Dia:</span>
-          <span id="saldo-badge" class="saldo-badge">0 (Equilíbrio)</span>
+          <span>Saldo Emocional do Dia:</span>
+          <span id="badge-saldo-diario" class="saldo-badge">+0</span>
         </div>
-        <button class="btn-guardar" onclick="salvarRegistroDiario()">Salvar Registro Diário</button>
+        <button class="btn-guardar" onclick="salvarRegistroDiario()">
+          Guardar Registro Diário
+        </button>
       </div>
 
     </div>
 
     <!-- ==================== ABA 2: RELATÓRIOS ==================== -->
     <div id="aba-relatorios" class="aba-conteudo">
-      <div class="acoes-globais-topo">
-        <button class="btn-discreto" onclick="exportarBackupJSON()">Exportar</button>
-        <label class="btn-discreto">
-          Importar
-          <input type="file" accept=".json" onchange="importarBackupJSON(event)">
-        </label>
-        <button class="btn-discreto" onclick="gerarPDFMensal()">PDF do Mês</button>
+      <div class="card">
+        <div class="card-title">Relatórios & Prontuário Clínico</div>
+        
+        <div class="acoes-globais-topo">
+          <button class="btn-discreto" onclick="gerarPDF()">📄 Exportar Relatório Técnico em PDF</button>
+          <button class="btn-discreto" onclick="exportarJSON()">💾 Backup (JSON)</button>
+          <label class="btn-discreto">
+            📂 Restaurar (JSON)
+            <input type="file" accept=".json" onchange="importarJSON(event)">
+          </label>
+        </div>
+
+        <div class="prontuario-subtitulo">Resumo Técnico Consolidado dos Últimos 30 Dias</div>
+        <div id="container-prontuario" class="caixa-prontuario">
+          <!-- Conteúdo gerado dinamicamente -->
+        </div>
       </div>
 
-      <div id="lista-relatorios">
-        <!-- Itens inseridos via JS -->
+      <div class="card">
+        <div class="card-title">Histórico Detalhado de Registros</div>
+        <div id="container-historico-relatorios">
+          <!-- Histórico gerado dinamicamente -->
+        </div>
       </div>
     </div>
 
-    <!-- ==================== ABA 3: EVOLUÇÃO (GRÁFICOS & PRONTUÁRIO) ==================== -->
+    <!-- ==================== ABA 3: EVOLUÇÃO ==================== -->
     <div id="aba-evolucao" class="aba-conteudo">
       <div class="card">
-        <div class="card-title">Análise Descritiva de Evolução (30 Dias)</div>
-        <div id="caixa-resumo-evolucao" class="caixa-prontuario">
-          Carregando prontuário de evolução...
+        <div class="card-title">Perfil de Regulação por Dimensão</div>
+        <div class="chart-box">
+          <canvas id="graficoRadarDimensao"></canvas>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title">Tendência do Saldo Emocional (30 Dias)</div>
         <div class="chart-box">
-          <canvas id="chartSaldoLinha"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Perfil de Regulação por Dimensão</div>
-        <div class="chart-box">
-          <canvas id="chartCategoriasRadar"></canvas>
+          <canvas id="graficoLinhaSaldo"></canvas>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Rodapé -->
-  <footer class="app-footer">
-    <span>Armazenamento Local (LGPD) &bull;</span>
-    <button class="footer-link" onclick="abrirModalTermos()">Termos de Uso & Privacidade</button>
-  </footer>
+  <div class="app-footer">
+    <span>Clínica de Psicologia &copy; 2026</span>
+    <span>&bull;</span>
+    <button class="footer-link" onclick="abrirModalTermos()">Aviso Técnico e Legal</button>
+  </div>
 
-  <!-- Modal de Termos e Política de Privacidade -->
-  <div class="modal-overlay" id="modal-termos" onclick="fecharModalFora(event)">
+  <!-- Modal de Termos / Aviso Legal -->
+  <div class="modal-overlay" id="modal-termos">
     <div class="modal-box">
       <div class="modal-header">
-        <span>Termos de Uso & Política de Privacidade</span>
+        <span>Aviso Técnico e Legal</span>
         <button class="modal-close" onclick="fecharModalTermos()">&times;</button>
       </div>
       <div class="modal-body">
-        <h3>1. Natureza da Ferramenta e Isenção Médica</h3>
-        <p>Este Dashboard é uma ferramenta de autogestão, acompanhamento diário e monitoramento de bem-estar. <strong>NÃO constitui</strong> dispositivo médico, diagnóstico clínico ou tratamento psiquiátrico/psicológico. Em caso de crise ou sofrimento agudo, procure ajuda profissional especializada.</p>
+        <h3>Instrumento de Apoio Clínico</h3>
+        <p>Esta ferramenta de acompanhamento e anotação neuroemocional foi desenvolvida para apoiar o registro longitudinal de variáveis comportamentais, cognitivas e afetivas entre sessões.</p>
         
-        <h3>2. Soberania e Armazenamento Local de Dados</h3>
-        <p>Arquitetado com foco em privacidade digital (LGPD-compliant). Todos os registos diários, notas e métricas são armazenados <strong>estritamente no seu próprio navegador (LocalStorage)</strong>. Não recolhemos, visualizamos ou processamos os seus dados em servidores centrais.</p>
-
-        <h3>3. Backup e Portabilidade</h3>
-        <p>A aplicação disponibiliza recursos de exportação e importação de backups em formato JSON. O utilizador é responsável por guardar e proteger as suas cópias de segurança caso limpe o cache do navegador.</p>
-
+        <h3>Natureza do Instrumento</h3>
+        <p>Este aplicativo e a respectiva avaliação descritiva gerada **não substituem em hipótese alguma uma avaliação, diagnóstico ou acompanhamento com profissional de psicologia ou psiquiatria**. Trata-se estritamente de um instrumento de autopreenchimento e anotações clínicas que visa contribuir com o vínculo e a precisão da relação terapêutica entre paciente e profissional.</p>
+        
         <div class="autor-credito">
-          Concebido e desenvolvido por <strong>Jully Kutsk Maieski</strong>
+          Dashboard Clínico Neuroemocional &bull; Desenvolvido para Prática Psicoterapêutica Avançada
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const perfisFoco = {
-      ahsd: { nome: "AH/SD (Altas Habilidades / Superdotação)", prioridades: ["nutricao_intelectual", "autocompaixao", "produtividade_criativa", "ansiedade"] },
-      dupla_excepcionalidade: { nome: "Dupla Excepcionalidade (AH/SD + Neurodivergência)", prioridades: ["nutricao_intelectual", "foco_estudos", "sobrecarga", "autocompaixao"] },
-      tdah: { nome: "TDAH (Déficit de Atenção / Hiperatividade)", prioridades: ["foco_estudos", "rotina_domestica", "qualidade_sono", "produtividade_criativa"] },
-      tea: { nome: "TEA (Transtorno do Espectro Autista)", prioridades: ["sobrecarga", "rotinas_autocuidado", "relacionamento", "qualidade_sono"] },
-      transtorno_bipolar: { nome: "Transtorno Bipolar / Ciclotimia", prioridades: ["vitalidade", "qualidade_sono", "cuidados_medicos", "ansiedade"] },
-      depressao: { nome: "Transtorno Depressivo (Unipolar)", prioridades: ["vitalidade", "qualidade_sono", "rotinas_autocuidado", "alimentacao"] },
-      borderline: { nome: "Transtorno de Personalidade Borderline (TPB)", prioridades: ["ansiedade", "vitalidade", "relacionamento", "autocompaixao"] },
-      personalidade_geral: { nome: "Outros Transtornos de Personalidade", prioridades: ["autocompaixao", "relacionamento", "rotina_domestica", "ansiedade"] },
-      transtornos_alimentares: { nome: "Transtornos Alimentares", prioridades: ["alimentacao", "autocompaixao", "rotinas_autocuidado", "ansiedade"] },
-      burnout: { nome: "Burnout / Exaustão Profissional & Acadêmica", prioridades: ["qualidade_sono", "vitalidade", "hobbies", "sobrecarga"] },
-      luto_perdas: { nome: "Luto, Crises e Rupturas Relacionais", prioridades: ["vitalidade", "ansiedade", "autocompaixao", "relacionamento"] },
-      geral: { nome: "Geral / Saúde Mental & Bem-Estar", prioridades: ["ansiedade", "vitalidade", "alimentacao", "qualidade_sono"] }
+    // Banco de Critérios por Perfil Clínico
+    const perfisDados = {
+      ahsd: {
+        titulo: "AH/SD (Altas Habilidades / Superdotação)",
+        prioritarios: ["ansiedade", "nutricao_intelectual", "foco_estudos"],
+        categorias: [
+          {
+            nome: "Neuroemocional & Cognitivo",
+            criterios: [
+              { key: "ansiedade", nome: "Ansiedade & Ruminação", legenda: "1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada." },
+              { key: "sobrecarga_sensorial", nome: "Sobrecarga Sensorial", legenda: "1 = Exaustão sensorial severa; 3 = Tolerância moderada; 5 = Conforto sensorial completo." },
+              { key: "autocompaxao", nome: "Autocompaixão & Flexibilidade", legenda: "1 = Autocrítica severa / perfeccionismo paralisante; 3 = Flexibilidade moderada; 5 = Autoaceitação plena." }
+            ]
+          },
+          {
+            nome: "Engajamento & Produtividade",
+            criterios: [
+              { key: "nutricao_intelectual", nome: "Nutrição Intelectual / Estimulação", legenda: "1 = Tédio profundo / Underachievement; 3 = Estímulo adequado; 5 = Profundo flow cognitivo." },
+              { key: "foco_estudos", nome: "Foco nos Estudos / Projetos", legenda: "1 = Dispersão total / Procrastinação; 3 = Foco funcional; 5 = Concentração hiperfocada e produtiva." }
+            ]
+          },
+          {
+            nome: "Bases Biológicas & Bem-Estar",
+            criterios: [
+              { key: "sono", nome: "Qualidade do Sono", legenda: "1 = Insônia / Ciclo invertido; 3 = Sono reparador mediano; 5 = Sono restaurador perfeito." },
+              { key: "hidratacao", nome: "Hidratação", legenda: "1 = Desidratação / Esquece de beber água; 3 = Hidratação mediana; 5 = Hidratação ideal (> 2L)." },
+              { key: "exercicios", nome: "Exercícios / Movimento", legenda: "1 = Sedentarismo total; 3 = Caminhada leve / Movimento esporádico; 5 = Prática regular de exercícios." },
+              { key: "cuidados_medicos", nome: "Cuidados Médicos & Medicação", legenda: "1 = Negligência total com tratamentos; 3 = Adesão parcial; 5 = Adesão e autocuidado rigorosos." },
+              { key: "relacionamento", nome: "Relacionamento Afetivo / Social", legenda: "1 = Isolamento ou conflito intenso; 3 = Interações funcionais; 5 = Conexão social nutritiva." },
+              { key: "hobbies", nome: "Hobbies & Desconexão", legenda: "1 = Sem momentos de pausa; 3 = Pausas pontuais; 5 = Desconexão e lazer prazerosos." }
+            ]
+          }
+        ]
+      },
+      transtorno_bipolar: {
+        titulo: "Transtorno Bipolar / Ciclotimia",
+        prioritarios: ["vitalidade_humor", "ansiedade", "sono"],
+        categorias: [
+          {
+            nome: "Humor & Regulação Afetiva",
+            criterios: [
+              { key: "vitalidade_humor", nome: "Vitalidade & Humor", legenda: "1 = Depressão profunda / Anergia; 3 = Humor eutímico / Estável; 5 = Hipomania / Irritabilidade / Agitação." },
+              { key: "ansiedade", nome: "Ansiedade & Ruminação", legenda: "1 = Crise severa de ansiedade/angústia; 3 = Ansiedade controlada; 5 = Calma e estabilidade emocional." },
+              { key: "sobrecarga_sensorial", nome: "Sobrecarga Sensorial", legenda: "1 = Hipersensibilidade intensa a estímulos; 3 = Tolerância mediana; 5 = Equilíbrio sensorial." }
+            ]
+          },
+          {
+            nome: "Rotina & Comportamento",
+            criterios: [
+              { key: "sono", nome: "Qualidade do Sono", legenda: "1 = Insônia severa ou hipersonia; 3 = Sono dentro do padrão habitual; 5 = Descanso profundo e restaurador." },
+              { key: "cuidados_medicos", nome: "Cuidados Médicos & Medicação", legenda: "1 = Falhas na medicação / Sem acompanhamento; 3 = Uso regular; 5 = Rigor absoluto com tratamento e psiquiatra." },
+              { key: "relacionamento", nome: "Relacionamento Afetivo / Social", legenda: "1 = Conflitos ou afastamento social drástico; 3 = Convivência estável; 5 = Interações saudáveis e empáticas." }
+            ]
+          },
+          {
+            nome: "Hábitos de Suporte",
+            criterios: [
+              { key: "hidratacao", nome: "Hidratação", legenda: "1 = Baixa ingestão de líquidos; 3 = Razoável; 5 = Excelente hidratação." },
+              { key: "exercicios", nome: "Exercícios / Movimento", legenda: "1 = Inércia total; 3 = Caminhadas leves; 5 = Atividade física vigorosa e regular." },
+              { key: "nutricao_intelectual", nome: "Nutrição Intelectual / Estimulação", legenda: "1 = Mente estagnada; 3 = Atividade leve; 5 = Estímulo cognitivo prazeroso." },
+              { key: "hobbies", nome: "Hobbies & Desconexão", legenda: "1 = Sem momentos de lazer; 3 = Lazer moderado; 5 = Plena desconexão e prazer." }
+            ]
+          }
+        ]
+      },
+      tdah: {
+        titulo: "TDAH (Déficit de Atenção / Hiperatividade)",
+        prioritarios: ["foco_estudos", "ansiedade", "sono"],
+        categorias: [
+          {
+            nome: "Funções Executivas & Foco",
+            criterios: [
+              { key: "foco_estudos", nome: "Foco nos Estudos / Projetos", legenda: "1 = Distração extrema / Procrastinação paralisante; 3 = Foco mediano com apoios; 5 = Concentração contínua e produtiva." },
+              { key: "ansiedade", nome: "Ansiedade & Sobrecarga Executiva", legenda: "1 = Paralisação por excesso de tarefas; 3 = Gestão razoável de prazos; 5 = Fluidez e tranquilidade nas tarefas." },
+              { key: "nutricao_intelectual", nome: "Nutrição Intelectual / Estimulação", legenda: "1 = Tédio crônico; 3 = Estímulo funcional; 5 = Alto engajamento criativo." }
+            ]
+          },
+          {
+            nome: "Autocuidado & Regulação",
+            criterios: [
+              { key: "sono", nome: "Qualidade do Sono", legenda: "1 = Atraso de fase severo / Sem rotina de sono; 3 = Sono funcional; 5 = Sono reparador." },
+              { key: "cuidados_medicos", nome: "Cuidados Médicos & Medicação", legenda: "1 = Esquecimento de medicação / consultas; 3 = Uso regular com lembretes; 5 = Adesão perfeita." },
+              { key: "exercicios", nome: "Exercícios / Movimento", legenda: "1 = Sedentarismo; 3 = Movimento esporádico; 5 = Gasto adequado de energia física." }
+            ]
+          },
+          {
+            nome: "Social & Bem-Estar",
+            criterios: [
+              { key: "relacionamento", nome: "Relacionamento Afetivo / Social", legenda: "1 = Conflitos por impulsividade ou desatenção; 3 = Relacionamentos estáveis; 5 = Conexões empáticas." },
+              { key: "hidratacao", nome: "Hidratação", legenda: "1 = Desidratado / Esquece de beber água; 3 = Razoável; 5 = Hidratação adequada." },
+              { key: "hobbies", nome: "Hobbies & Desconexão", legenda: "1 = Hiperfoco desregulado em telas; 3 = Pausas equilibradas; 5 = Lazer revigorante." }
+            ]
+          }
+        ]
+      },
+      tea: {
+        titulo: "TEA (Espectro Autista)",
+        prioritarios: ["sobrecarga_sensorial", "ansiedade", "sono"],
+        categorias: [
+          {
+            nome: "Sensorial & Emocional",
+            criterios: [
+              { key: "sobrecarga_sensorial", nome: "Sobrecarga Sensorial", legenda: "1 = Meltdown / Shutdown iminente; 3 = Conforto sensorial tolerável; 5 = Ambiente regulado e confortável." },
+              { key: "ansiedade", nome: "Ansiedade & Rigidez de Rotina", legenda: "1 = Ansiedade extrema por imprevistos; 3 = Flexibilidade moderada; 5 = Tranquilidade e previsibilidade." },
+              { key: "autocompaxao", nome: "Autocompaixão & Mascaramento", legenda: "1 = Exaustão extrema por masking; 3 = Espaços seguros de descompressão; 5 = Autoaceitação autêntica." }
+            ]
+          },
+          {
+            nome: "Rotina & Especialização",
+            criterios: [
+              { key: "nutricao_intelectual", nome: "Interesses Restritos & Específicos", legenda: "1 = Impossibilidade de focar em hiperfocos; 3 = Espaço para interesses; 5 = Prazer profundo nos hiperfocos." },
+              { key: "sono", nome: "Qualidade do Sono", legenda: "1 = Distúrbios severos de sono; 3 = Descanso regular; 5 = Sono restaurador." }
+            ]
+          },
+          {
+            nome: "Saúde & Suporte",
+            criterios: [
+              { key: "relacionamento", nome: "Relacionamento Afetivo / Social", legenda: "1 = Exaustão social severa; 3 = Interações dosadas; 5 = Conexões seguras e confortáveis." },
+              { key: "cuidados_medicos", nome: "Cuidados Médicos & Medicação", legenda: "1 = Dificuldade com ambiente clínico; 3 = Acompanhamento funcional; 5 = Suporte adequado." },
+              { key: "hidratacao", nome: "Hidratação", legenda: "1 = Baixa ingestão; 3 = Funcional; 5 = Ótima hidratação." },
+              { key: "exercicios", nome: "Exercícios / Movimento", legenda: "1 = Sedentário; 3 = Caminhadas / Propriocepção; 5 = Atividade física prazerosa." },
+              { key: "hobbies", nome: "Hobbies & Desconexão", legenda: "1 = Sem tempo para descompressão; 3 = Momentos isolados; 5 = Descompressão plena." }
+            ]
+          }
+        ]
+      },
+      geral: {
+        titulo: "Geral / Saúde Mental & Bem-Estar",
+        prioritarios: ["ansiedade", "sono", "vitalidade_humor"],
+        categorias: [
+          {
+            nome: "Equilíbrio Emocional",
+            criterios: [
+              { key: "ansiedade", nome: "Ansiedade & Ruminação", legenda: "1 = Alta ansiedade / Estresse agudo; 3 = Ansiedade moderada; 5 = Serenidade e equilíbrio." },
+              { key: "vitalidade_humor", nome: "Vitalidade & Humor", legenda: "1 = Humor deprimido / Desânimo; 3 = Humor neutro/estável; 5 = Ânimo e disposição." },
+              { key: "autocompaxao", nome: "Autocompaixão & Autocuidado", legenda: "1 = Autocrítica severa; 3 = Cuidado mediano; 5 = Pleno acolhimento pessoal." }
+            ]
+          },
+          {
+            nome: "Hábitos Fundamentais",
+            criterios: [
+              { key: "sono", nome: "Qualidade do Sono", legenda: "1 = Insônia / Sono ruim; 3 = Sono regular; 5 = Sono revigorante." },
+              { key: "hidratacao", nome: "Hidratação", legenda: "1 = Desidratado; 3 = Razoável; 5 = Ideal." },
+              { key: "exercicios", nome: "Exercícios / Movimento", legenda: "1 = Inativo; 3 = Moderado; 5 = Ativo." },
+              { key: "cuidados_medicos", nome: "Cuidados Médicos & Medicação", legenda: "1 = Sem cuidados; 3 = Parcial; 5 = Excelente adesão." }
+            ]
+          },
+          {
+            nome: "Relações & Lazer",
+            criterios: [
+              { key: "relacionamento", nome: "Relacionamento Afetivo / Social", legenda: "1 = Conflituoso ou isolado; 3 = Estável; 5 = Nutritivo." },
+              { key: "hobbies", nome: "Hobbies & Desconexão", legenda: "1 = Inexistente; 3 = Esporádico; 5 = Frequente e prazeroso." },
+              { key: "foco_estudos", nome: "Trabalho / Produtividade", legenda: "1 = Exaustão / Burnout; 3 = Ritmo sustentável; 5 = Realização equilibrada." }
+            ]
+          }
+        ]
+      }
     };
 
-    const nomesCriterios = {
-      ansiedade: "Ansiedade & Ruminação",
-      vitalidade: "Vitalidade & Humor",
-      sobrecarga: "Sobrecarga Sensorial",
-      autocompaixao: "Autocompaixão & Flexibilidade",
-      nutricao_intelectual: "Nutrição Intelectual / Estimulação",
-      foco_estudos: "Foco nos Estudos / Projetos",
-      produtividade_criativa: "Produtividade Criativa / Trabalho",
-      qualidade_sono: "Qualidade do Sono",
-      rotinas_autocuidado: "Rotinas de Autocuidado",
-      alimentacao: "Alimentação Equilibrada",
-      hidratacao: "Hidratação",
-      exercicios: "Exercícios / Movimento",
-      cuidados_medicos: "Cuidados Médicos & Medicação",
-      rotina_domestica: "Rotina Doméstica / Organização",
-      gestao_financeira: "Gestão Financeira",
-      relacionamento: "Relacionamento Afetivo / Social",
-      hobbies: "Hobbies & Desconexão"
+    // Fallback genérico para perfis não detalhados individualmente
+    function obterPerfilConfig(chave) {
+      return perfisDados[chave] || perfisDados["geral"];
+    }
+
+    // Estado da Aplicação
+    let dadosApp = {
+      perfilAtual: "ahsd",
+      registros: {} // chave: "YYYY-MM-DD" -> { saldo: X, valores: {key: valor}, notas: {key: texto} }
     };
 
-    const categoriasAreas = {
-      "Neuroemocional & AH/SD": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
-      "Foco & Cognição": ["nutricao_intelectual", "foco_estudos", "produtividade_criativa"],
-      "Saúde Integral & Rotina": ["qualidade_sono", "rotinas_autocuidado", "alimentacao", "hidratacao", "exercicios", "cuidados_medicos", "rotina_domestica", "gestao_financeira"],
-      "Conexões & Lazer": ["relacionamento", "hobbies"]
-    };
+    let chartRadar = null;
+    let chartLinha = null;
 
-    let instChartLinha = null;
-    let instChartRadar = null;
+    // Inicialização ao carregar a página
+    window.addEventListener("DOMContentLoaded", () => {
+      const hojeStr = new Date().toISOString().split("T")[0];
+      document.getElementById("data-registro").value = hojeStr;
+      
+      carregarDoLocalStorage();
+      renderizarCriteriosPerfil("ahsd");
+      carregarRegistroData(hojeStr);
+      atualizarEstatisticasECharts();
+    });
 
+    // Alternância de Tema
     function alternarTema() {
       const body = document.body;
-      const btn = document.getElementById('theme-toggle');
-      const atual = body.getAttribute('data-theme');
-      
-      if (atual === 'dark') {
-        body.setAttribute('data-theme', 'light');
-        btn.innerHTML = '🌙';
-        localStorage.setItem('dashboard_clinica_tema', 'light');
+      const btn = document.getElementById("theme-toggle");
+      if (body.getAttribute("data-theme") === "light") {
+        body.setAttribute("data-theme", "dark");
+        btn.textContent = "☀️";
       } else {
-        body.setAttribute('data-theme', 'dark');
-        btn.innerHTML = '☀️';
-        localStorage.setItem('dashboard_clinica_tema', 'dark');
-      }
-
-      if (document.getElementById('aba-evolucao').classList.contains('active')) {
-        renderizarEvolucao();
+        body.setAttribute("data-theme", "light");
+        btn.textContent = "🌙";
       }
     }
 
+    // Sistema de Abas
+    function mudarAba(nomeAba, btnEl) {
+      document.querySelectorAll(".aba-conteudo").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+      
+      document.getElementById("aba-" + nomeAba).classList.add("active");
+      btnEl.classList.add("active");
+
+      if (nomeAba === "relatorios") {
+        renderizarRelatorios();
+      } else if (nomeAba === "evolucao") {
+        atualizarEstatisticasECharts();
+      }
+    }
+
+    // Dropdown Customizado de Perfil
     function toggleDropdown(event) {
       event.stopPropagation();
-      const content = document.getElementById('custom-dropdown-list');
-      content.classList.toggle('open');
+      const content = document.getElementById("custom-dropdown-list");
+      content.classList.toggle("open");
     }
 
-    window.addEventListener('click', function() {
-      const content = document.getElementById('custom-dropdown-list');
-      if (content && content.classList.contains('open')) {
-        content.classList.remove('open');
+    window.addEventListener("click", () => {
+      const content = document.getElementById("custom-dropdown-list");
+      if (content && content.classList.contains("open")) {
+        content.classList.remove("open");
       }
     });
 
-    function selecionarPerfilCustom(valorChave, textoNome) {
-      document.getElementById('select-perfil-diagnostico').value = valorChave;
-      document.getElementById('custom-dropdown-selected-text').innerText = textoNome;
+    function selecionarPerfilCustom(chave, nomeExibicao) {
+      document.getElementById("custom-dropdown-selected-text").textContent = nomeExibicao;
+      document.getElementById("select-perfil-diagnostico").value = chave;
       
-      document.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
+      // Atualiza classe selected nos itens
+      document.querySelectorAll(".dropdown-item").forEach(item => item.classList.remove("selected"));
+      event.currentTarget.classList.add("selected");
 
-      document.getElementById('custom-dropdown-list').classList.remove('open');
-      alterarPerfilDiagnostico(valorChave);
+      dadosApp.perfilAtual = chave;
+      renderizarCriteriosPerfil(chave);
+      
+      const dataStr = document.getElementById("data-registro").value;
+      carregarRegistroData(dataStr);
+      salvarNoLocalStorage();
+      atualizarEstatisticasECharts();
     }
 
-    function abrirModalTermos() {
-      document.getElementById('modal-termos').classList.add('open');
-    }
+    // Renderização dos Critérios baseados no Perfil
+    function renderizarCriteriosPerfil(perfilChave) {
+      const config = obterPerfilConfig(perfilChave);
+      const container = document.getElementById("container-criterios-dinamicos");
+      container.innerHTML = "";
 
-    function fecharModalTermos() {
-      document.getElementById('modal-termos').classList.remove('open');
-    }
+      config.categorias.forEach(cat => {
+        const divCat = document.createElement("div");
+        divCat.className = "categoria-titulo";
+        divCat.textContent = cat.nome;
+        container.appendChild(divCat);
 
-    function fecharModalFora(event) {
-      if (event.target.id === 'modal-termos') {
-        fecharModalTermos();
-      }
-    }
+        cat.criterios.forEach(crit => {
+          const isPrioritario = config.prioritarios.includes(crit.key);
+          
+          const card = document.createElement("div");
+          card.className = "criterio-card" + (isPrioritario ? " prioritario" : "");
+          card.setAttribute("data-key", crit.key);
 
-    function alterarPerfilDiagnostico(perfilChave) {
-      localStorage.setItem('dashboard_clinica_perfil', perfilChave);
-      const config = perfisFoco[perfilChave] || perfisFoco.ahsd;
-
-      document.querySelectorAll('.criterio-card').forEach(card => {
-        const key = card.getAttribute('data-key');
-        if (config.prioridades.includes(key)) {
-          card.classList.add('prioritario');
-        } else {
-          card.classList.remove('prioritario');
-        }
+          card.innerHTML = `
+            <div class="criterio-nome">${crit.nome}</div>
+            <div class="criterio-legenda">${crit.legenda}</div>
+            <div class="botoes-escala">
+              <button class="btn-escala" onclick="selecionarValor(this, 1)">1</button>
+              <button class="btn-escala" onclick="selecionarValor(this, 2)">2</button>
+              <button class="btn-escala selected" onclick="selecionarValor(this, 3)">3</button>
+              <button class="btn-escala" onclick="selecionarValor(this, 4)">4</button>
+              <button class="btn-escala" onclick="selecionarValor(this, 5)">5</button>
+            </div>
+            <textarea class="anotacao-criterio" placeholder="Anotação / observação sobre este critério..."></textarea>
+          `;
+          container.appendChild(card);
+        });
       });
     }
 
-    function mudarAba(abaId, btnElement) {
-      document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(`aba-${abaId}`).classList.add('active');
-      btnElement.classList.add('active');
-
-      if (abaId === 'relatorios') renderizarRelatorios();
-      if (abaId === 'evolucao') renderizarEvolucao();
+    // Seleção de Valor na Escala (1 a 5)
+    function selecionarValor(btnEl, valor) {
+      const botoes = btnEl.parentElement.querySelectorAll(".btn-escala");
+      botoes.forEach(b => b.classList.remove("selected"));
+      btnEl.classList.add("selected");
+      calcularSaldoDiario();
     }
 
-    function selecionarValor(btn, valor) {
-      const card = btn.closest('.criterio-card');
-      card.querySelectorAll('.btn-escala').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      atualizarSaldoDia();
-    }
+    // Cálculo do Saldo Emocional do Dia
+    function calcularSaldoDiario() {
+      const cards = document.querySelectorAll("#container-criterios-dinamicos .criterio-card");
+      let soma = 0;
+      let total = 0;
 
-    function calcularSaldoAtual() {
-      let saldoTotal = 0;
-      document.querySelectorAll('.criterio-card').forEach(card => {
-        const btnSelecionado = card.querySelector('.btn-escala.selected');
-        if (btnSelecionado) {
-          const val = parseInt(btnSelecionado.innerText);
-          saldoTotal += (val - 3);
-        }
-      });
-      return saldoTotal;
-    }
-
-    function atualizarSaldoDia() {
-      const saldo = calcularSaldoAtual();
-      const badge = document.getElementById('saldo-badge');
-      
-      if (saldo > 0) {
-        badge.innerText = `+${saldo} (Regulado/Positivo)`;
-        badge.style.background = '#10b981';
-      } else if (saldo < 0) {
-        badge.innerText = `${saldo} (Sobrecarga/Desgaste)`;
-        badge.style.background = '#ef4444';
-      } else {
-        badge.innerText = `0 (Equilíbrio)`;
-        badge.style.background = '#b8866b';
-      }
-    }
-
-    function carregarRegistroData(dataSelecionada) {
-      if (!dataSelecionada) return;
-      const historico = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
-      const registro = historico.find(item => item.data === dataSelecionada);
-
-      document.querySelectorAll('.criterio-card').forEach(card => {
-        const key = card.getAttribute('data-key');
-        const botoes = card.querySelectorAll('.btn-escala');
-        const textarea = card.querySelector('.anotacao-criterio');
-
-        botoes.forEach(b => b.classList.remove('selected'));
-
-        if (registro && registro.criterios[key]) {
-          const valorSalvo = registro.criterios[key].valor;
-          const obsSalva = registro.criterios[key].observacao || '';
-
-          botoes.forEach(b => {
-            if (parseInt(b.innerText) === valorSalvo) b.classList.add('selected');
-          });
-          textarea.value = obsSalva;
-        } else {
-          botoes.forEach(b => {
-            if (parseInt(b.innerText) === 3) b.classList.add('selected');
-          });
-          textarea.value = '';
+      cards.forEach(card => {
+        const sel = card.querySelector(".btn-escala.selected");
+        if (sel) {
+          const v = parseInt(sel.textContent);
+          // Escala de 1 a 5 convertida para saldo -2 a +2 (-2, -1, 0, +1, +2) ou média ponderada
+          // Vamos usar pontuação linear simples: (v - 3) somada
+          soma += (v - 3);
+          total++;
         }
       });
 
-      atualizarSaldoDia();
+      const badge = document.getElementById("badge-saldo-diario");
+      const saldoFinal = soma;
+      const sinal = saldoFinal > 0 ? "+" : "";
+      badge.textContent = sinal + saldoFinal;
+      return saldoFinal;
     }
 
+    // Salvar Registro Diário
     function salvarRegistroDiario() {
-      const dataSelecionada = document.getElementById('data-registro').value;
-      if (!dataSelecionada) {
-        alert('Por favor, selecione uma data no calendário.');
+      const dataStr = document.getElementById("data-registro").value;
+      if (!dataStr) {
+        alert("Selecione uma data válida.");
         return;
       }
 
-      const dadosCriterios = {};
-      document.querySelectorAll('.criterio-card').forEach(card => {
-        const key = card.getAttribute('data-key');
-        const val = parseInt(card.querySelector('.btn-escala.selected').innerText);
-        const obs = card.querySelector('.anotacao-criterio').value.trim();
-        dadosCriterios[key] = { valor: val, observacao: obs };
+      const cards = document.querySelectorAll("#container-criterios-dinamicos .criterio-card");
+      const valores = {};
+      const notas = {};
+
+      cards.forEach(card => {
+        const key = card.getAttribute("data-key");
+        const sel = card.querySelector(".btn-escala.selected");
+        const txt = card.querySelector(".anotacao-criterio").value.trim();
+        
+        if (sel) valores[key] = parseInt(sel.textContent);
+        if (txt) notas[key] = txt;
       });
 
-      const perfilAtual = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
+      const saldo = calcularSaldoDiario();
 
-      const registro = {
-        data: dataSelecionada,
-        perfil: perfilAtual,
-        timestamp: new Date().getTime(),
-        saldo: calcularSaldoAtual(),
-        criterios: dadosCriterios
+      dadosApp.registros[dataStr] = {
+        perfil: dadosApp.perfilAtual,
+        saldo: saldo,
+        valores: valores,
+        notas: notas,
+        timestamp: new Date().toISOString()
       };
 
-      let historico = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
-      historico = historico.filter(item => item.data !== dataSelecionada);
-      historico.push(registro);
-      
-      localStorage.setItem('dashboard_clinica_dados', JSON.stringify(historico));
-      alert(`Registro do dia ${new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')} salvo com sucesso!`);
+      salvarNoLocalStorage();
+      alert("Registro diário guardado com sucesso!");
+      atualizarEstatisticasECharts();
     }
 
-    function obterHistorico() {
-      const dados = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
-      return dados.sort((a, b) => a.data.localeCompare(b.data));
-    }
+    // Carregar Registro de uma Data Específica
+    function carregarRegistroData(dataStr) {
+      const reg = dadosApp.registros[dataStr];
+      const cards = document.querySelectorAll("#container-criterios-dinamicos .criterio-card");
 
-    function renderizarRelatorios() {
-      const container = document.getElementById('lista-relatorios');
-      const historico = obterHistorico().slice().reverse();
+      cards.forEach(card => {
+        const key = card.getAttribute("data-key");
+        const botoes = card.querySelectorAll(".btn-escala");
+        const textarea = card.querySelector(".anotacao-criterio");
 
-      if (historico.length === 0) {
-        container.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted);">Nenhum registro encontrado.</div>';
-        return;
-      }
+        // Reseta para padrão (3)
+        botoes.forEach(b => b.classList.remove("selected"));
+        botoes[2].classList.add("selected"); // valor 3
+        textarea.value = "";
 
-      let html = '';
-      historico.forEach(reg => {
-        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
-        let corSaldoBadge = reg.saldo > 0 ? '#10b981' : (reg.saldo < 0 ? '#ef4444' : '#b8866b');
-        let corTextoDescricao = reg.saldo > 0 ? 'var(--text-dimmed)' : (reg.saldo < 0 ? '#ef4444' : '#b8866b');
-        
-        let descricaoSaldo = reg.saldo > 0 
-          ? 'Saldo Positivo — Dia com predomínio de autorregulação e recursos preservados.' 
-          : (reg.saldo < 0 
-            ? 'Saldo Negativo — Dia com acúmulo de sobrecarga ou consumo excessivo de energia.' 
-            : 'Saldo Neutro — Dia em equilíbrio básico entre desgastes e recuperação.');
-
-        html += `
-          <div class="relatorio-item">
-            <div class="relatorio-item-header">
-              <span class="relatorio-data">${dataFormatada}</span>
-              <span style="color: ${corSaldoBadge}; font-weight: bold; font-size:0.9rem;">
-                Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}
-              </span>
-              <button class="btn-apagar-diario" onclick="apagarRegistro('${reg.data}')">Apagar</button>
-            </div>
-            <div style="font-size:0.8rem; color:${corTextoDescricao}; margin-top:4px; font-style:italic;">
-              ${descricaoSaldo}
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function apagarRegistro(data) {
-      if (confirm(`Deseja apagar o registro do dia ${data}?`)) {
-        let historico = JSON.parse(localStorage.getItem('dashboard_clinica_dados') || '[]');
-        historico = historico.filter(item => item.data !== data);
-        localStorage.setItem('dashboard_clinica_dados', JSON.stringify(historico));
-        renderizarRelatorios();
-        if (document.getElementById('data-registro').value === data) {
-          carregarRegistroData(data);
+        if (reg && reg.valores && reg.valores[key] !== undefined) {
+          const val = reg.valores[key];
+          botoes.forEach(b => {
+            if (parseInt(b.textContent) === val) b.classList.add("selected");
+            else b.classList.remove("selected");
+          });
         }
-      }
-    }
 
-    function formatarDataBR(strData) {
-      const [ano, mes, dia] = strData.split('-');
-      return `${dia}/${mes}/${ano}`;
-    }
-
-    function renderizarEvolucao() {
-      const historico = obterHistorico();
-      const resumoContainer = document.getElementById('caixa-resumo-evolucao');
-
-      if (historico.length === 0) {
-        resumoContainer.innerHTML = 'Sem dados suficientes registrados para gerar a análise descritiva.';
-        return;
-      }
-
-      const ultimos30 = historico.slice(-30);
-      const qtdRegistros = ultimos30.length;
-      const dataInicio = formatarDataBR(ultimos30[0].data);
-      const dataFim = formatarDataBR(ultimos30[qtdRegistros - 1].data);
-
-      const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
-      const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
-
-      let diasSobrecargaOk = 0;
-      ultimos30.forEach(reg => {
-        const nivelSobrecarga = reg.criterios.sobrecarga ? reg.criterios.sobrecarga.valor : 3;
-        if (nivelSobrecarga >= 3) diasSobrecargaOk++;
-      });
-      const pctSobrecargaOk = Math.round((diasSobrecargaOk / qtdRegistros) * 100);
-
-      let textoTendencia = "";
-      const regMaisRecente = ultimos30[qtdRegistros - 1];
-
-      if (qtdRegistros === 1) {
-        textoTendencia = `Início do acompanhamento diário com foco no perfil <strong>${perfilNome}</strong>. Em <strong>100% dos registros</strong>, os níveis de autorregulação apresentam estado inicial preservado.`;
-      } else {
-        if (pctSobrecargaOk >= 60) {
-          textoTendencia = `Observa-se uma <strong>melhora na estabilidade emocional</strong> nos registros mais recentes. Em <strong>${pctSobrecargaOk}% dos dias registrados</strong>, os níveis de sobrecarga mantiveram-se sob controle.`;
-        } else {
-          textoTendencia = `Identifica-se período de <strong>maior vulnerabilidade neuroemocional</strong> para o perfil selecionado. Em apenas <strong>${pctSobrecargaOk}% dos dias</strong> a sobrecarga esteve totalmente sob controle.`;
+        if (reg && reg.notas && reg.notas[key]) {
+          textarea.value = reg.notas[key];
         }
-      }
-
-      let textoResumoAnotacoes = "";
-      const regComObs = ultimos30.slice().reverse().find(r => {
-        return Object.values(r.criterios).some(c => c.observacao && c.observacao.length > 0);
       });
 
-      if (regComObs) {
-        const dataObs = formatarDataBR(regComObs.data);
-        const obsLista = [];
-        Object.keys(regComObs.criterios).forEach(k => {
-          if (regComObs.criterios[k].observacao) {
-            obsLista.push(`${nomesCriterios[k]}: "${regComObs.criterios[k].observacao}"`);
+      calcularSaldoDiario();
+    }
+
+    // Persistência localStorage
+    function salvarNoLocalStorage() {
+      localStorage.setItem("clinica_psico_dashboard", JSON.stringify(dadosApp));
+    }
+
+    function carregarDoLocalStorage() {
+      const salvo = localStorage.getItem("clinica_psico_dashboard");
+      if (salvo) {
+        try {
+          dadosApp = JSON.parse(salvo);
+          if (dadosApp.perfilAtual) {
+            const config = obterPerfilConfig(dadosApp.perfilAtual);
+            document.getElementById("custom-dropdown-selected-text").textContent = config.titulo;
+            document.getElementById("select-perfil-diagnostico").value = dadosApp.perfilAtual;
+            renderizarCriteriosPerfil(dadosApp.perfilAtual);
           }
-        });
-        textoResumoAnotacoes = `Destaque para o registro de <strong>${dataObs}</strong> com relato registrado (${obsLista.join(', ')}).`;
-      } else {
-        const dataDestaque = formatarDataBR(regMaisRecente.data);
-        textoResumoAnotacoes = `Destaque para o registro recente de <strong>${dataDestaque}</strong>.`;
+        } catch (e) {
+          console.error("Erro ao carregar dados salvos:", e);
+        }
+      }
+    }
+
+    // Apagar Registro Individual
+    function apagarRegistro(dataStr) {
+      if (confirm(`Deseja realmente apagar o registro do dia ${dataStr.split("-").reverse().join("/")}?`)) {
+        delete dadosApp.registros[dataStr];
+        salvarNoLocalStorage();
+        renderizarRelatorios();
+        atualizarEstatisticasECharts();
+        carregarRegistroData(document.getElementById("data-registro").value);
+      }
+    }
+
+    // Renderizar Relatórios e Prontuário
+    function renderizarRelatorios() {
+      const containerHistorico = document.getElementById("container-historico-relatorios");
+      const containerProntuario = document.getElementById("container-prontuario");
+      
+      const datas = Object.keys(dadosApp.registros).sort().reverse();
+
+      if (datas.length === 0) {
+        containerHistorico.innerHTML = '<div style="font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 10px;">Nenhum registro encontrado.</div>';
+        containerProntuario.innerHTML = '<div style="font-size: 0.82rem; color: var(--text-muted);">Sem dados suficientes para consolidação de prontuário.</div>';
+        return;
       }
 
-      resumoContainer.innerHTML = `
-        <div class="prontuario-subtitulo">Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro${qtdRegistros > 1 ? 's' : ''}) — <strong>Perfil: ${perfilNome}</strong>:</div>
-        <div class="prontuario-topico">• <strong>Tendência:</strong> ${textoTendencia}</div>
-        <div class="prontuario-topico">• <strong>Resumo das Anotações:</strong> ${textoResumoAnotacoes}</div>
-      `;
+      // Renderiza Histórico
+      containerHistorico.innerHTML = "";
+      datas.forEach(dataStr => {
+        const reg = dadosApp.registros[dataStr];
+        const dataFormatada = dataStr.split("-").reverse().join("/");
+        const sinalSaldo = reg.saldo > 0 ? "+" : "";
+        
+        let htmlItens = "";
+        for (const [k, v] > of Object.entries(reg.valores || {})) {
+          const notaStr = reg.notas && reg.notas[k] ? ` ("${reg.notas[k]}")` : "";
+          htmlItens += `<div style="font-size: 0.78rem; color: var(--text-dimmed); margin-left: 10px;"> - ${formatarNomeCriterio(k)}: Nível ${v}${notaStr}</div>`;
+        }
 
-      const isDark = document.body.getAttribute('data-theme') === 'dark';
-      const gridColor = isDark ? '#26334d' : '#e8e2d8';
-      const tickColor = isDark ? '#9ca3af' : '#8c7f73';
-      const accentColor = isDark ? '#d4a373' : '#b8866b';
-
-      const labelsDatas = ultimos30.map(item => {
-        const [ano, mes, dia] = item.data.split('-');
-        return `${dia}/${mes}`;
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "relatorio-item";
+        itemDiv.innerHTML = `
+          <div class="relatorio-item-header">
+            <span class="relatorio-data">Data: ${dataFormatada} | Saldo: ${sinalSaldo}${reg.saldo}</span>
+            <button class="btn-apagar-diario" onclick="apagarRegistro('${dataStr}')">🗑️️ Apagar</button>
+          </div>
+          ${htmlItens}
+        `;
+        containerHistorico.appendChild(itemDiv);
       });
-      const valoresSaldos = ultimos30.map(item => item.saldo);
-      const coresPontos = valoresSaldos.map(s => s > 0 ? '#10b981' : (s < 0 ? '#ef4444' : '#b8866b'));
 
-      const ctxLinha = document.getElementById('chartSaldoLinha').getContext('2d');
-      if (instChartLinha) instChartLinha.destroy();
-      instChartLinha = new Chart(ctxLinha, {
+      // Renderiza Prontuário Consolidado (Últimos 30 dias)
+      const perfilConf = obterPerfilConfig(dadosApp.perfilAtual);
+      const totalRegs = datas.length;
+      let soma Saldos = 0;
+      datas.forEach(d => soma Saldos += dadosApp.registros[d].saldo);
+      const mediaSaldo = (soma Saldos / totalRegs).toFixed(1);
+
+      containerProntuario.innerHTML = `
+        <div class="prontuario-topico"><strong>Perfil Clínico Ativo:</strong> ${perfilConf.titulo}</div>
+        <div class="prontuario-topico"><strong>Total de Registros Analisados:</strong> ${totalRegs} registro(s)</div>
+        <div class="prontuario-topico"><strong>Média de Saldo Emocional:</strong> ${mediaSaldo > 0 ? "+" : ""}${mediaSaldo}</div>
+        <div class="prontuario-topico" style="margin-top: 10px;"><strong>Síntese Comportamental:</strong> O paciente apresenta monitoramento regular das dimensões neuroemocionais vinculadas ao plano terapêutico, permitindo ao profissional rastrear oscilações afetivas, padrões de ruminação e eficácia adaptativa no período.</div>
+      `;
+    }
+
+    function formatarNomeCriterio(key) {
+      const mapaNomes = {
+        ansiedade: "Ansiedade & Ruminação",
+        sobrecarga_sensorial: "Sobrecarga Sensorial",
+        autocompaxao: "Autocompaixão & Flexibilidade",
+        nutricao_intelectual: "Nutrição Intelectual / Estimulação",
+        foco_estudos: "Foco nos Estudos / Projetos",
+        sono: "Qualidade do Sono",
+        hidratacao: "Hidratação",
+        exercicios: "Exercícios / Movimento",
+        cuidados_medicos: "Cuidados Médicos & Medicação",
+        relacionamento: "Relacionamento Afetivo / Social",
+        hobbies: "Hobbies & Desconexão",
+        vitalidade_humor: "Vitalidade & Humor"
+      };
+      return mapaNomes[key] || key;
+    }
+
+    // Gráficos (Chart.js)
+    function atualizarEstatisticasECharts() {
+      const datas = Object.keys(dadosApp.registros).sort();
+      if (datas.length === 0) return;
+
+      // Dados para o Gráfico de Linha (Saldo dos últimos 30 dias)
+      const ultimos30Datas = datas.slice(-30);
+      const labelsLinha = ultimos30Datas.map(d => d.split("-").reverse().join("/"));
+      const valoresLinha = ultimos30Datas.map(d => dadosApp.registros[d].saldo);
+
+      const ctxLinha = document.getElementById("graficoLinhaSaldo").getContext("2d");
+      if (chartLinha) chartLinha.destroy();
+
+      chartLinha = new Chart(ctxLinha, {
         type: 'line',
         data: {
-          labels: labelsDatas,
+          labels: labelsLinha,
           datasets: [{
-            label: 'Saldo Diário',
-            data: valoresSaldos,
-            borderColor: accentColor,
-            borderWidth: 2,
-            pointBackgroundColor: coresPontos,
-            pointRadius: 4,
-            tension: 0.2,
-            fill: false
+            label: 'Saldo Emocional',
+            data: valoresLinha,
+            borderColor: '#b8866b',
+            backgroundColor: 'rgba(184, 134, 107, 0.1)',
+            fill: true,
+            tension: 0.3
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
           scales: {
-            x: { ticks: { color: tickColor, font: { size: 10 } }, grid: { color: gridColor } },
-            y: { ticks: { color: tickColor }, grid: { color: gridColor } }
-          }
+            y: {
+              grid: { color: 'rgba(150,150,150,0.1)' },
+              ticks: { color: '#8c7f73' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#8c7f73' }
+            }
+          },
+          plugins: { legend: { display: false } }
         }
       });
 
-      const mediasAreas = [];
-      const nomesAreas = Object.keys(categoriasAreas);
+      // Dados para o Gráfico Radar (Média por Dimensão)
+      const dimensoesSoma = {};
+      const dimensoesCont = {};
 
-      nomesAreas.forEach(area => {
-        const chaves = categoriasAreas[area];
-        let somaValores = 0;
-        let countValores = 0;
-
-        ultimos30.forEach(reg => {
-          chaves.forEach(k => {
-            if (reg.criterios[k]) {
-              somaValores += reg.criterios[k].valor;
-              countValores++;
-            }
-          });
-        });
-
-        const mediaArea = countValores > 0 ? (somaValores / countValores).toFixed(1) : 3.0;
-        mediasAreas.push(mediaArea);
+      ultimos30Datas.forEach(d => {
+        const valores = dadosApp.registros[d].valores || {};
+        for (const [k, v] of Object.entries(valores)) {
+          dimensoesSoma[k] = (dimensoesSoma[k] || 0) + v;
+          dimensoesCont[k] = (dimensoesCont[k] || 0) + 1;
+        }
       });
 
-      const ctxRadar = document.getElementById('chartCategoriasRadar').getContext('2d');
-      if (instChartRadar) instChartRadar.destroy();
-      instChartRadar = new Chart(ctxRadar, {
+      const chavesDim = Object.keys(dimensoesSoma);
+      const labelsRadar = chavesDim.map(k => formatarNomeCriterio(k));
+      const dadosRadar = chavesDim.map(k => (dimensoesSoma[k] / dimensoesCont[k]).toFixed(1));
+
+      const ctxRadar = document.getElementById("graficoRadarDimensao").getContext("2d");
+      if (chartRadar) chartRadar.destroy();
+
+      chartRadar = new Chart(ctxRadar, {
         type: 'radar',
         data: {
-          labels: nomesAreas,
+          labels: labelsRadar.length > 0 ? labelsRadar : ['Ansiedade', 'Sono', 'Foco', 'Hidratação'],
           datasets: [{
-            label: 'Média de Nível (1 a 5)',
-            data: mediasAreas,
-            backgroundColor: isDark ? 'rgba(212, 163, 115, 0.15)' : 'rgba(184, 134, 107, 0.12)',
-            borderColor: accentColor,
-            pointBackgroundColor: accentColor
+            label: 'Média por Dimensão',
+            data: dadosRadar.length > 0 ? dadosRadar : [3, 3, 3, 3],
+            backgroundColor: 'rgba(184, 134, 107, 0.2)',
+            borderColor: '#b8866b',
+            pointBackgroundColor: '#b8866b'
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
           scales: {
             r: {
-              min: 1,
-              max: 5,
-              ticks: { stepSize: 1, display: false },
-              grid: { color: gridColor },
-              angleLines: { color: gridColor },
-              pointLabels: { color: tickColor, font: { size: 11, weight: 'bold' } }
+              grid: { color: 'rgba(150,150,150,0.1)' },
+              angleLines: { color: 'rgba(150,150,150,0.1)' },
+              ticks: { display: false, max: 5, min: 0 }
             }
-          }
+          },
+          plugins: { legend: { display: false } }
         }
       });
     }
 
-    function exportarBackupJSON() {
-      const historico = localStorage.getItem('dashboard_clinica_dados') || '[]';
-      const blob = new Blob([historico], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `backup_clinica_psicologia_${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+    // Modal de Termos
+    function abrirModalTermos() {
+      document.getElementById("modal-termos").classList.add("open");
+    }
+    function fecharModalTermos() {
+      document.getElementById("modal-termos").classList.remove("open");
     }
 
-    function importarBackupJSON(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+    // Exportação JSON
+    function exportarJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dadosApp, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `backup_dashboard_psico_${new Date().toISOString().split("T")[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const dados = JSON.parse(e.target.result);
-          if (Array.isArray(dados)) {
-            localStorage.setItem('dashboard_clinica_dados', JSON.stringify(dados));
-            alert('Backup importado com sucesso!');
-            renderizarRelatorios();
-            const dataAtualInput = document.getElementById('data-registro').value;
-            if (dataAtualInput) carregarRegistroData(dataAtualInput);
-          } else {
-            alert('Formato de arquivo JSON inválido.');
+    // Importação JSON
+    function importarJSON(event) {
+      const fileReader = new FileReader();
+      if (event.target.files[0]) {
+        fileReader.readAsText(event.target.files[0], "UTF-8");
+        fileReader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            if (parsed && parsed.registros) {
+              dadosApp = parsed;
+              salvarNoLocalStorage();
+              const config = obterPerfilConfig(dadosApp.perfilAtual || "ahsd");
+              document.getElementById("custom-dropdown-selected-text").textContent = config.titulo;
+              document.getElementById("select-perfil-diagnostico").value = dadosApp.perfilAtual || "ahsd";
+              renderizarCriteriosPerfil(dadosApp.perfilAtual || "ahsd");
+              carregarRegistroData(document.getElementById("data-registro").value);
+              atualizarEstatisticasECharts();
+              alert("Backup importado com sucesso!");
+            } else {
+              alert("Arquivo de backup inválido.");
+            }
+          } catch (err) {
+            alert("Erro ao ler arquivo JSON.");
           }
-        } catch (err) {
-          alert('Erro ao ler o arquivo JSON.');
-        }
-      };
-      reader.readAsText(file);
+        };
+      }
     }
 
-    function gerarPDFMensal() {
+    // Geração de PDF Técnico com Gráficos e Aviso Legal Discreto
+    async function gerarPDF() {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const historico = obterHistorico().slice().reverse();
+      const doc = new jsPDF('p', 'mm', 'a4');
+      
+      const perfilConf = obterPerfilConfig(dadosApp.perfilAtual);
+      const hojeStr = new Date().toLocaleDateString("pt-BR");
 
-      if (historico.length === 0) {
-        alert('Sem dados para gerar relatório.');
-        return;
+      let yPos = 15;
+
+      // Cabeçalho do PDF
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(184, 134, 107); // Cor Accent
+      doc.text("Relatório Mensal - Clínica de Psicologia", 14, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Gerado em: ${hojeStr} | Perfil Clínico: ${perfilConf.titulo}`, 14, yPos);
+
+      yPos += 10;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(50, 50, 50);
+      doc.text("ANÁLISE DESCRITIVA DE EVOLUÇÃO (ÚLTIMOS 30 DIAS)", 14, yPos);
+
+      const datas = Object.keys(dadosApp.registros).sort().reverse();
+      const ultimos30 = datas.slice(0, 30);
+      
+      yPos += 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(80, 80, 80);
+      
+      if (ultimos30.length > 0) {
+        const dataInicio = ultimos30[ultimos30.length - 1].split("-").reverse().join("/");
+        const dataFim = ultimos30[0].split("-").reverse().join("/");
+        doc.text(`Acompanhamento do período de ${dataInicio} a ${dataFim} (${ultimos30.length} registro(s)):`, 14, yPos);
+      } else {
+        doc.text("Nenhum registro encontrado no período.", 14, yPos);
       }
 
-      const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
-      const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
-
+      yPos += 8;
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(15);
-      doc.text("Relatório Mensal - Clínica de Psicologia", 14, 18);
-
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} | Perfil Clínico: ${perfilNome}`, 14, 24);
-
-      const ultimos30 = historico.slice(0, 30);
-      const qtdRegistros = ultimos30.length;
-      const dataInicio = formatarDataBR(ultimos30[qtdRegistros - 1].data);
-      const dataFim = formatarDataBR(ultimos30[0].data);
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.text("ANÁLISE DESCRITIVA DE EVOLUÇÃO (ÚLTIMOS 30 DIAS)", 14, 33);
+      doc.setFontSize(10);
+      doc.setTextColor(50, 50, 50);
+      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, yPos);
+      yPos += 6;
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
-      doc.text(`Acompanhamento do período de ${dataInicio} a ${dataFim} (${qtdRegistros} registro(s)):`, 14, 40);
+      doc.setFontSize(8.5);
 
-      doc.setDrawColor(200, 200, 200);
-      doc.line(14, 46, 196, 46);
+      ultimos30.forEach(dataStr => {
+        const reg = dadosApp.registros[dataStr];
+        const dataFmt = dataStr.split("-").reverse().join("/");
+        const sinal = reg.saldo > 0 ? "+" : "";
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.text("HISTÓRICO DETALHADO DOS REGISTROS DIÁRIOS", 14, 53);
-
-      let y = 61;
-      historico.forEach((reg) => {
-        if (y > 270) {
+        if (yPos > 260) {
           doc.addPage();
-          y = 20;
+          yPos = 15;
         }
 
-        const dataFormatada = new Date(reg.data + 'T00:00:00').toLocaleDateString('pt-BR');
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.text(`Data: ${dataFormatada} | Saldo: ${reg.saldo > 0 ? '+' + reg.saldo : reg.saldo}`, 14, y);
-        y += 6;
+        doc.setTextColor(184, 134, 107);
+        doc.text(`Data: ${dataFmt} | Saldo: ${sinal}${reg.saldo}`, 14, yPos);
+        yPos += 5;
 
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        
-        Object.keys(reg.criterios).forEach(key => {
-          const item = reg.criterios[key];
-          if (item.observacao || item.valor !== 3) {
-            const linha = ` - ${nomesCriterios[key] || key}: Nível ${item.valor} ${item.observacao ? `("${item.observacao}")` : ''}`;
-            const linhasTratadas = doc.splitTextToSize(linha, 180);
-            
-            if (y > 270) {
-              doc.addPage();
-              y = 20;
-            }
-            doc.text(linhasTratadas, 16, y);
-            y += (linhasTratadas.length * 4.8);
-          }
-        });
+        doc.setTextColor(70, 70, 70);
 
-        y += 4;
+        for (const [k, v] of Object.entries(reg.valores || {})) {
+          if (yPos > 280) {
+            doc.addPage();
+            yPos = 15;
+          }
+          const nota = reg.notas && reg.notas[k] ? ` ("${reg.notas[k]}")` : "";
+          doc.text(` - ${formatarNomeCriterio(k)}: Nível ${v}${nota}`, 18, yPos);
+          yPos += 4.5;
+        }
+        yPos += 3;
       });
 
-      doc.save(`Relatorio_Clinica_Psicologia_${new Date().toISOString().split('T')[0]}.pdf`);
+      // Inserção dos Gráficos no PDF
+      if (chartRadar && chartLinha) {
+        doc.addPage();
+        yPos = 15;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(50, 50, 50);
+        doc.text("VISUALIZAÇÃO GRÁFICA DE TENDÊNCIAS", 14, yPos);
+        yPos += 10;
+
+        // Captura Gráfico Radar
+        const canvasRadar = document.getElementById("graficoRadarDimensao");
+        const imgRadar = canvasRadar.toDataURL("image/png");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        doc.text("Perfil de Regulação por Dimensão", 14, yPos);
+        yPos += 4;
+        doc.addImage(imgRadar, 'PNG', 14, yPos, 90, 60);
+
+        // Captura Gráfico Linha
+        const canvasLinha = document.getElementById("graficoLinhaSaldo");
+        const imgLinha = canvasLinha.toDataURL("image/png");
+        doc.text("Tendência do Saldo Emocional (30 Dias)", 114, yPos - 4);
+        doc.addImage(imgLinha, 'PNG', 110, yPos, 90, 60);
+
+        yPos += 75;
+      }
+
+      // Adicionar Aviso Legal Discreto no Rodapé de todas as páginas ou na última
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(7);
+        doc.setTextColor(130, 130, 130);
+        doc.text(
+          "Nota: Esta avaliação não substitui profissional de psicologia/psiquiatria; é apenas um instrumento de anotações que pode contribuir com a relação terapêutica entre paciente e profissional.",
+          14,
+          288,
+          { maxWidth: 182 }
+        );
+      }
+
+      doc.save(`relatorio_clinico_${dadosApp.perfilAtual}_${new Date().toISOString().split("T")[0]}.pdf`);
     }
-
-    window.onload = function() {
-      const temaSalvo = localStorage.getItem('dashboard_clinica_tema') || 'light';
-      document.body.setAttribute('data-theme', temaSalvo);
-      document.getElementById('theme-toggle').innerHTML = temaSalvo === 'light' ? '🌙' : '☀️';
-
-      const hoje = new Date().toISOString().split('T')[0];
-      const inputData = document.getElementById('data-registro');
-      inputData.value = hoje;
-
-      const perfilSalvo = localStorage.getItem('dashboard_clinica_perfil') || 'ahsd';
-      const nomeInicial = perfisFoco[perfilSalvo] ? perfisFoco[perfilSalvo].nome : perfisFoco.ahsd.nome;
-      
-      document.getElementById('select-perfil-diagnostico').value = perfilSalvo;
-      document.getElementById('custom-dropdown-selected-text').innerText = nomeInicial;
-      
-      alterarPerfilDiagnostico(perfilSalvo);
-      carregarRegistroData(hoje);
-    };
   </script>
-
 </body>
 </html>
-
