@@ -870,7 +870,7 @@
   <div class="modal-overlay" id="modal-termos" onclick="fecharModalFora(event)">
     <div class="modal-box">
       <div class="modal-header">
-        <span>Termos de Uso & Política de Privacidade</span>
+        <span>Termos de Uso & Privacidade</span>
         <button class="modal-close" onclick="fecharModalTermos()">&times;</button>
       </div>
       <div class="modal-body">
@@ -879,8 +879,13 @@
         
         <h3>2. Soberania e Armazenamento Local de Dados</h3>
         <p>Arquitetado com foco em privacidade digital (LGPD-compliant). Todos os registos diários, notas e métricas são armazenados <strong>estritamente no seu próprio navegador (LocalStorage)</strong>. Não recolhemos, visualizamos ou processamos os seus dados em servidores centrais.</p>
+        
         <h3>3. Backup e Portabilidade</h3>
         <p>A aplicação disponibiliza recursos de exportação e importação de backups em formato JSON. O utilizador é responsável por guardar e proteger as suas cópias de segurança caso limpe o cache do navegador.</p>
+        
+        <h3>4. Origem Científica e Acadêmica</h3>
+        <p>Ferramenta desenvolvida para uso pessoal e aprimoramento da autorregulação. Concebida por <strong>Jully Kutsk Maieski</strong>, graduanda em Psicologia (período de 2025–2030), com o intuito de estruturar um instrumento prático de acompanhamento terapêutico. O projeto conta com suporte e validação institucional acadêmica para fundamentação de argumentações científicas, visando sua futura aplicação e expansão no Trabalho de Conclusão de Curso (TCC).</p>
+        
         <div class="autor-credito">
           Concebido e desenvolvido por <strong>Jully Kutsk Maieski</strong>
         </div>
@@ -1348,14 +1353,12 @@
       let contNivel1 = 0;
       let contPositivos = 0;
       let contNegativos = 0;
-      const frequenciaCriteriosNivel1 = {};
 
       ultimos30.forEach(reg => {
         Object.keys(reg.criterios).forEach(key => {
           const val = reg.criterios[key].valor;
           if (val === 1) {
             contNivel1++;
-            frequenciaCriteriosNivel1[key] = (frequenciaCriteriosNivel1[key] || 0) + 1;
           }
           if (val >= 4) contPositivos++;
           if (val <= 2) contNegativos++;
