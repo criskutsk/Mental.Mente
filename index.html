@@ -46,7 +46,7 @@
     
     .container { max-width: 800px; margin: 0 auto; flex: 1; width: 100%; }
     
-    /* Cabeçalho com Logo Ocupando Todo o Espaço do Topo */
+    /* Cabeçalho com Banner Largo Otimizado */
     .header-marca {
       width: 100%;
       margin-bottom: 14px;
@@ -54,12 +54,17 @@
       padding: 0;
       overflow: hidden;
       border-radius: 10px;
+      background: var(--bg-container);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .logo-img {
       width: 100%;
-      height: auto;
+      max-height: 140px;
       display: block;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 10px;
     }
     .header-topo { 
@@ -544,7 +549,7 @@
 <body data-theme="light">
   <div class="container">
     
-    <!-- Cabeçalho com Logo Ocupando Todo o Espaço Horizontal -->
+    <!-- Cabeçalho com Banner Largo Otimizado -->
     <div class="header-marca">
       <img src="logo.png" alt="Dashboard Psicoeducativo" class="logo-img">
     </div>
@@ -596,8 +601,8 @@
         </div>
         <input type="date" id="data-registro" class="seletor-data-input" onchange="carregarRegistroData(this.value)">
       </div>
-      <!-- Seção: Neuroemocional & AH/SD -->
-      <div class="categoria-titulo">Neuroemocional & AH/SD</div>
+      <!-- Seção: Dimensão Neuroemocional -->
+      <div class="categoria-titulo">Dimensão Neuroemocional</div>
       <div class="criterio-card" data-key="ansiedade">
         <div class="criterio-nome">Ansiedade & Ruminação</div>
         <div class="criterio-legenda">1 = Alta ruminação/crise; 3 = Ansiedade gerível; 5 = Mente calma e focada.</div>
@@ -927,7 +932,7 @@
       hobbies: "Hobbies & Desconexão"
     };
     const categoriasAreas = {
-      "Neuroemocional & AH/SD": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
+      "Dimensão Neuroemocional": ["ansiedade", "vitalidade", "sobrecarga", "autocompaixao"],
       "Foco & Cognição": ["nutricao_intelectual", "foco_estudos", "produtividade_criativa"],
       "Saúde Integral & Rotina": ["qualidade_sono", "rotinas_autocuidado", "alimentacao", "hidratacao", "exercicios", "cuidados_medicos", "rotina_domestica", "gestao_financeira"],
       "Conexões & Lazer": ["relacionamento", "hobbies"]
@@ -945,7 +950,7 @@
         localStorage.setItem('dashboard_clinica_tema', 'light');
       } else {
         body.setAttribute('data-theme', 'dark');
-        btn.innerHTML = '☀️️';
+        btn.innerHTML = '☀️';
         localStorage.setItem('dashboard_clinica_tema', 'dark');
       }
       if (document.getElementById('aba-evolucao').classList.contains('active')) {
@@ -1349,7 +1354,6 @@
       const dataInicio = formatarDataBR(ultimos30[qtdRegistros - 1].data);
       const dataFim = formatarDataBR(ultimos30[0].data);
       
-      // Mapeamento e contagem exata de nível 1 (críticos/gatilhos) e incidências positivas/negativas recorrentes
       let contNivel1 = 0;
       let contPositivos = 0;
       let contNegativos = 0;
@@ -1399,10 +1403,9 @@
           const item = reg.criterios[key];
           if (item.observacao || item.valor !== 3) {
             
-            // Destaca no histórico se o critério for exatamente Nível 1
             if (item.valor === 1) {
               doc.setFont("helvetica", "bold");
-              doc.setTextColor(180, 40, 40); // Vermelho de destaque para nível 1
+              doc.setTextColor(180, 40, 40);
             } else {
               doc.setFont("helvetica", "normal");
               doc.setTextColor(60, 60, 60);
@@ -1420,7 +1423,7 @@
               const parteObs = ` ("${item.observacao}")`;
               const larguraBase = doc.getTextWidth(parteBase);
               
-              doc.setTextColor(150, 60, 40); // Cor destacada (terracota) para observações
+              doc.setTextColor(150, 60, 40);
               doc.setFont("helvetica", "italic");
               
               const linhasObs = doc.splitTextToSize(parteObs, 180 - larguraBase);
@@ -1433,10 +1436,8 @@
         y += 4;
       });
 
-      // Restaura a cor padrão de texto
       doc.setTextColor(0, 0, 0);
 
-      // Incorporação da Pauta para a Sessão (Anotações Gerais)
       const pautaTexto = localStorage.getItem('dashboard_clinica_pauta') || '';
       if (pautaTexto.trim() !== '') {
         if (y > 230) {
