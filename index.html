@@ -46,7 +46,7 @@
     
     .container { max-width: 800px; margin: 0 auto; flex: 1; width: 100%; }
     
-    /* Cabeçalho com Banner Largo Otimizado */
+    /* Cabeçalho com Banner Largo Aumentado */
     .header-marca {
       width: 100%;
       margin-bottom: 14px;
@@ -56,15 +56,13 @@
       border-radius: 10px;
       background: var(--bg-container);
       border: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .logo-img {
       width: 100%;
-      max-height: 140px;
+      height: 170px; /* Altura aumentada para maior destaque */
       display: block;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center;
       border-radius: 10px;
     }
     .header-topo { 
@@ -549,7 +547,7 @@
 <body data-theme="light">
   <div class="container">
     
-    <!-- Cabeçalho com Banner Largo Otimizado -->
+    <!-- Cabeçalho com Banner Largo Aumentado -->
     <div class="header-marca">
       <img src="logo.png" alt="Dashboard Psicoeducativo" class="logo-img">
     </div>
@@ -1341,7 +1339,6 @@
       const perfilChave = document.getElementById('select-perfil-diagnostico').value || 'ahsd';
       const perfilNome = perfisFoco[perfilChave] ? perfisFoco[perfilChave].nome : perfisFoco.ahsd.nome;
       
-      // Cabeçalho Psicoeducativo e Funcional
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
       doc.text("RELATÓRIO PSICOEDUCATIVO DE AUTORREGULAÇÃO", 14, 18);
